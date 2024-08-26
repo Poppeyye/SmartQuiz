@@ -1,0 +1,353 @@
+@import url(https://fonts.googleapis.com/css?family=Righteous);
+
+*, *:before, *:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: hsla(230, 40%, 50%, 1);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Asegura que el body ocupe siempre toda la altura de la ventana */
+    overflow-x: hidden; /* Solo ocultar overflow en el eje x para evitar scroll horizontal */
+    flex-direction: column; 
+}
+body:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0;
+    height: auto;
+}
+
+h1 {
+    display: inline-block;
+    color: white;
+    font-family: 'Righteous', serif;
+    font-size: 8vw; /* Usar viewport width para hacerlo responsivo */
+    text-shadow: .03em .03em 0 hsla(230, 40%, 50%, 1);
+    margin-bottom: 1em;
+}
+
+h1:after {
+    content: attr(data-shadow);
+    position: absolute;
+    top: .06em; 
+    left: .06em;
+    z-index: -1;
+    text-shadow: none;
+    background-image: linear-gradient(45deg, transparent 45%, hsla(48, 20%, 90%, 1) 45%, hsla(48, 20%, 90%, 1) 55%, transparent 0);
+    background-size: .05em .05em;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shad-anim 15s linear infinite;
+}
+
+@keyframes shad-anim {
+    0% {background-position: 0 0}
+    100% {background-position: 100% -100%}
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    min-height: 50vh; /* Asegura que el contenedor siempre tenga un mínimo de altura */
+    text-align: center;
+    overflow-y: auto; /* Permitir scroll si el contenido excede la altura del contenedor */
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#category-container, #question-container {
+    width: 100%;
+    margin: 20px 0;
+}
+
+#score-timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 102, 204, 0.8); /* Fondo azul semi-transparente */
+    border-radius: 20px; /* Esquinas redondeadas */
+    padding: 20px; /* Espaciado alrededor */
+    transition: opacity 0.5s ease; 
+}
+
+/* Estilo para el texto */
+#timer-text, #score-text, #result-text {
+    font-size: 2rem; /* Tamaño mayor para visibilidad */
+    margin: 5px 0;
+    color: #ffffff;
+    text-align: center; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
+}
+
+/* Asegúrate de que los botones y el input se adapten bien */
+#user-name {
+    width: 100%; /* Usar el ancho completo */
+    padding: 12px;
+    border: 2px solid #007BFF; 
+    border-radius: 25px; 
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #0056b3; 
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+    text-align: center; 
+}
+
+#user-name:focus {
+    outline: none;
+    background-color: #004494; 
+}
+
+button {
+    background-color: #28a745; 
+    color: white;
+    border: none;
+    border-radius: 24px; 
+    padding: 15px 25px;
+    font-size: 1.5rem; /* Ajustado para ser más apropiado */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+    width: 100%; /* Hacer que el botón se expanda */
+}
+
+button:hover {
+    background-color: #218838; 
+    transform: translateY(-3px); 
+}
+
+#question-text {
+    font-size: 2rem;
+    margin: 20px 0;
+    color: #0056b3; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
+}
+
+#answer-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0; /* Ajustar márgenes para no tener overflow */
+}
+
+.score-text, #result-text, #funny-message {
+    font-size: 2rem;
+    margin-top: 20px;
+    opacity: 1;
+    animation: funAnimation 1.5s ease-in-out forwards;
+    transition: opacity 0.5s;
+}
+
+/* Animación para el texto */
+@keyframes funAnimation {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Media Queries para equipos pequeños */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 5vw; /* Tamaño responsivo para el título */
+    }
+
+    button {
+        font-size: 1.2rem; /* Ajustar tamaño de fuente */
+        padding: 10px;
+    }
+
+    #timer-text, #score-text, #result-text {
+        font-size: 1.5rem; 
+    }
+
+    #score-timer {
+        width: 100%; /* Asegurarse de que el temporizador ocupe todo el ancho */
+    }
+    
+    /* Ajuste de márgenes y rellenos para evitar desbordamientos */
+    #category-container, #question-container {
+        margin: 10px 0; /* Reducir márgenes */
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.message-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90%; /* Evitar overflow en pantallas pequeñas */
+}
+
+.play-again-message {
+    font-size: 1.2rem;
+}
+
+.overlay-button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF; /* Cambia esto según tu estilo */
+    color: white;
+    cursor: pointer;
+    /*transition: background-color 0.3s;*/
+}
+
+.overlay-button:hover {
+    background-color: #0056b3;
+}
+
+.popup-message {
+    position: fixed;
+    bottom: 20px; /* Posicionar 20px desde la parte inferior */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Centrar con transform */
+    background-color: rgba(0, 128, 0, 0.8); /* Fondo verde semitransparente */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0; /* Comenzar invisible */
+    transition: opacity 0.3s ease;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+/* Efecto de animación al aparecer y desaparecer */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.ranking-popup {
+    position: fixed;
+    top: 20px; /* A 20px desde la parte superior */
+    left: 20px; /* A 20px desde la izquierda */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo negro semitransparente para un aspecto más discreto */
+    color: white;
+    padding: 10px 15px; /* Menos padding para hacerlo más compacto */
+    border-radius: 8px; /* Bordes ligeramente redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); /* Sombra más sutil */
+    z-index: 1000;
+    opacity: 0; /* Comenzar invisible */
+    transition: opacity 0.3s ease;
+    text-align: left; /* Alinear el texto a la izquierda */
+    font-size: 1.2rem; /* Tamaño de fuente más pequeño */
+    min-width: 200px; /* Ancho mínimo para asegurar que el texto se vea bien */
+}
+.final-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con opacidad */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#progress-bar-container {
+    width: 100%;
+    background-color: rgba(0, 102, 204, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 10px 0;
+}
+
+#progress-bar {
+    height: 30px;
+    width: 100%;
+    background: linear-gradient(to right, #003366, #3399ff); /* Degradado azul */
+    transition: width 0.1s linear;
+}
+
+#ranking-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 250px; /* Ancho fijo para el ranking */
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco transparente */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 10px;
+    z-index: 1000; /* Asegúrate que esté por encima */
+}
+
+#ranking-container h2 {
+    font-size: 1.5em;
+    margin: 0;
+    color: #007BFF; /* Color del título del ranking */
+}
+
+#best-scores-list {
+    list-style-type: none; /* Para quitar los puntos de la lista */
+    padding: 0;
+    margin: 0;
+}
+
+#best-scores-list li {
+    color: #333; /* Texto oscuro para mejorar la legibilidad */
+    margin: 5px 0; 
+}
+
+/* Estilos para móviles y tabletas */
+@media (max-width: 768px) {
+    #ranking-container {
+        position: relative; /* Cambia a relativo para dispositivos pequeños */
+        width: 100%; /* Ancho completo en móviles */
+        top: auto;
+        right: auto;
+        margin-top: 10px; /* Espacio adicional desde el main container */
+    }
+}

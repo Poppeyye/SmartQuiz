@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="game-container common-container" id="game-container">
+    <h1 data-shadow='Top 10'>Top 10!</h1>
+    <div id="welcome-container">
+        <input type="text" id="user-name" placeholder="Nombre divertido" />
+        <button id="start-button">¡A jugar!</button>
+    </div>
+    <div id="category-container" style="display: none;">
+        <button id="category-sports">Deportes</button>
+        <button id="category-history">Historia</button>
+        <button id="category-technology">Tecnología</button>
+        <button id="category-fashion">Moda</button>
+    </div>
+    <div id="question-container" style="display: none;">
+        <p id="question-text">Selecciona la respuesta correcta:</p>
+    </div>
+    <div id="answer-buttons" style="display: none;">
+        <button id="option-button-1">Cargando...</button>
+        <button id="option-button-2">Cargando...</button>
+    </div>
+    <p id="funny-message"></p>
+    <div id="progress-bar-container" style="display: none;">
+        <div id="progress-bar"></div>
+    </div>
+    <p id="timer-text">Tiempo: 10.0s</p>  <!-- Cambiado el tiempo inicial a 10s -->
+    <p id="result-text"></p>
+    <p id="score-text">Puntuación Total: 0</p>
+</div>
+<div id="ranking-container">
+    <h2>Ranking de Puntuaciones</h2>
+    <ul id="best-scores-list"></ul> <!-- Lista de mejores puntuaciones -->
+</div>
+
+{% endblock %}

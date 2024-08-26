@@ -1,0 +1,18 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Elige la respuesta correcta, si fallas pierdes{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div class="main-container">
+    <!-- Contenido específico de cada página -->
+    {% block content %}
+    {% endblock %}
+</div>
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
