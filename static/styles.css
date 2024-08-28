@@ -8,6 +8,7 @@
 }
 
 body {
+    height: 100%; /* Asegurarse de que el HTML y el body ocupen todo el alto */
     font-family: 'Arial', sans-serif;
     background-color: hsl(35, 50%, 80%);
     background-size: 100px 100px; /* Tamaño del mosaico */
@@ -17,7 +18,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Asegura que el body ocupe siempre toda la altura de la ventana */
-    overflow-x: hidden; /* Solo ocultar overflow en el eje x para evitar scroll horizontal */
+    overflow-x: auto; /* Solo ocultar overflow en el eje x para evitar scroll horizontal */
     flex-direction: column; 
 }
 
@@ -34,7 +35,7 @@ h1 {
     color: #7B5A2A; /* Color suave para el título */
     font-family: 'Righteous', serif;
     font-size: 6vw; /* Usar viewport width para hacerlo responsivo */
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
     position: relative; /* Necesario para usar el absolute en :after */
     animation: shadowMove 5s infinite; /* Animación de la sombra */
 }
@@ -76,11 +77,12 @@ h1:after {
     text-align: center;
     overflow-y: auto; /* Permitir scroll si el contenido excede la altura del contenedor */
     padding: 20px; /* Espaciado alrededor */
-    background: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.6); /* Fondo blanco semi-transparente */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     border-radius: 20px;
     margin: 20px 0; /* Ajustar márgenes */
 }
+
 
 #category-container, #question-container {
     width: 100%;
@@ -413,14 +415,6 @@ h1:after {
     }
 }
 
-html, body {
-    height: 100%;
-}
-
-body {
-    display: grid;
-    place-content: center;
-}
 
 .category-container {
     display: flex;
@@ -482,4 +476,50 @@ body {
     60% {
         transform: translateY(-10px);
     }
+}
+#category-rankings {
+    width: 100%;
+    height: calc(100vh - 40px); /* Ajustar altura total menos el espacio para el encabezado */
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 0;
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Scroll vertical para el contenedor */
+}
+
+.ranking {
+    margin-bottom: 20px; /* Reducir margin para evitar demasiado espacio */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    height: 400px; /* Altura máxima de cada ranking */
+}
+
+.ranking h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #2980b9;
+}
+
+.ranking-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ranking-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+}
+
+.ranking-list li:last-child {
+    border-bottom: none;
+}
+
+.ranking-list li:hover {
+    background-color: #f0f8ff;
 }

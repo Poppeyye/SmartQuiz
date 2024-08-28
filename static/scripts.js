@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayBestScores() {
         // Limpiar la lista actual
         bestScoresList.innerHTML = '';
-    
+
         // Ordenar las puntuaciones de mayor a menor si no se ha hecho antes
         bestScores.sort((a, b) => b.score - a.score);
-        
+
         // Recorriendo la lista de puntuaciones
         bestScores.forEach((score, index) => {
             const li = document.createElement('li');
-    
+
             // Añadir medalla según la posición
             if (index === 0) {
                 li.innerHTML = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 li.textContent = `${score.name}: ${score.score.toFixed(2)}`; // Sin medalla
             }
-    
+
             // Añadir el <li> a la lista
             bestScoresList.appendChild(li);
         });
@@ -126,13 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
         timerText.style.display = 'flex';
         scoreText.style.display = 'flex';
         progressBar.style.width = '100%';
-    
+
         // Detener el temporizador anterior si existe
         if (countdownInterval) {
             clearInterval(countdownInterval);
             gameEnded = false; // Asegúrate de reiniciar el estado del juego
         }
-    
+
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
             const data = await response.json();
@@ -140,16 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(data.error);
                 return;
             }
-    
+
             const options = [data.headline, data.fake_new];
             const shuffledOptions = options.sort(() => Math.random() - 0.5);
             optionButton1.textContent = shuffledOptions[0];
             optionButton2.textContent = shuffledOptions[1];
             correctAnswer = data.headline;
-            
+
             answerButtons.style.display = 'flex';
             startCountdown();
-    
+
         } catch (error) {
             console.error('Error fetching question:', error);
         }
@@ -267,19 +267,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let countdownTime = 10; // Tiempo inicial en segundos
     let countdownInterval;
     let startTime;
+    let remainingTime;
 
     function startCountdown() {
         startTime = Date.now();
         updateProgressBar();
         countdownInterval = setInterval(updateProgressBar, 100);
     }
-    
+
     function updateProgressBar() {
-        gameEnded = false;
-        console.log(gameEnded)
+        if (gameEnded) return;
+
         const elapsedTime = (Date.now() - startTime) / 1000;
-        const remainingTime = countdownTime - elapsedTime;
-        const progressPercentage = Math.max((remainingTime / countdownTime) * 100, 0);
+        remainingTime = countdownTime - elapsedTime;
+        const progressPercentage = (remainingTime / countdownTime) * 100;
 
         // Actualizar la barra de progreso
         progressBar.style.width = `${progressPercentage}%`;
@@ -289,13 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Verificar si el tiempo ha terminado y detener el intervalo
         if (remainingTime <= 0 && !gameEnded) {
-            console.log(gameEnded)
-            clearInterval(countdownInterval);
-            timerText.textContent = 'Tiempo finalizado!';
-            progressBar.style.width = '0%';
-            gameEnded = true; 
-            endGame('Se acabó el tiempo!\n Puntuación Total: '); 
+            endGame('Se acabó el tiempo!\n Puntuación Total: ');
         }
+
     }
 
     function stopTimer() {
@@ -303,6 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timerInterval = null;
         progressBar.style.width = '0%';
         progressBarContainer.style.display = 'none';
+        gameEnded = true;
         timerText.style.display = 'none';
     }
 
@@ -313,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkAnswer(userAnswer) {
+        if (gameEnded) return;
         stopTimer();
 
         const endTime = Date.now();
@@ -321,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userAnswer === correctAnswer) {
             handleCorrectAnswer(timeTaken);
         } else {
+            gameEnded = true;
             endGame('Incorrecto!\n Puntuación total: ');
         }
 
@@ -373,12 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame(msg) {
 
         // Establecer el mensaje de resultado
+        stopTimer();
+
         resultText.textContent = `${msg}: ${totalScore.toFixed(2)}`;
         resultText.style.opacity = 1;
 
         // Enviar la puntuación
         submitScore(userName, totalScore);
-        stopTimer();
         // Mostrar el mensaje de puntuación final como un pop-up
         showFinalOverlay();
 
@@ -394,35 +395,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // Creamos el overlay
         const overlay = document.createElement('div');
         overlay.className = 'final-overlay';
-    
+
         // Crear el cuadro del mensaje
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';
-    
+
         const title = document.createElement('h2');
         title.textContent = '¡Juego Terminado!';
         title.className = 'overlay-title';
-    
+
         const rankMessage = document.createElement('p');
         rankMessage.textContent = `Tu puesto en el ranking es: ${userRank}`;
         rankMessage.className = 'rank-message';
-    
+
         const playAgainMessage = document.createElement('p');
         playAgainMessage.textContent = '¿Qué quieres hacer ahora?';
         playAgainMessage.className = 'overlay-subtitle';
-    
+
         const returnButton = document.createElement('button');
         returnButton.textContent = 'Volver a Jugar';
         returnButton.className = 'btn';
-    
+
         const rankingButton = document.createElement('button');
         rankingButton.textContent = 'Ver Rankings';
         rankingButton.className = 'btn';
-    
+
         const shareButton = document.createElement('button');
         shareButton.textContent = 'Compartir Resultado';
         shareButton.className = 'btn';
-    
+
         // Agregar los elementos al cuadro del mensaje
         messageBox.appendChild(title);
         messageBox.appendChild(rankMessage);
@@ -432,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.appendChild(shareButton);
         overlay.appendChild(messageBox);
         document.body.appendChild(overlay);
-    
+
         // Manejar eventos de los botones
         returnButton.addEventListener('click', () => {
             document.body.removeChild(overlay);
@@ -492,30 +493,29 @@ function generatDataURL(canvasSize, level) {
     offscreenCanvas.width = canvasSize;
     offscreenCanvas.height = canvasSize;
     const ctx = offscreenCanvas.getContext('2d');
-  
+
     function drawSierpinskiCarpet(x, y, size, level) {
-      if (level == 0) {
-        ctx.fillStyle = "hsl(35, 50%, 65%)";
-        ctx.fillRect(x, y, size, size);
-        return;
-      }
-  
-      const newSize = size / 3;
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          if (!(i == 1 && j == 1)) {
-            drawSierpinskiCarpet(x + i * newSize, y + j * newSize, newSize, level - 1);
-          }
+        if (level == 0) {
+            ctx.fillStyle = "hsl(35, 50%, 65%)";
+            ctx.fillRect(x, y, size, size);
+            return;
         }
-      }
+
+        const newSize = size / 3;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (!(i == 1 && j == 1)) {
+                    drawSierpinskiCarpet(x + i * newSize, y + j * newSize, newSize, level - 1);
+                }
+            }
+        }
     }
-  
+
     drawSierpinskiCarpet(0, 0, canvasSize, level);
     return offscreenCanvas.toDataURL();
-  }
-  
-  const canvasSize = window.innerWidth / 9; 
-  const level = 5; // Adjust recursion level for detail
-  const dataURL = generatDataURL(canvasSize, level);
-  document.body.style.backgroundImage = `url(${dataURL})`;
-  
+}
+
+const canvasSize = window.innerWidth / 9;
+const level = 5; // Adjust recursion level for detail
+const dataURL = generatDataURL(canvasSize, level);
+document.body.style.backgroundImage = `url(${dataURL})`;

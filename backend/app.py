@@ -1,5 +1,5 @@
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import render_template, jsonify, session, request
 from sqlalchemy import inspect
@@ -172,6 +172,19 @@ def get_all_scores(category):
     results = [{'name': score.name, 'score': score.score, 'category': score.category} for score in scores]
     return jsonify({'scores': results})
 
+
+@app.route('/get_all_scores_dates/<category>/<date_range>', methods=['GET'])
+def get_all_scores_dates(category, date_range):
+    query = PlayerScore.query.filter_by(category=category)
+    
+    if date_range == '7':
+        query = query.filter(PlayerScore.date >= datetime.now() - timedelta(days=7))
+    elif date_range == '30':
+        query = query.filter(PlayerScore.date >= datetime.now() - timedelta(days=30))
+    
+    scores = query.order_by(PlayerScore.score.desc()).all()
+    results = [{'name': score.name, 'score': score.score, 'category': score.category} for score in scores]
+    return jsonify({'scores': results})
 
 if __name__ == '__main__':
     app.run(debug=True)

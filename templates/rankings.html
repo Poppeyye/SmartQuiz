@@ -2,33 +2,19 @@
 
 {% block content %}
 
-<div id="rankings-container">
-    <h1>Rankings por Categoría</h1>
-    <div id="category-rankings">
-        <h2>Deportes</h2>
-        <ul>
-            <div id="rank-container">
-                <h2>Top 10</h2>
-                <ul id="best-scores-list"></ul>
-            </div>
-        </ul>
+<h1>Rankings por Categoría</h1>
 
-        <h2>Historia</h2>
-        <ul>
-            <!-- Inserta los rankings de historia aquí -->
-        </ul>
-
-        <h2>Tecnología</h2>
-        <ul>
-            <!-- Inserta los rankings de tecnología aquí -->
-        </ul>
-
-        <h2>Moda</h2>
-        <ul>
-            <!-- Inserta los rankings de moda aquí -->
-        </ul>
-    </div>
+<div id="category-rankings">
+    {% set categories = ['Deportes', 'Historia', 'Software', 'Moda', 'Economia'] %}
+    {% for category in categories %}
+        <h2>{{ category }}</h2>
+        <div class="ranking">
+            <h3>Top 10</h3>
+            <ul id="best-scores-{{ category|lower }}" class="ranking-list"></ul>
+        </div>
+    {% endfor %}
 </div>
-</div>
+
+<script src="{{ url_for('static', filename='rankings.js') }}"></script>
 
 {% endblock %}
