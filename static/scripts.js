@@ -23,13 +23,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let bestScores = [];
     let userName = '';
     let selectedCategory = '';
+    let gameEnded = null;
 
     // Función para mostrar la tabla de puntuaciones
     function displayBestScores() {
+        // Limpiar la lista actual
         bestScoresList.innerHTML = '';
-        bestScores.forEach(score => {
+    
+        // Ordenar las puntuaciones de mayor a menor si no se ha hecho antes
+        bestScores.sort((a, b) => b.score - a.score);
+        
+        // Recorriendo la lista de puntuaciones
+        bestScores.forEach((score, index) => {
             const li = document.createElement('li');
-            li.textContent = `${score.name}: ${score.score.toFixed(2)}`;
+    
+            // Añadir medalla según la posición
+            if (index === 0) {
+                li.innerHTML = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+            } else if (index === 1) {
+                li.innerHTML = `<img src="/static/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+            } else if (index === 2) {
+                li.innerHTML = `<img src="/static/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+            } else {
+                li.textContent = `${score.name}: ${score.score.toFixed(2)}`; // Sin medalla
+            }
+    
+            // Añadir el <li> a la lista
             bestScoresList.appendChild(li);
         });
     }
@@ -59,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funciones para la selección de categoría
     document.getElementById('category-sports').addEventListener('click', () => { selectCategory('Deportes'); });
     document.getElementById('category-history').addEventListener('click', () => { selectCategory('Historia'); });
-    document.getElementById('category-technology').addEventListener('click', () => { selectCategory('Ciencia'); });
+    document.getElementById('category-technology').addEventListener('click', () => { selectCategory('Software'); });
+    document.getElementById('category-economy').addEventListener('click', () => { selectCategory('Economia'); });
     document.getElementById('category-fashion').addEventListener('click', () => { selectCategory('Moda'); });
 
     function selectCategory(category) {
@@ -87,24 +107,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function getAllScores() {
-            try {
-                const response = await fetch('/get_all_scores');
-                const data = await response.json();
-                console.log(data)
-                if (data.scores) {
-                    return data.scores;
-                }
-            } catch (error) {
-                console.error('Error fetching all scores:', error);
-                return [];
+        try {
+            const response = await fetch(`/get_all_scores/${selectedCategory}`);
+            const data = await response.json();
+            console.log(data)
+            if (data.scores) {
+                return data.scores;
             }
+        } catch (error) {
+            console.error('Error fetching all scores:', error);
+            return [];
         }
+    }
 
     async function getQuestion() {
+        // Mostrar elementos del temporizador y la barra de progreso
         progressBarContainer.style.display = 'flex';
-        timerText.style.display='flex';
+        timerText.style.display = 'flex';
         scoreText.style.display = 'flex';
-
+        progressBar.style.width = '100%';
+    
+        // Detener el temporizador anterior si existe
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            gameEnded = false; // Asegúrate de reiniciar el estado del juego
+        }
+    
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
             const data = await response.json();
@@ -112,26 +140,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(data.error);
                 return;
             }
-            questionText.textContent = 'Seleccione el artículo de noticias correcto:';
+    
             const options = [data.headline, data.fake_new];
             const shuffledOptions = options.sort(() => Math.random() - 0.5);
             optionButton1.textContent = shuffledOptions[0];
             optionButton2.textContent = shuffledOptions[1];
             correctAnswer = data.headline;
+            
             answerButtons.style.display = 'flex';
             startCountdown();
-
+    
         } catch (error) {
             console.error('Error fetching question:', error);
         }
     }
 
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
-
+    let userRank = 0;
     async function displayFunnyMessage(userName, playerScore) {
         const allScores = await getAllScores();
         console.log("displayFunnyMessage called");
-    
+
         // Añadir o actualizar la puntuación del usuario actual
         const userIndex = allScores.findIndex(score => score.name.toLowerCase() === userName.toLowerCase());
         if (userIndex !== -1) {
@@ -139,19 +168,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             allScores.push({ name: userName, score: playerScore });
         }
-    
+
         // Ordenar las puntuaciones
         allScores.sort((a, b) => b.score - a.score);
-    
+
         // Encontrar la nueva posición del usuario en la lista de puntuaciones
-        const userRank = allScores.findIndex(score => score.name.toLowerCase() === userName.toLowerCase() && score.score === playerScore) + 1;
+        userRank = allScores.findIndex(score => score.name.toLowerCase() === userName.toLowerCase() && score.score === playerScore) + 1;
         const totalUsers = allScores.length;
-    
+
         console.log("Total Users:", totalUsers);
         console.log("User Rank:", userRank);
-    
+
         let message = '';
-    
+
         // Comprobamos si el usuario está o no en la lista
         if (userRank === 0 || userRank > totalUsers) {
             message = '¡No se encontró tu puntuación en la lista!';
@@ -166,29 +195,29 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             message = '¡Sigue intentándolo, lo harás mejor la próxima vez!';
         }
-    
+
         // Solo mostrar el mensaje si el rango ha cambiado
         if (previousUserRank !== userRank) {
             showRankingPopup(message);
             previousUserRank = userRank; // Actualiza el rango anterior
         }
-        
+
         console.log(message);
     }
-    
+
     function showRankingPopup(message) {
         const rankingPopup = document.createElement('div');
         rankingPopup.className = 'ranking-popup'; // Clase CSS para el pop-up
         rankingPopup.textContent = message;
-    
+
         // Agregar el pop-up al DOM
         document.body.appendChild(rankingPopup);
-    
+
         // Mostrar el pop-up
         setTimeout(() => {
             rankingPopup.style.opacity = 1; // Hacerlo visible
         }, 10); // Un pequeño delay para que se aplique el estilo
-    
+
         // Desaparecer el pop-up después de 3 segundos
         setTimeout(() => {
             rankingPopup.style.opacity = 0; // Hacerlo invisible primero
@@ -207,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     name: userName,
                     score: totalScore,
+                    category: selectedCategory
                 }),
             });
 
@@ -222,53 +252,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function getBestScores() {
-            try {
-                const response = await fetch('/get_best_scores');
-                const data = await response.json();
-                if (data.scores) {
-                    bestScores = data.scores;
-                    displayBestScores();
-                }
-            } catch (error) {
-                console.error('Error fetching best scores:', error);
+        try {
+            const response = await fetch(`/get_best_scores/${selectedCategory}`);
+            const data = await response.json();
+            if (data.scores) {
+                bestScores = data.scores;
+                displayBestScores();
             }
+        } catch (error) {
+            console.error('Error fetching best scores:', error);
         }
-
-let countdownTime = 10; // Tiempo inicial en segundos
-let countdownInterval;
-let startTime;
-
-function startCountdown() {
-    startTime = Date.now();
-    updateProgressBar();
-    countdownInterval = setInterval(updateProgressBar, 100);
-}
-
-function updateProgressBar() {
-    const elapsedTime = (Date.now() - startTime) / 1000;
-    const remainingTime = countdownTime - elapsedTime;
-    const progressPercentage = (remainingTime / countdownTime) * 100;
-
-    // Actualizar la barra de progreso
-    progressBar.style.width = `${progressPercentage}%`;
-
-    // Actualizar el texto del temporizador
-    timerText.textContent = `Tiempo: ${remainingTime.toFixed(1)}s`;
-    
-    // Verificar si el tiempo ha terminado y detener el intervalo
-    if (remainingTime <= 0) {
-        clearInterval(countdownInterval);
-        timerText.textContent = 'Tiempo finalizado!';
-        progressBar.style.width = '0%';
     }
-}
+
+    let countdownTime = 10; // Tiempo inicial en segundos
+    let countdownInterval;
+    let startTime;
+
+    function startCountdown() {
+        startTime = Date.now();
+        updateProgressBar();
+        countdownInterval = setInterval(updateProgressBar, 100);
+    }
+    
+    function updateProgressBar() {
+        gameEnded = false;
+        console.log(gameEnded)
+        const elapsedTime = (Date.now() - startTime) / 1000;
+        const remainingTime = countdownTime - elapsedTime;
+        const progressPercentage = Math.max((remainingTime / countdownTime) * 100, 0);
+
+        // Actualizar la barra de progreso
+        progressBar.style.width = `${progressPercentage}%`;
+
+        // Actualizar el texto del temporizador
+        timerText.textContent = `Tiempo: ${remainingTime.toFixed(1)}s`;
+
+        // Verificar si el tiempo ha terminado y detener el intervalo
+        if (remainingTime <= 0 && !gameEnded) {
+            console.log(gameEnded)
+            clearInterval(countdownInterval);
+            timerText.textContent = 'Tiempo finalizado!';
+            progressBar.style.width = '0%';
+            gameEnded = true; 
+            endGame('Se acabó el tiempo!\n Puntuación Total: '); 
+        }
+    }
 
     function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
         progressBar.style.width = '0%';
         progressBarContainer.style.display = 'none';
-        timerText.style.display='none';
+        timerText.style.display = 'none';
     }
 
     function updateTimer() {
@@ -286,7 +321,7 @@ function updateProgressBar() {
         if (userAnswer === correctAnswer) {
             handleCorrectAnswer(timeTaken);
         } else {
-            handleIncorrectAnswer();
+            endGame('Incorrecto!\n Puntuación total: ');
         }
 
         console.log(`Tiempo de respuesta: ${timeTaken.toFixed(2)}s`);
@@ -296,15 +331,15 @@ function updateProgressBar() {
         const popup = document.createElement('div');
         popup.className = 'popup-message'; // Clase CSS para el pop-up
         popup.textContent = message;
-    
+
         // Agregar el pop-up al DOM
         document.body.appendChild(popup);
-    
+
         // Mostrar el pop-up
         setTimeout(() => {
             popup.style.opacity = 1; // Hacerlo visible
         }, 10); // Un pequeño delay para que se aplique el estilo
-    
+
         // Ocultar el pop-up después de un tiempo
         setTimeout(() => {
             popup.style.opacity = 0; // Comenzar a ocultar
@@ -317,86 +352,84 @@ function updateProgressBar() {
     function handleCorrectAnswer(timeTaken) {
         const messages = ["¡Bien!", "¡Excelente!", "¡Sigue así!", "¡Muy bien hecho!", "¡Gran trabajo!", "¡Correcto!"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    
+
         // Mostrar el mensaje en el pop-up
         showPopup(randomMessage);
-    
+
         // Aumentar la puntuación
         totalScore += Math.max(0, 10 - timeTaken);
         scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`;
-    
+
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             displayFunnyMessage(userName, totalScore);
             updateBestScores(userName, totalScore);
-    
+
             // Obtener la siguiente pregunta, se puede agregar un tiempo para delay antes de hacer la siguiente pregunta
             getQuestion();
         }, 1300); // Asegúramos que no se interrumpa el pop-up
     }
 
-    function handleIncorrectAnswer() {
-    
+    function endGame(msg) {
+
         // Establecer el mensaje de resultado
-        resultText.textContent = `¡Incorrecto!\n Puntuación final: ${totalScore.toFixed(2)}`;
+        resultText.textContent = `${msg}: ${totalScore.toFixed(2)}`;
         resultText.style.opacity = 1;
-        
+
         // Enviar la puntuación
         submitScore(userName, totalScore);
         stopTimer();
         // Mostrar el mensaje de puntuación final como un pop-up
         showFinalOverlay();
-        
+
         // Remover el pop-up de ranking si existe
         const rankingPopup = document.querySelector('.ranking-popup');
         if (rankingPopup) {
             document.body.removeChild(rankingPopup);
         }
-    
+
         console.log(`Juego terminado. Puntuación final: ${totalScore.toFixed(2)}`);
     }
     function showFinalOverlay() {
         // Creamos el overlay
         const overlay = document.createElement('div');
-        overlay.className = 'final-overlay'; // Clase CSS para el overlay
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        overlay.style.display = 'flex';
-        overlay.style.justifyContent = 'center';
-        overlay.style.alignItems = 'center';
-        overlay.style.zIndex = '1000';
+        overlay.className = 'final-overlay';
     
         // Crear el cuadro del mensaje
         const messageBox = document.createElement('div');
-        messageBox.style.backgroundColor = 'white';
-        messageBox.style.padding = '30px';
-        messageBox.style.borderRadius = '8px';
-        messageBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
-        messageBox.style.textAlign = 'center';
-        
+        messageBox.className = 'message-box';
+    
+        const title = document.createElement('h2');
+        title.textContent = '¡Juego Terminado!';
+        title.className = 'overlay-title';
+    
+        const rankMessage = document.createElement('p');
+        rankMessage.textContent = `Tu puesto en el ranking es: ${userRank}`;
+        rankMessage.className = 'rank-message';
+    
         const playAgainMessage = document.createElement('p');
-        playAgainMessage.textContent = 'Bien Jugado, ahora qué?';
-        playAgainMessage.style.fontSize = '1.2rem';
-        playAgainMessage.style.marginTop = '20px';
+        playAgainMessage.textContent = '¿Qué quieres hacer ahora?';
+        playAgainMessage.className = 'overlay-subtitle';
     
         const returnButton = document.createElement('button');
-        returnButton.textContent = 'Volver a jugar';
-        returnButton.style.margin = '10px';
-        returnButton.className = 'overlay-button';
-        
+        returnButton.textContent = 'Volver a Jugar';
+        returnButton.className = 'btn';
+    
         const rankingButton = document.createElement('button');
         rankingButton.textContent = 'Ver Rankings';
-        rankingButton.style.margin = '10px';
-        rankingButton.className = 'overlay-button';
+        rankingButton.className = 'btn';
+    
+        const shareButton = document.createElement('button');
+        shareButton.textContent = 'Compartir Resultado';
+        shareButton.className = 'btn';
     
         // Agregar los elementos al cuadro del mensaje
+        messageBox.appendChild(title);
+        messageBox.appendChild(rankMessage);
         messageBox.appendChild(playAgainMessage);
         messageBox.appendChild(returnButton);
         messageBox.appendChild(rankingButton);
+        messageBox.appendChild(shareButton);
         overlay.appendChild(messageBox);
         document.body.appendChild(overlay);
     
@@ -410,42 +443,79 @@ function updateProgressBar() {
             document.body.removeChild(overlay);
             window.location.href = '/rankings';
         });
+        shareButton.addEventListener('click', () => {
+            // La funcionalidad de compartir se implementará más adelante.
+            alert('Funcionalidad de compartir en redes sociales aún no implementada.');
+        });
     }
 
     function goToMainScreen() {
         // Eliminar el ranking pop-up, si existe
-        const rankingPopup = document.querySelector('.ranking-popup');
-   
+        //const rankingPopup = document.querySelector('.ranking-popup');
+
         // Realizar la búsqueda para finalizar el juego
         fetch('/end_game', {
             method: 'POST',
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
-            welcomeContainer.style.display = 'block';
-            answerButtons.style.display = 'none';
-            userNameInput.value = userName;
-            resultText.style.display = 'none';
-            scoreText.style.display = 'none';
-            rankingPopup.style.display = 'none';
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                welcomeContainer.style.display = 'block';
+                answerButtons.style.display = 'none';
+                userNameInput.value = userName;
+                resultText.style.display = 'none';
+                scoreText.style.display = 'none';
+                //rankingPopup.style.display = 'none';
+            });
     }
 
-   function resetUI() {
-    resultText.style.opacity = 0;
-    timerText.style.display = 'none'; // Ocultar el temporizador
-    answerButtons.style.display = 'none'; // Ocultar botones de respuesta
-    funnyMessage.style.display = 'none'
-    // Solo mostrar la puntuación anterior
-    scoreText.style.display = 'block'; // Asegúrate de que la puntuación sea visible
-}
+    function resetUI() {
+        resultText.style.opacity = 0;
+        timerText.style.display = 'none'; // Ocultar el temporizador
+        answerButtons.style.display = 'none'; // Ocultar botones de respuesta
+        funnyMessage.style.display = 'none'
+        // Solo mostrar la puntuación anterior
+        scoreText.style.display = 'block'; // Asegúrate de que la puntuación sea visible
+    }
 
-   optionButton1.addEventListener('click', () => {
-       checkAnswer(optionButton1.textContent);
-   });
+    optionButton1.addEventListener('click', () => {
+        checkAnswer(optionButton1.textContent);
+    });
 
-   optionButton2.addEventListener('click', () => {
-       checkAnswer(optionButton2.textContent);
-   });
+    optionButton2.addEventListener('click', () => {
+        checkAnswer(optionButton2.textContent);
+    });
 });
+
+function generatDataURL(canvasSize, level) {
+    const offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.width = canvasSize;
+    offscreenCanvas.height = canvasSize;
+    const ctx = offscreenCanvas.getContext('2d');
+  
+    function drawSierpinskiCarpet(x, y, size, level) {
+      if (level == 0) {
+        ctx.fillStyle = "hsl(35, 50%, 65%)";
+        ctx.fillRect(x, y, size, size);
+        return;
+      }
+  
+      const newSize = size / 3;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (!(i == 1 && j == 1)) {
+            drawSierpinskiCarpet(x + i * newSize, y + j * newSize, newSize, level - 1);
+          }
+        }
+      }
+    }
+  
+    drawSierpinskiCarpet(0, 0, canvasSize, level);
+    return offscreenCanvas.toDataURL();
+  }
+  
+  const canvasSize = window.innerWidth / 9; 
+  const level = 5; // Adjust recursion level for detail
+  const dataURL = generatDataURL(canvasSize, level);
+  document.body.style.backgroundImage = `url(${dataURL})`;
+  

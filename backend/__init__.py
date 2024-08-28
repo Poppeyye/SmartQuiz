@@ -8,15 +8,22 @@ from backend.utils import generate_ia_questions
 
 db = SQLAlchemy()
 
+class Player(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<PlayerScore {self.name} {self.score} {self.date} {self.category}>'
 
 class PlayerScore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     score = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    category = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return f'<PlayerScore {self.name} {self.score} {self.date}>'
+        return f'<PlayerScore {self.name} {self.score} {self.date} {self.category}>'
 
 class Question(db.Model):
     __tablename__ = 'questions'

@@ -22,6 +22,7 @@ def add_score():
     data = request.json
     player_name = data['name']
     new_score_value = data['score']
+    category = data['category']
 
     # Buscar si ya existe un score para este jugador
     existing_score = PlayerScore.query.filter_by(name=player_name).first()
@@ -30,14 +31,15 @@ def add_score():
         # Solo actualizar si la nueva puntuación es mayor
         if new_score_value > existing_score.score:
             existing_score.score = new_score_value
-            existing_score.date = str(datetime.now())  # Actualiza la fecha
+            existing_score.date = str(datetime.now())
+            existing_score.category = category
             db.session.commit()  # Solo hacer commit si se actualiza
             return jsonify({"message": "Puntuación actualizada con éxito"}), 200
         else:
             return jsonify({"message": "La nueva puntuación no es mayor que la existente, no se realizaron cambios."}), 200
     else:
         # Si no existe, crear un nuevo registro
-        new_score = PlayerScore(name=player_name, score=new_score_value, date=str(datetime.now()))
+        new_score = PlayerScore(name=player_name, score=new_score_value, date=str(datetime.now()), category=category)
         db.session.add(new_score)
         db.session.commit()  # Commitear el nuevo registro
         return jsonify({"message": "Puntuación agregada con éxito"}), 201
@@ -87,7 +89,7 @@ def generate_questions(category):
     
 @app.route('/get_question/<category>')
 def get_question(category):
-    #generate_questions(category)
+    # generate_questions(category)
     # Initialize session data if not already present
     if 'news_pool' not in session:
         print("Initializing session...")
@@ -138,10 +140,10 @@ def end_game():
     return jsonify({"message": "Juego terminado y sesión reiniciada"}), 200
 
 
-@app.route('/get_best_scores', methods=['GET'])
-def get_best_scores():
+@app.route('/get_best_scores/<category>', methods=['GET'])
+def get_best_scores(category):
     # Query the top scores using SQLAlchemy
-    scores = PlayerScore.query.order_by(PlayerScore.score.desc()).limit(10).all()
+    scores = PlayerScore.query.filter_by(category=category).order_by(PlayerScore.score.desc()).limit(10).all()
 
     # Convert results to a list of dictionaries
     results = [{'name': score.name, 'score': score.score} for score in scores]
@@ -164,10 +166,10 @@ def get_all_questions(category):
     
     return questions_list
 
-@app.route('/get_all_scores', methods=['GET'])
-def get_all_scores():
-    scores = PlayerScore.query.order_by(PlayerScore.score.desc()).all()
-    results = [{'name': score.name, 'score': score.score} for score in scores]
+@app.route('/get_all_scores/<category>', methods=['GET'])
+def get_all_scores(category):
+    scores = PlayerScore.query.filter_by(category=category).order_by(PlayerScore.score.desc()).all()
+    results = [{'name': score.name, 'score': score.score, 'category': score.category} for score in scores]
     return jsonify({'scores': results})
 
 
