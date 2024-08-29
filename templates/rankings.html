@@ -2,19 +2,30 @@
 
 {% block content %}
 
-<h1>Rankings por Categoría</h1>
+<h1 class="main-title">🏆 Ranking de Jugadores por Categoría</h1>
 
-<div id="category-rankings">
+<div class="search-container">
+    <input type="text" id="search-input" placeholder="Buscar por nombre..." />
+</div>
+
+<div id="category-leaderboards">
     {% set categories = ['Deportes', 'Historia', 'Software', 'Moda', 'Economia'] %}
     {% for category in categories %}
-        <h2>{{ category }}</h2>
-        <div class="ranking">
-            <h3>Top 10</h3>
-            <ul id="best-scores-{{ category|lower }}" class="ranking-list"></ul>
+        <div class="leaderboard-container">
+            <h2 class="category-title">{{ category }}</h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Puntuación</th>
+                    </tr>
+                </thead>
+                <tbody id="best-scores-{{ category|lower }}" class="ranking-list"></tbody>
+            </table>
         </div>
     {% endfor %}
 </div>
 
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
-
-{% endblock %}
+  {% endblock %}

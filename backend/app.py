@@ -165,11 +165,34 @@ def get_all_questions(category):
     ]
     
     return questions_list
-
+@app.route('/get_all_scores/', methods=['GET'])
 @app.route('/get_all_scores/<category>', methods=['GET'])
-def get_all_scores(category):
-    scores = PlayerScore.query.filter_by(category=category).order_by(PlayerScore.score.desc()).all()
-    results = [{'name': score.name, 'score': score.score, 'category': score.category} for score in scores]
+def get_all_scores(category=None):
+    if category is None:
+        scores = PlayerScore.query.all()  # Obtener todos los puntajes sin filtrar por categoría
+    else:
+        scores = PlayerScore.query.filter_by(category=category).all()  # Filtrar por categoría específica
+    
+    # Crear un diccionario para almacenar puntajes por categoría
+    scores_by_category = {}
+    
+    # Agrupar puntajes por categoría
+    for score in scores:
+        cat = score.category
+        if cat not in scores_by_category:
+            scores_by_category[cat] = []
+        scores_by_category[cat].append(score)
+
+    # Crear una lista de resultados con ranking por categoría
+    results = []
+    for cat, scores in scores_by_category.items():
+        # Ordenar puntajes de esta categoría
+        scores_sorted = sorted(scores, key=lambda x: x.score, reverse=True)
+        
+        # Crear rankings
+        for index, score in enumerate(scores_sorted):
+            results.append({'ranking': index + 1, 'name': score.name, 'score': score.score, 'category': cat})
+    
     return jsonify({'scores': results})
 
 
