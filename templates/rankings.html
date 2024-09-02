@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1 class="main-title">🏆 Ranking de Jugadores por Categoría</h1>
+<h1 class="h1">🏆 Global Ranking</h1>
 
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Buscar por nombre..." />
@@ -26,6 +26,22 @@
         </div>
     {% endfor %}
 </div>
-
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
+<script>
+    window.onload = function() {
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        const searchInput = document.getElementById('search-input');
+
+        const searchValue = params.get('search');
+
+        // Si hay un valor, establecerlo en el input y disparar el evento 'input'
+        if (searchValue) {
+            searchInput.value = decodeURIComponent(searchValue);
+            // Crear y despachar un evento de entrada (input) manualmente
+            const event = new Event('input', { bubbles: true });
+            searchInput.dispatchEvent(event);
+        }
+    };
+</script>
   {% endblock %}

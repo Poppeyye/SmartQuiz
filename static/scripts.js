@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const answerButtons = document.getElementById('answer-buttons');
     const funnyMessage = document.getElementById('funny-message');
     //const scoreTimer = document.getElementById('score-timer')
-    const scoreTimer = document.getElementById('score-timer');
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
 
@@ -157,53 +156,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
     let userRank = 0;
-    async function displayFunnyMessage(userName, playerScore) {
-        const allScores = await getAllScores();
-        console.log("displayFunnyMessage called");
-
-        // Añadir o actualizar la puntuación del usuario actual
-        const userIndex = allScores.findIndex(score => score.name.toLowerCase() === userName.toLowerCase());
-        if (userIndex !== -1) {
-            allScores[userIndex].score = playerScore;
-        } else {
-            allScores.push({ name: userName, score: playerScore });
+    async function displayFunnyMessage(playerScore) {
+        const url = selectedCategory ? `/get_user_rank/${selectedCategory}` : '/get_user_rank/';
+        const params = new URLSearchParams({ playerScore });
+        
+        try {
+            const response = await fetch(`${url}?${params}`);
+            const data = await response.json();
+    
+            const userRank = data.userRank;
+            const totalUsers = data.totalUsers;
+    
+            console.log("Total Users:", totalUsers);
+            console.log("User Rank:", userRank);
+    
+            let message = '';
+    
+            if (userRank === 0 || userRank > totalUsers) {
+                message = '¡No se encontró tu puntuación en la lista!';
+            } else if (userRank <= Math.ceil(totalUsers * 0.25)) {
+                message = '¡Estás en el Top 25% de jugadores!';
+            } else if (userRank <= Math.ceil(totalUsers * 0.50)) {
+                message = '¡Estás en el Top 50% de jugadores!';
+            } else if (userRank <= Math.ceil(totalUsers * 0.75)) {
+                message = '¡Estás en el Top 75% de jugadores!';
+            } else if (userRank <= 3) {
+                message = '¡Estás en el Top 3!';
+            } else if (userRank == 1) {
+                message = 'Sin límite hacia arriba =D';
+            } else {
+                message = '¡Sigue intentándolo, lo harás mejor la próxima vez!';
+            }
+    
+            if (previousUserRank !== userRank) {
+                showRankingPopup(message);
+                previousUserRank = userRank;
+            }
+    
+            console.log(message);
+        } catch (error) {
+            console.error('Error fetching user rank:', error);
         }
-
-        // Ordenar las puntuaciones
-        allScores.sort((a, b) => b.score - a.score);
-
-        // Encontrar la nueva posición del usuario en la lista de puntuaciones
-        userRank = allScores.findIndex(score => score.name.toLowerCase() === userName.toLowerCase() && score.score === playerScore) + 1;
-        const totalUsers = allScores.length;
-
-        console.log("Total Users:", totalUsers);
-        console.log("User Rank:", userRank);
-
-        let message = '';
-
-        // Comprobamos si el usuario está o no en la lista
-        if (userRank === 0 || userRank > totalUsers) {
-            message = '¡No se encontró tu puntuación en la lista!';
-        } else if (userRank <= Math.ceil(totalUsers * 0.25)) {
-            message = '¡Estás en el Top 25% de jugadores!';
-        } else if (userRank <= Math.ceil(totalUsers * 0.50)) {
-            message = '¡Estás en el Top 50% de jugadores!';
-        } else if (userRank <= Math.ceil(totalUsers * 0.75)) {
-            message = '¡Estás en el Top 75% de jugadores!';
-        } else if (userRank <= 3) {
-            message = '¡Estás en el Top 3!';
-        } else {
-            message = '¡Sigue intentándolo, lo harás mejor la próxima vez!';
-        }
-
-        // Solo mostrar el mensaje si el rango ha cambiado
-        if (previousUserRank !== userRank) {
-            showRankingPopup(message);
-            previousUserRank = userRank; // Actualiza el rango anterior
-        }
-
-        console.log(message);
     }
+    
 
     function showRankingPopup(message) {
         const rankingPopup = document.createElement('div');
@@ -304,12 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
         timerText.style.display = 'none';
     }
 
-    function updateTimer() {
-        const currentTime = Date.now();
-        const elapsedTime = (currentTime - startTime) / 1000;
-        timerText.textContent = `Tiempo: ${elapsedTime.toFixed(1)}s`;
-    }
-
     function checkAnswer(userAnswer) {
         if (gameEnded) return;
         stopTimer();
@@ -362,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
-            displayFunnyMessage(userName, totalScore);
+            displayFunnyMessage(totalScore);
             updateBestScores(userName, totalScore);
 
             // Obtener la siguiente pregunta, se puede agregar un tiempo para delay antes de hacer la siguiente pregunta
@@ -444,9 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(overlay);
             window.location.href = '/rankings';
         });
+
         shareButton.addEventListener('click', () => {
-            // La funcionalidad de compartir se implementará más adelante.
-            alert('Funcionalidad de compartir en redes sociales aún no implementada.');
+            // La URL que deseas compartir
+            const urlToShare = `https://127.0.0.1:5000/rankings?search=${userName}`; // Cambia esto por la URL que deseas compartir
+        
+            // Crea un enlace de AddToAny para compartir
+            const shareURL = `https://www.addtoany.com/share_save?linkurl=${encodeURIComponent(urlToShare)}`;
+        
+            // Abre el enlace en una nueva ventana
+            window.open(shareURL, '_blank');
         });
     }
 

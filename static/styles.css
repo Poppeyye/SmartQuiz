@@ -12,12 +12,11 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: hsl(35, 50%, 80%);
     background-size: 100px 100px; /* Tamaño del mosaico */
-    margin: 0;
-    padding: 0;
+    margin: 10px;
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Asegura que el body ocupe siempre toda la altura de la ventana */
     overflow-x: auto; /* Solo ocultar overflow en el eje x para evitar scroll horizontal */
     flex-direction: column; 
 }
@@ -35,9 +34,12 @@ h1 {
     color: #7B5A2A; /* Color suave para el título */
     font-family: 'Righteous', serif;
     font-size: 6vw; /* Usar viewport width para hacerlo responsivo */
-    margin-bottom: 0.5em;
+    margin-bottom: 0.2em; /* Ajustar el margen para más espacio entre el título y el eslogan */
     position: relative; /* Necesario para usar el absolute en :after */
     animation: shadowMove 5s infinite; /* Animación de la sombra */
+    font-weight: normal; /* Asegúrate de que la letra sea más fina */
+    text-align: center;
+    margin: 20px;
 }
 
 h1:after {
@@ -46,12 +48,19 @@ h1:after {
     top: 0; /* Ajusta la posición de la sombra */
     left: 0; /* Ajusta la posición de la sombra */
     z-index: -1;
-    text-shadow: none;
     background-image: linear-gradient(45deg, transparent 45%, hsla(48, 20%, 90%, 1) 45%, hsla(48, 20%, 90%, 1) 55%, transparent 0);
     background-size: .05em .05em;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shad-anim 15s linear infinite; /* Mantener la animación de movimiento de sombra */
+}
+
+.slogan {
+    font-family: 'Righteous', serif; /* Usar la misma fuente para consistencia */
+    font-size: 2vw; /* Tamaño más pequeño para el eslogan */
+    text-align: center; /* Centrar el eslogan */
+    margin: 15px; /* Eliminar márgenes */
+    color: #7B5A2A; /* Color suave para el eslogan */
 }
 
 @keyframes shadowMove {
@@ -171,7 +180,10 @@ h1:after {
 /* Media Queries para equipos pequeños */
 @media (max-width: 600px) {
     h1 {
-        font-size: 5vw; /* Tamaño responsivo para el título */
+        font-size: 6vw; /* Tamaño responsivo para el título */
+    }
+    .slogan{
+        font-size: 4vw;
     }
 
     button {
@@ -297,14 +309,15 @@ h1:after {
 
 #ranking-container {
     position: fixed;
-    top: 10px;
+    display: flex;
+    flex-direction: column;
+    top: 40px;
     right: 10px;
-    width: 250px; /* Ancho fijo para el ranking */
+    width: 180px; /* Ancho fijo para el ranking */
     background-color: rgba(255, 227, 186, 0.9); /* Fondo suave con tonos claros de camel */
     border-radius: 15px; /* Bordes un poco más redondeados */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
     padding: 15px;
-    z-index: 1000; /* Asegúrate que esté por encima */
     font-family: 'Arial', sans-serif; /* Tipografía moderna */
 }
 
@@ -403,6 +416,10 @@ h1:after {
     animation: float .5s ease-in-out infinite;
 }
 
+a {
+    text-decoration: none; /* Quitar subrayado */
+    color: inherit; /* Heredar el color del botón */
+}
 @keyframes float {
     0% {
         transform: translateX(-50%) translatey(0px);
@@ -482,6 +499,11 @@ h1:after {
     margin: 20px 0;
 }
 
+.main-container {
+    text-align: center;
+}
+
+
 .search-container {
     text-align: center;
     margin-bottom: 20px;
@@ -523,8 +545,8 @@ h1:after {
 }
 
 .leaderboard-table th {
-    background-color: #007bff;
-    color: white;
+    background-color: rgb(252, 211, 77);
+    color: rgb(124, 45, 18);
 }
 
 .leaderboard-table tr:hover {

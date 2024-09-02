@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const searchInput = document.getElementById('search-input');
     searchInput.addEventListener('input', (event) => {
+        console.log('Input event triggered!'); // Para depuración
         const query = event.target.value.toLowerCase();
         // Filtrar los puntajes según el nombre ingresado en el input
         const filteredScores = allScores.filter(score => 

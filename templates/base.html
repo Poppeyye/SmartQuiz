@@ -1,17 +1,26 @@
 <!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Elige la respuesta correcta, si fallas pierdes{% endblock %}</title>
+    <title>{% block title %}Fact Apex Game{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header-style.css') }}">
 </head>
+
 <body>
-<div class="main-container">
-    <!-- Contenido específico de cada página -->
-    {% block content %}
-    {% endblock %}
-</div>
+    <nav class="menu">
+        <a class="btn" href="/">Game</a>
+        <a class="btn" href="/about">About</a>
+        <a class="btn" href="/rankings">Ranking</a>
+    </nav>
+    <div class="main-container">
+        <!-- Contenido específico de cada página -->
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
+
 </html>

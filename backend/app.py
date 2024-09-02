@@ -196,6 +196,37 @@ def get_all_scores(category=None):
     return jsonify({'scores': results})
 
 
+@app.route('/get_user_rank/', methods=['GET'])
+@app.route('/get_user_rank/<category>', methods=['GET'])
+def get_user_rank(category=None):
+    user_score = request.args.get('playerScore')
+
+    if category:
+        user_rank = db.session.query(
+            PlayerScore
+        ).filter_by(
+            category=category
+        ).filter(
+            PlayerScore.score > user_score
+        ).count() + 1
+    else:
+        user_rank = db.session.query(
+            PlayerScore
+        ).filter(
+            PlayerScore.score > user_score
+        ).count() + 1
+
+    total_users = db.session.query(PlayerScore).count()
+
+    # Prepare the response data
+    response = {
+        'userRank': user_rank,
+        'totalUsers': total_users
+    }
+
+    return jsonify(response)
+
+
 @app.route('/get_all_scores_dates/<category>/<date_range>', methods=['GET'])
 def get_all_scores_dates(category, date_range):
     query = PlayerScore.query.filter_by(category=category)
