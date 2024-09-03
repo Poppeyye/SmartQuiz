@@ -20,7 +20,9 @@
                 "--no-reload"
             ],
             "jinja": true,
-            "autoStartBrowser": false
+            "autoStartBrowser": false,
+            
         }
     ]
+    
 }
