@@ -11,7 +11,7 @@
             "module": "flask",
             "envFile": "${workspaceFolder}/.env", // Carga las variables de entorno desde el archivo .env.
             "env": {
-                "FLASK_APP": "backend\\app.py",
+                "FLASK_APP": "run.py",
                 "FLASK_DEBUG": "1"
             },
             "args": [
