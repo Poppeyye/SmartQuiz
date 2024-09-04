@@ -66,9 +66,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         userName = userNameInput.value.trim();
+        console.log(userName)
         if (userName) {
-            welcomeContainer.style.display = 'none';
-            categoryContainer.style.display = 'block';
+            // Enviar el nombre del usuario al backend
+            fetch('/set_user_name', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_name: userName }),
+            })
+            .then(response => {
+                console.log(response)
+                if (response.ok) {
+                    welcomeContainer.style.display = 'none';
+                    categoryContainer.style.display = 'block';
+                } else {
+                    alert('Hubo un error al establecer el nombre de usuario. Por favor, inténtalo de nuevo.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al iniciar el juego.');
+            });
         } else {
             alert('Por favor ingrese su nombre.');
         }
@@ -134,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
+            console.log(response)
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
@@ -164,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${url}?${params}`);
             const data = await response.json();
     
-            const userRank = data.userRank;
+            userRank = data.userRank;
             const totalUsers = data.totalUsers;
     
             console.log("Total Users:", totalUsers);
