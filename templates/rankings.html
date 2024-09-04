@@ -6,42 +6,89 @@
 
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Buscar por nombre..." />
+    <select id="category-selector">
+        <option value="all">Todas las Categorías</option>
+        <option value="deportes">Deportes</option>
+        <option value="moda">Moda</option>
+        <option value="historia">Historia</option>
+        <option value="software">Informática</option>
+        <option value="economia">Economía</option>
+    </select>
+    <select id="date-range-selector">
+        <option value="all">Global</option>
+        <option value="7">Últimos 7 días</option>
+        <option value="30">Últimos 30 días</option>
+    </select>
 </div>
 
+
 <div id="category-leaderboards">
-    {% set categories = ['Deportes', 'Historia', 'Software', 'Moda', 'Economia'] %}
+    {% set categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia'] %}
     {% for category in categories %}
         <div class="leaderboard-container">
-            <h2 class="category-title">{{ category }}</h2>
+            <h2 class="category-title">
+                <img src="{{ url_for('static', filename='svgs/' ~ category|lower ~ '.svg') }}" alt="{{ category }}" class="icon">
+                <span>{{ category }}</span>
+            </h2>
             <table class="leaderboard-table">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
                         <th>Puntuación</th>
+                        <th>Fecha</th>
+                        <th>Total correctas</th>
+                        <th>Tiempo Medio (s)</th>
                     </tr>
                 </thead>
-                <tbody id="best-scores-{{ category|lower }}" class="ranking-list"></tbody>
+                <tbody id="best-scores-{{ category|lower }}" class="ranking-list">
+                    {% for score in scores %}
+                        <tr class="{% if loop.index <= 3 %}top-three{% endif %}">
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                {% if loop.index == 1 %}
+                                    <img src="{{ url_for('static', filename='svgs/gold.svg') }}" alt="Medalla de Oro" width="20" height="20"> {{ score.name }}
+                                {% elif loop.index == 2 %}
+                                    <img src="{{ url_for('static', filename='svgs/silver.svg') }}" alt="Medalla de Plata" width="20" height="20"> {{ score.name }}
+                                {% elif loop.index == 3 %}
+                                    <img src="{{ url_for('static', filename='svgs/bronze.svg') }}" alt="Medalla de Bronce" width="20" height="20"> {{ score.name }}
+                                {% else %}
+                                    {{ score.name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ score.points }}</td>
+                            <td>{{ score.date }}</td>
+                            <td>{{ score.total_correct }}</td>
+                            <td>{{ score.avg_time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     {% endfor %}
 </div>
+
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
     window.onload = function() {
         // Obtener los parámetros de la URL
         const params = new URLSearchParams(window.location.search);
         const searchInput = document.getElementById('search-input');
+        const categorySelector = document.getElementById('category-selector');
 
         const searchValue = params.get('search');
 
         // Si hay un valor, establecerlo en el input y disparar el evento 'input'
         if (searchValue) {
             searchInput.value = decodeURIComponent(searchValue);
-            // Crear y despachar un evento de entrada (input) manualmente
             const event = new Event('input', { bubbles: true });
             searchInput.dispatchEvent(event);
         }
+
+        categorySelector.addEventListener('change', (event) => {
+            const selectedCategory = event.target.value;
+            updateScores(allScores, selectedCategory);
+        });
     };
 </script>
-  {% endblock %}
+{% endblock %}

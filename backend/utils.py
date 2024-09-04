@@ -16,8 +16,7 @@ client = OpenAI(
 
 def is_valid_name(name):
     # Comprueba que el nombre solo contenga letras y espacios, y tenga una longitud razonable
-    return bool(re.match("^[A-Za-z ]+$", name)) and 1 <= len(name) <= 100
-
+    return bool(re.match("^[A-Za-z0-9 ]+$", name)) and 1 <= len(name) <= 100
 
 def require_session(f):
     @wraps(f)

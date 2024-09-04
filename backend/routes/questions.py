@@ -56,7 +56,7 @@ def reset_score():
 @questions_bp.route("/end_game", methods=["POST"])
 @require_session
 def end_game():
-    # session.clear()
+    session.clear()
     return jsonify({"message": "Juego terminado y sesión reiniciada"}), 200
 
 

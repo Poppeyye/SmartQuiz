@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let userName = '';
     let selectedCategory = '';
     let gameEnded = null;
+    let correctAnswersCount = 0; // Contador de respuestas correctas
+    let totalTimeTaken = 0; // Acumulador del tiempo total tomado por las respuestas
 
     // Función para mostrar la tabla de puntuaciones
     function displayBestScores() {
@@ -38,13 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Añadir medalla según la posición
             if (index === 0) {
-                li.innerHTML = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+                li.innerHTML = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score}`;
             } else if (index === 1) {
-                li.innerHTML = `<img src="/static/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+                li.innerHTML = `<img src="/static/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">${score.name}: ${score.score}`;
             } else if (index === 2) {
-                li.innerHTML = `<img src="/static/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">${score.name}: ${score.score.toFixed(2)}`;
+                li.innerHTML = `<img src="/static/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">${score.name}: ${score.score}`;
             } else {
-                li.textContent = `${score.name}: ${score.score.toFixed(2)}`; // Sin medalla
+                li.textContent = `${score.name}: ${score.score}`; // Sin medalla
             }
 
             // Añadir el <li> a la lista
@@ -151,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(countdownInterval);
             gameEnded = false; // Asegúrate de reiniciar el estado del juego
         }
-
+        console.log(selectCategory)
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
             console.log(response)
@@ -242,7 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300); // Duración del desvanecimiento
         }, 3000); // 3 segundos
     }
-    async function submitScore(userName, totalScore) {
+    async function submitScore(userName, totalScore, totalTimeTaken, correctAnswersCount ) {
+        console.log("submit")
+        console.log(correctAnswersCount)
         try {
             const response = await fetch('/add_score', {
                 method: 'POST',
@@ -252,7 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     name: userName,
                     score: totalScore,
-                    category: selectedCategory
+                    category: selectedCategory,
+                    total_correct: correctAnswersCount,
+                    total_time: totalTimeTaken,
                 }),
             });
 
@@ -360,16 +366,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleCorrectAnswer(timeTaken) {
-        const messages = ["¡Bien!", "¡Excelente!", "¡Sigue así!", "¡Muy bien hecho!", "¡Gran trabajo!", "¡Correcto!"];
+        const messages = ["Bien!", "Excelente!", "Sigue así!", "Muy bien hecho!", "Gran trabajo!", "Correcto!", "Olé!", "Eso es!", "Crack!", "GOAT!"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
         // Mostrar el mensaje en el pop-up
         showPopup(randomMessage);
 
         // Aumentar la puntuación
-        totalScore += Math.max(0, 10 - timeTaken);
-        scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`;
-
+        let scoreToAdd = Math.max(0, 10 - timeTaken);
+        totalScore += scoreToAdd;
+        totalScore = parseFloat(totalScore.toFixed(2));
+        scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`; 
+        correctAnswersCount += 1;
+        console.log(correctAnswersCount)
+        console.log(totalScore)
+        totalTimeTaken += timeTaken;
+        console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             displayFunnyMessage(totalScore);
@@ -385,11 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Establecer el mensaje de resultado
         stopTimer();
 
-        resultText.textContent = `${msg}: ${totalScore.toFixed(2)}`;
+        resultText.textContent = `${msg}: ${totalScore}`;
         resultText.style.opacity = 1;
 
         // Enviar la puntuación
-        submitScore(userName, totalScore);
+        submitScore(userName, totalScore,totalTimeTaken, correctAnswersCount);
         // Mostrar el mensaje de puntuación final como un pop-up
         showFinalOverlay();
 
@@ -399,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(rankingPopup);
         }
 
-        console.log(`Juego terminado. Puntuación final: ${totalScore.toFixed(2)}`);
+        console.log(`Juego terminado. Puntuación final: ${totalScore}`);
     }
     function showFinalOverlay() {
         // Creamos el overlay

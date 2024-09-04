@@ -509,13 +509,6 @@ a {
     margin-bottom: 20px;
 }
 
-#search-input {
-    padding: 10px;
-    width: 300px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
 
 .leaderboard-container {
     background-color: white;
@@ -523,32 +516,139 @@ a {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin: 20px;
     padding: 20px;
-    max-height: 600px; /* Ajusta la altura máxima según lo que necesites */
+    max-height: 600px; /* Altura máxima para el contenedor */
     overflow-y: auto; /* Permitir el desplazamiento vertical */
 }
 
-.category-title {
-    color: #007bff;
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+    .leaderboard-container {
+        margin: 10px; /* Reducir el margen para pantallas pequeñas */
+        padding: 15px; /* Reducir el padding para pantallas pequeñas */
+        max-height: 100%; /* Eliminar la restricción de altura en pantallas pequeñas si es necesario */
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Reducir la sombra para una mejor visualización en móviles */
+    }
 }
 
 .leaderboard-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: auto; /* Hacer que la tabla sea flexible */
 }
 
 .leaderboard-table th,
 .leaderboard-table td {
-    padding: 10px;
+    padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease;
+    word-wrap: break-word; /* Permitir que las palabras largas se ajusten */
 }
 
 .leaderboard-table th {
-    background-color: rgb(252, 211, 77);
-    color: rgb(124, 45, 18);
+    background-color: #ffc107;
+    color: #fff;
+    font-size: 18px;
+}
+
+.leaderboard-table tr {
+    background-color: #fff;
 }
 
 .leaderboard-table tr:hover {
     background-color: #f1f1f1;
+}
+
+.leaderboard-table tr.top-three {
+    font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+.leaderboard-table tr.top-three td {
+    background-color: #ffeeba; /* Color de fondo para los tres primeros */
+}
+
+/* Ajustes específicos para pantallas pequeñas */
+@media (max-width: 600px) {
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px; /* Reducir el padding para celdas en pantallas pequeñas */
+        font-size: 10px; /* Reducir el tamaño de fuente en pantallas pequeñas */
+    }
+
+    .leaderboard-table th {
+        font-size: 16px; /* Ajustar tamaño de fuente para cabecera */
+    }
+}
+
+
+@keyframes pulse {
+    0% { background-color: #ffeeba; }
+    50% { background-color: #ffdf99; }
+    100% { background-color: #ffeeba; }
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 50px 0;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #ffc107;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+input[type="text"]::placeholder {
+    color: #757575;
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: #ffa000;
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+select {
+    appearance: none; /* Eliminar estilo por defecto */
+    -webkit-appearance: none; /* Eliminar estilo por defecto en Safari/Chrome */
+    background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffc107" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+    background-size: 12px;
+}
+
+input[type="text"]:hover,
+select:hover {
+    border-color: #ffa000;
+}
+
+.search-container input[type="text"],
+.search-container select {
+    background-color: #fff;
+}
+
+#search-input:focus {
+    border-color: camel;
+}
+
+#category-selector,
+#date-range-selector {
+    cursor: pointer;
+    color: #333;
+    background-color: #fff;
+}
+
+#category-selector:hover,
+#date-range-selector:hover {
+    background-color: #fff3cd;
 }
