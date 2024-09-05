@@ -2,7 +2,7 @@ import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import inspect
 from backend.models import Question, db
-from backend.utils import generate_ia_questions, is_valid_name, require_session
+from backend.utils import is_valid_name, require_session
 
 questions_bp = Blueprint("questions", __name__)
 
