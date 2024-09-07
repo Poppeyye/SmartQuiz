@@ -3,16 +3,15 @@ import time
 from functools import lru_cache
 
 import requests
-# from openai import OpenAI
+from openai import OpenAI
 import os
 import re
 from functools import wraps
 from flask import session, jsonify
 
 
-# OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
-# client = OpenAI(
-#     api_key=OPEN_AI_KEY)
+OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
+client = OpenAI(api_key=OPEN_AI_KEY)
 
 def is_valid_name(name):
     # Comprueba que el nombre solo contenga letras y espacios, y tenga una longitud razonable
@@ -27,70 +26,60 @@ def require_session(f):
     return decorated_function
 
 
-# def generate_ia_questions(category):
-#     content = """Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"
-#                 "que el usuario elija. Un campo llamado fact que contendrá un hecho, realidad o frase que sea real."
-#                 "Un campo invent que contenga una invención que esté relacionada con el campo fact, pero que cambie ligeramente la verdacidad de lo anterior, intenando confundir al que lo lea"
-#                 "El dato fact debe contenter información real y precisa mientras que el invent debe acercarse mucho a la respuesta real, pero cambiar ligeramente para ser falsa y confundir al que tenga que elegir la respuesta."
-#                 "Por ejemplo. Fact: Amancio Ortega es el fundador del grupo Inditex. Invent: Amancio Ortega es el fundador de Mango"
-#                 "Debes generar un total de 200 elementos en el JSON. Tanto el fact como el invent formarán parte de un juego de escoger la respuesta correcta, tu misión como asistente es proporcionar datos reales en el fact y en el invent debe acercarse mucho a la realidad, para confundir al jugador
-#                 """
-                
-#     content = """Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"
-#             "que el usuario elija. Un campo llamado fact que contendrá un dato real, hecho o solución exacta. "
-#             "Un campo invent que contenga una invención que esté relacionada con el campo fact, pero que cambie ligeramente la verdacidad de lo anterior, intenando confundir al que lo lea."
-#             "Se te puede pedir tanto datos o hechos históricos reales como operaciones matemáticas o snippets de programación en cualquier lenguaje, entre otros.
-#             "Por ejemplo. Fact: 2+2=4. Invent: 2+2=8"
-#             "Debes generar un total de 200 elementos en el JSON. Tanto el fact como el invent formarán parte de un juego de escoger la respuesta correcta, tu misión como asistente es proporcionar datos reales en el fact y en el invent debe acercarse mucho a la realidad, para confundir al jugador.
-#             Haz que sea todo lo difícil posible
-#             """             
+def generate_ia_questions(category,n):
+    content = f"""Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"
+                "que el usuario elija. Un campo llamado fact que contendrá un hecho, realidad o frase que sea real."
+                "Un campo invent que contenga una invención que esté relacionada con el campo fact, pero que cambie ligeramente la verdacidad de lo anterior, intenando confundir al que lo lea."
+                "El dato fact debe contenter información real y precisa mientras que el invent debe acercarse mucho a la respuesta real, pero cambiar ligeramente para ser falsa y confundir al que tenga que elegir la respuesta."
+                "Debes generar un total de {n} elementos en el JSON. Tanto el fact como el invent formarán parte de un juego de escoger la respuesta correcta, tu misión como asistente es proporcionar datos reales en el fact y en el invent debe acercarse mucho a la realidad, para confundir al jugador.
+                """
+    print(category)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system",
+             "content": content},
+            {"role": "user", "content": f"La categoria es: {category}"}
+        ],
+        response_format={"type": "json_schema",
+                          "json_schema": {
+        "name": "question_generator",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                category: {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "fact": {
+                                "type": "string"
+                            },
+                            "invent": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "fact",
+                            "invent",
+                        ],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": [
+                category
+            ],
+            "additionalProperties": False
+        }
+    }
+    }
+    )
+    response_dict = json.loads(response.choices[0].message.content)
     
-#     response = client.chat.completions.create(
-#         model="gpt-4o-mini",
-#         messages=[
-#             {"role": "system",
-#              "content": content},
-#             {"role": "user", "content": category}
-#         ],
-#         response_format={"type": "json_schema",
-#                           "json_schema": {
-#     "name": "question_generator",
-#     "strict": True,
-#     "schema": {
-#         "type": "object",
-#         "properties": {
-#             category: {
-#                 "type": "array",
-#                 "items": {
-#                     "type": "object",
-#                     "properties": {
-#                         "fact": {
-#                             "type": "string"
-#                         },
-#                         "invent": {
-#                             "type": "string"
-#                         }
-#                     },
-#                     "required": [
-#                         "fact",
-#                         "invent",
-#                     ],
-#                     "additionalProperties": False
-#                 }
-#             }
-#         },
-#         "required": [
-#             category
-#         ],
-#         "additionalProperties": False
-#     }
-# }
-# }
-#     )
-#     response_dict = json.loads(response.choices[0].message.content)
-    
-#     # Asegúrate de que la respuesta se puede decodificar a JSON
-#     return json.loads(response.choices[0].message.content)
+    return json.loads(response.choices[0].message.content)
+
 
 
 # def generate_json_news(category):

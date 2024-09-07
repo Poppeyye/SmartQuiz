@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Crear Preguntas de Verdadero o Falso</h1>
+
+    <form id="thematic-form">
+        <label for="thematic-input">Tema:</label>
+        <input type="text" id="thematic-input" required placeholder="Ingrese una temática" />
+
+        <label for="questions-count">Número de Preguntas:</label>
+        <select id="questions-count" required>
+            <option value="5">5 Preguntas - 1 Euro</option>
+            <option value="10">10 Preguntas - 2 Euros</option>
+            <option value="15">15 Preguntas - 3 Euros</option>
+        </select>
+
+        <button class="btn" type="submit" id="obtain-questions-button">Obtener Preguntas</button>
+    </form>
+
+    <div id="loading-indicator" style="display:none;">Cargando preguntas...</div>
+
+    <div id="questions-container" style="display:none;">
+        <h2>Preguntas</h2>
+        <div id="questions-list"></div>
+        <button id="save-questions-button">Guardar Preguntas</button>
+    </div>
+</div>
+
+<style>
+/* General styles */
+.question-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.question-item > label {
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+.question-item-number {
+    font-weight: bold;
+    color: #333;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* Textarea styles */
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    resize: vertical; /* Permite solo el redimensionado vertical */
+    overflow-y: auto; /* Activa el scroll vertical */
+    min-height: 40px; /* Altura mínima */
+    max-height: 200px; /* Altura máxima */
+}
+
+/* Focus styles */
+textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Placeholder styles */
+textarea::placeholder {
+    color: #888;
+    opacity: 1;
+}
+
+/* Custom background colors for the first and last textarea */
+label textarea:first-child {
+    background-color: #f0f8ff;
+}
+
+label textarea:last-child {
+    background-color: #fafad2;
+}
+
+/* Loading styles */
+#loading-indicator {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #007bff;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    textarea {
+        width: 100%;
+        height: auto;
+        max-height: 150px; /* Limita la altura en móvil */
+    }
+}
+</style>
+
+<script>
+    document.getElementById('thematic-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const thematicInput = document.getElementById('thematic-input').value;
+        const questionsCount = document.getElementById('questions-count').value;
+        const obtainButton = document.getElementById('obtain-questions-button');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        
+        // Desactivar el botón y mostrar el indicador de carga
+        obtainButton.disabled = true;
+        loadingIndicator.style.display = 'block';
+
+        // Llamar al endpoint de Flask para obtener las preguntas
+        const response = await fetch(`/create_questions?thematic=${encodeURIComponent(thematicInput)}&count=${encodeURIComponent(questionsCount)}`);
+        const data = await response.json();
+
+        // Verificar si hay un error en la respuesta
+        if (response.ok) {
+            const questions = data.category[thematicInput]; // Cambia 'futbol' por la categoría relevante si es dinámica
+
+            // Limpiar la lista de preguntas y mostrarlas en el contenedor
+            const questionsList = document.getElementById('questions-list');
+            questionsList.innerHTML = ''; // Limpiar contenido previo
+
+            questions.forEach((question, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                questionItem.innerHTML = `
+                    <label>
+                        <div class="question-item-number">Pregunta ${index + 1}</div>
+                        <textarea data-index="${index}" placeholder="Contenido...">${question.fact}</textarea>
+                        <textarea data-index="${index}" placeholder="Autor">${question.invent}</textarea>
+                    </label>
+                `;
+                questionsList.appendChild(questionItem);
+            });
+
+            document.getElementById('questions-container').style.display = 'block'; // Mostrar preguntas
+        } else {
+            alert(data.error); // Mostrar error si existe
+        }
+
+        // Reactivar el botón y ocultar el indicador de carga
+        obtainButton.disabled = false;
+        loadingIndicator.style.display = 'none';
+    });
+
+    document.getElementById('save-questions-button').addEventListener('click', function() {
+        const questionInputs = document.querySelectorAll('#questions-list .question-item');
+        const questionsToSave = [];
+
+        questionInputs.forEach((input, index) => {
+            const factInput = input.querySelector('textarea[data-index="${index}"]:nth-child(1)'); // Obtener el textarea de 'fact'
+            const inventInput = input.querySelector('textarea[data-index="${index}"]:nth-child(2)'); // Obtener el textarea de 'invent'
+            questionsToSave.push({
+                fact: factInput.value,
+                invent: inventInput.value
+            });
+        });
+
+        // Aquí deberías enviar las preguntas a tu endpoint de Flask para guardarlas
+        fetch('/save_questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(questionsToSave)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("Preguntas guardadas con éxito!");
+        })
+        .catch(error => {
+            console.error('Error al guardar las preguntas:', error);
+        });
+    });
+</script>
+{% endblock %}

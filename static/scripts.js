@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
+    const mountain = document.getElementById('mountain');
     const categoryContainer = document.getElementById('category-container');
     const questionText = document.getElementById('question-text');
     const optionButton1 = document.getElementById('option-button-1');
@@ -82,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(response)
                 if (response.ok) {
                     welcomeContainer.style.display = 'none';
+                    mountain.style.display = 'none'
                     categoryContainer.style.display = 'block';
                 } else {
                     alert('Hubo un error al establecer el nombre de usuario. Por favor, inténtalo de nuevo.');
@@ -548,3 +550,4 @@ const canvasSize = window.innerWidth / 9;
 const level = 5; // Adjust recursion level for detail
 const dataURL = generatDataURL(canvasSize, level);
 document.body.style.backgroundImage = `url(${dataURL})`;
+

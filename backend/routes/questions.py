@@ -2,7 +2,7 @@ import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import inspect
 from backend.models import Question, db
-from backend.utils import is_valid_name, require_session
+from backend.utils import generate_ia_questions, is_valid_name, require_session
 
 questions_bp = Blueprint("questions", __name__)
 
@@ -71,3 +71,17 @@ def get_all_questions(category):
         }
         for question in questions
     ]
+
+@questions_bp.route('/create_questions', methods=['GET'])
+def create_questions():
+    # Obtener el parámetro 'thematic' de la consulta
+    thematic = request.args.get('thematic')
+    n_questions = request.args.get('count')
+    if not thematic:
+        return jsonify({"error": "La temática es requerida"}), 400
+
+    # Llamar a la función que crea las preguntas
+    questions = generate_ia_questions(thematic, n_questions)
+
+    # Devolver la respuesta en el formato esperado
+    return jsonify({"category": questions})

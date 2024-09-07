@@ -17,3 +17,7 @@ def rankings():
 @main_bp.route("/about")
 def about():
     return render_template("about.html")
+
+@main_bp.route("/questions")
+def questions():
+    return render_template("questions.html")
