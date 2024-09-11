@@ -1,13 +1,162 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #021205; /* Base color */
+  color: white; /* Para que el texto por defecto sea blanco */
+  margin: 0;
+  padding: 0;
+  font-size: 16px; /* Ajuste del tamaño de fuente base */
+  /* position: relative; /* Para posicionar las formas geométricas */
+}
+
+.background-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1; /* Asegurarse de que está detrás del contenido */
+}
+
+.shape {
+  position: absolute;
+  transition: transform 0.3s ease-out; /* Transición para el movimiento */
+}
+
+/* Formas geométricas y sus colores, ubicadas en los laterales y solapadas */
+#shape1 {
+  width: 300px;
+  height: 300px;
+  background: rgba(149, 198, 35, 0.8); /* Yellow Green */
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  top: 10%;
+  left: 0;
+}
+
+#shape2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 0, 132, 0.7); /* Rose */
+  clip-path: polygon(0 100%, 100% 100%, 100% 0);
+  top: 20%;
+  right: 0;
+}
+
+#shape3 {
+  width: 250px;
+  height: 250px;
+  background: rgba(9, 93, 14, 0.6); /* Dartmouth Green */
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  bottom: 30%;
+  left: 0;
+}
+
+#shape4 {
+  width: 200px;
+  height: 200px;
+  background: rgba(149, 198, 35, 0.6); /* Yellow Green */
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  top: 70%;
+  left: 0;
+}
+
+#shape5 {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 0, 132, 0.5); /* Rose */
+  clip-path: polygon(0% 50%, 50% 0%, 100% 50%, 50% 100%);
+  bottom: 10%;
+  right: 10%;
+}
+
+#shape6 {
+  width: 200px;
+  height: 200px;
+  background: rgba(9, 93, 14, 0.4); /* Dartmouth Green */
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  top: 80%;
+  right: 0;
+}
+
 .menu {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
   position: absolute;
-  top: 10px;
+  top: 50px;
   left: 0;
   right: 0;
   z-index: 1000;
+  background-color: rgba(2, 18, 5, 0.3); /* Night con máxima transparencia */
+  margin: 0;
+}
+
+.menu a {
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 1.2em; /* Aumenta el tamaño de las letras */
+  font-family: 'Verdana', sans-serif; /* Fuente más bonita */
+}
+
+.menu a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  bottom: 4px; /* Ajuste para pegar más el subrayado */
+  left: 0;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.menu a:hover::after {
+  opacity: 1;
+}
+
+.menu a:hover {
+  transform: scale(1.1); /* Pequeño efecto de aumento */
+}
+
+/* Colores específicos para cada opción del menú */
+.menu a[href="/"] {
+  color: #ff0084; /* Rose */
+}
+.menu a[href="/questions"] {
+  color: #95c623; /* Yellow Green */
+}
+.menu a[href="/rankings"] {
+  color: #095d0e; /* Dartmouth Green */
+}
+
+.main-container {
+  padding: 20px;
+  color: white;
+}
+
+.question-mark {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: #333;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.question-mark a {
+  color: white;
+  text-decoration: none;
 }
 
 @keyframes lights {
