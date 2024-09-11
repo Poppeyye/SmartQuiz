@@ -37,7 +37,8 @@ body {
     right: 0;
     height: calc(100vh - 200px); /* Resta la altura del header para evitar la superposición */
     display: grid;
-    place-items: center;
+    justify-content: center;
+    align-items: center;
 }
 
 
