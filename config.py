@@ -10,7 +10,7 @@ class Config:
     
     # Elegir la URI de la base de datos según el entorno
     if ENV == 'pro':
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DB_URL')
     else:
         SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:admin@localhost:5432/postgres'
 
