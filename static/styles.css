@@ -19,15 +19,15 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    flex-direction: column;
-    position: relative;
+    /* flex-direction: column;
+    /* position: relative;
     /* Fondo con gradientes suaves y colores más definidos */
     background: linear-gradient(to bottom right, #222222, #111111);
     background-size: cover;
-    background-position: center;
+    /* background-position: center;
     height: 100%; /* Asegura que el body tenga al menos el alto de la ventana de visualización */
     /* Añadir un ligero desenfoque para profundidad */
-    background-attachment: fixed; /* Fijo para que no se mueva al hacer scroll */
+    /* background-attachment: fixed; /* Fijo para que no se mueva al hacer scroll */
 }
 
 

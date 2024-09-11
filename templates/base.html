@@ -15,11 +15,18 @@
 </head>
 
 <body>
+    <div class="background-shapes">
+        <div class="shape" id="shape1"></div>
+        <div class="shape" id="shape2"></div>
+        <div class="shape" id="shape3"></div>
+        <div class="shape" id="shape4"></div>
+        <div class="shape" id="shape5"></div>
+        <div class="shape" id="shape6"></div>
+    </div>
     <nav class="menu">
-        <a class="btn" href="/">Juega</a>
-        <a class="btn" href="/questions">Contribuye</a>
-        <a class="btn" href="/rankings">Ranking</a>
-        <!--<a class="btn" href="/questions">Create your questions</a>-->
+        <a href="/">Juega</a>
+        <a href="/questions">Contribuye</a>
+        <a href="/rankings">Ranking</a>
     </nav>
     <div class="main-container">
         <!-- Contenido específico de cada página -->
@@ -32,6 +39,23 @@
     data-message="" data-color="linear-gradient(135deg, #F9C642, #FFEB84)" data-position="left" data-x_margin="18" data-y_margin="18">
 </script>
 
-</body>
 
+    <script>
+        const shapes = document.querySelectorAll('.shape');
+    
+        shapes.forEach(shape => {
+            shape.addEventListener('mouseover', () => {
+                const randomX = (Math.random() - 0.5) * 100; // Aumenta el rango de movimiento
+                const randomY = (Math.random() - 0.5) * 100; // Aumenta el rango de movimiento
+    
+                // Transformación al azar para la forma
+                shape.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 360}deg)`; // Añadir rotación aleatoria
+            });
+    
+            shape.addEventListener('mouseleave', () => {
+                shape.style.transform = 'translate(0, 0) rotate(0deg)'; // Volver a la posición original y rotación
+            });
+        });
+    </script>
+</body>
 </html>
