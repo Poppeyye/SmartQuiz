@@ -85,3 +85,22 @@ def create_questions():
 
     # Devolver la respuesta en el formato esperado
     return jsonify({"category": questions})
+
+@questions_bp.route('/save_questions', methods=['POST'])
+def save_questions():
+    data = request.json
+    questions_to_save = []
+
+    # Guardar cada pregunta en la base de datos
+    for question in data:
+        fact = question.get('fact')
+        invent = question.get('invent')
+        category = question.get('category')
+        new_question = Question(fact=fact, invent=invent, category=category)
+        questions_to_save.append(new_question)
+
+    # Agregar las preguntas a la base de datos
+    db.session.add_all(questions_to_save)
+    db.session.commit()
+
+    return jsonify({"message": "Preguntas guardadas exitosamente"}), 201

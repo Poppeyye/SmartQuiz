@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
-    const mountain = document.getElementById('mountain');
     const categoryContainer = document.getElementById('category-container');
     const questionText = document.getElementById('question-text');
     const optionButton1 = document.getElementById('option-button-1');
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(response)
                 if (response.ok) {
                     welcomeContainer.style.display = 'none';
-                    mountain.style.display = 'none'
                     categoryContainer.style.display = 'block';
                 } else {
                     alert('Hubo un error al establecer el nombre de usuario. Por favor, inténtalo de nuevo.');
@@ -492,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 console.log(data.message);
-                welcomeContainer.style.display = 'block';
+                welcomeContainer.style.display = 'flex';
                 answerButtons.style.display = 'none';
                 userNameInput.value = userName;
                 resultText.style.display = 'none';
@@ -518,36 +516,4 @@ document.addEventListener('DOMContentLoaded', () => {
         checkAnswer(optionButton2.textContent);
     });
 });
-
-function generatDataURL(canvasSize, level) {
-    const offscreenCanvas = document.createElement('canvas');
-    offscreenCanvas.width = canvasSize;
-    offscreenCanvas.height = canvasSize;
-    const ctx = offscreenCanvas.getContext('2d');
-
-    function drawSierpinskiCarpet(x, y, size, level) {
-        if (level == 0) {
-            ctx.fillStyle = "hsl(35, 50%, 65%)";
-            ctx.fillRect(x, y, size, size);
-            return;
-        }
-
-        const newSize = size / 3;
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (!(i == 1 && j == 1)) {
-                    drawSierpinskiCarpet(x + i * newSize, y + j * newSize, newSize, level - 1);
-                }
-            }
-        }
-    }
-
-    drawSierpinskiCarpet(0, 0, canvasSize, level);
-    return offscreenCanvas.toDataURL();
-}
-
-const canvasSize = window.innerWidth / 9;
-const level = 5; // Adjust recursion level for detail
-const dataURL = generatDataURL(canvasSize, level);
-document.body.style.backgroundImage = `url(${dataURL})`;
 

@@ -109,9 +109,10 @@ label textarea:last-child {
 </style>
 
 <script>
+    let thematicInput = '';
     document.getElementById('thematic-form').addEventListener('submit', async function(event) {
         event.preventDefault();
-        const thematicInput = document.getElementById('thematic-input').value;
+        thematicInput = document.getElementById('thematic-input').value;
         const questionsCount = document.getElementById('questions-count').value;
         const obtainButton = document.getElementById('obtain-questions-button');
         const loadingIndicator = document.getElementById('loading-indicator');
@@ -154,35 +155,42 @@ label textarea:last-child {
         obtainButton.disabled = false;
         loadingIndicator.style.display = 'none';
     });
-
     document.getElementById('save-questions-button').addEventListener('click', function() {
-        const questionInputs = document.querySelectorAll('#questions-list .question-item');
-        const questionsToSave = [];
+    const questionInputs = document.querySelectorAll('#questions-list .question-item');
+    const questionsToSave = [];
 
-        questionInputs.forEach((input, index) => {
-            const factInput = input.querySelector('textarea[data-index="${index}"]:nth-child(1)'); // Obtener el textarea de 'fact'
-            const inventInput = input.querySelector('textarea[data-index="${index}"]:nth-child(2)'); // Obtener el textarea de 'invent'
+    questionInputs.forEach((input, index) => {
+        // Selecciona el primer y el segundo textarea directamente
+        const factInput = input.querySelector('textarea:nth-of-type(1)'); // Obtener el primer textarea
+        const inventInput = input.querySelector('textarea:nth-of-type(2)'); // Obtener el segundo textarea
+
+        // Comprobar si los inputs no son nulos y extraer valores
+        if (factInput && inventInput) {
             questionsToSave.push({
                 fact: factInput.value,
-                invent: inventInput.value
+                invent: inventInput.value,
+                category: thematicInput // Asegúrate de que 'thematicInput' está definido en tu contexto
             });
-        });
-
-        // Aquí deberías enviar las preguntas a tu endpoint de Flask para guardarlas
-        fetch('/save_questions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(questionsToSave)
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert("Preguntas guardadas con éxito!");
-        })
-        .catch(error => {
-            console.error('Error al guardar las preguntas:', error);
-        });
+        } else {
+            console.warn(`Los inputs de la pregunta ${index} no fueron encontrados.`);
+        }
     });
+
+    // Aquí deberías enviar las preguntas a tu endpoint de Flask para guardarlas
+    fetch('/save_questions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(questionsToSave)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Preguntas guardadas con éxito!");
+    })
+    .catch(error => {
+        console.error('Error al guardar las preguntas:', error);
+    });
+});
 </script>
 {% endblock %}

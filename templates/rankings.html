@@ -3,16 +3,14 @@
 {% block content %}
 
 <h1 class="h1">🏆 Global Ranking</h1>
-
+{% set categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia'] %}
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Buscar por nombre..." />
     <select id="category-selector">
         <option value="all">Todas las Categorías</option>
-        <option value="deportes">Deportes</option>
-        <option value="moda">Moda</option>
-        <option value="historia">Historia</option>
-        <option value="software">Informática</option>
-        <option value="economia">Economía</option>
+        {% for category in categories %}
+            <option value="{{ category|lower }}">{{ category }}</option>
+        {% endfor %}
     </select>
     <select id="date-range-selector">
         <option value="all">Global</option>
@@ -21,11 +19,9 @@
     </select>
 </div>
 
-
 <div id="category-leaderboards">
-    {% set categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia'] %}
     {% for category in categories %}
-        <div class="leaderboard-container">
+        <div class="leaderboard-container" id="container-{{ category|lower }}">
             <h2 class="category-title">
                 <img src="{{ url_for('static', filename='svgs/' ~ category ~ '.svg') }}" alt="{{ category }}" class="icon">
                 <span>{{ category }}</span>
@@ -46,15 +42,10 @@
                         <tr class="{% if loop.index <= 3 %}top-three{% endif %}">
                             <td>{{ loop.index }}</td>
                             <td>
-                                {% if loop.index == 1 %}
-                                    <img src="{{ url_for('static', filename='svgs/gold.svg') }}" alt="Medalla de Oro" width="20" height="20"> {{ score.name }}
-                                {% elif loop.index == 2 %}
-                                    <img src="{{ url_for('static', filename='svgs/silver.svg') }}" alt="Medalla de Plata" width="20" height="20"> {{ score.name }}
-                                {% elif loop.index == 3 %}
-                                    <img src="{{ url_for('static', filename='svgs/bronze.svg') }}" alt="Medalla de Bronce" width="20" height="20"> {{ score.name }}
-                                {% else %}
-                                    {{ score.name }}
-                                {% endif %}
+                                {% if loop.index == 1 %}<img src="{{ url_for('static', filename='svgs/gold.svg') }}" alt="Medalla de Oro" width="20" height="20">{{ score.name }}
+                                {% elif loop.index == 2 %}<img src="{{ url_for('static', filename='svgs/silver.svg') }}" alt="Medalla de Plata" width="20" height="20">{{ score.name }}
+                                {% elif loop.index == 3 %}<img src="{{ url_for('static', filename='svgs/bronze.svg') }}" alt="Medalla de Bronce" width="20" height="20">{{ score.name }}
+                                {% else %}{{ score.name }}{% endif %}
                             </td>
                             <td>{{ score.points }}</td>
                             <td>{{ score.date }}</td>
@@ -71,11 +62,30 @@
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
     window.onload = function() {
-        // Obtener los parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
+        const allCategories = "{{ categories | tojson }}"; // Convertir la lista de Jinja a un array de JavaScript
+        console.log(allCategories)
         const searchInput = document.getElementById('search-input');
         const categorySelector = document.getElementById('category-selector');
 
+        // Función para mostrar/ocultar categorías según la selección
+        function filterCategories() {
+            const selectedCategory = categorySelector.value;
+            allCategories.forEach(category => {
+                const container = document.getElementById(`container-${category|lower}`);
+                if (selectedCategory === 'all' || selectedCategory === category|lower) {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                }
+            });
+        }
+
+        // Inicializar el filtrado
+        categorySelector.addEventListener('change', filterCategories);
+        filterCategories(); // Llamar a la función al cargar la página
+
+        // Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
         const searchValue = params.get('search');
 
         // Si hay un valor, establecerlo en el input y disparar el evento 'input'
@@ -85,10 +95,7 @@
             searchInput.dispatchEvent(event);
         }
 
-        categorySelector.addEventListener('change', (event) => {
-            const selectedCategory = event.target.value;
-            updateScores(allScores, selectedCategory);
-        });
+        // Extra: Puedes añadir un filtro de búsqueda si es necesario aquí
     };
 </script>
 {% endblock %}

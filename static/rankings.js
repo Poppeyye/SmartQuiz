@@ -2,6 +2,9 @@ let allScores = [];
 let currentCategory = 'all';
 let currentDateRange = 'all';
 
+// Define categorías estándar aquí
+const ALL_CATEGORIES = ['deportes', 'historia', 'software', 'moda', 'economia'];
+
 document.addEventListener('DOMContentLoaded', async () => {
     const categorySelector = document.getElementById('category-selector');
     const dateRangeSelector = document.getElementById('date-range-selector');
@@ -61,9 +64,7 @@ function updateScores(scores) {
 
 // Muestra los puntajes
 function displayScores(scores) {
-    const allCategories = ['deportes', 'historia', 'software', 'moda', 'economia'];
-
-    allCategories.forEach(category => {
+    ALL_CATEGORIES.forEach(category => {
         const listId = `best-scores-${category}`;
         const scoresList = document.getElementById(listId);
 
@@ -79,9 +80,7 @@ function displayScores(scores) {
 
 // Muestra los puntajes filtrados
 function displayFilteredScores(filteredScores) {
-    const allCategories = ['deportes', 'historia', 'software', 'moda', 'economia'];
-
-    allCategories.forEach(category => {
+    ALL_CATEGORIES.forEach(category => {
         const listId = `best-scores-${category}`;
         const scoresList = document.getElementById(listId);
 
@@ -113,7 +112,7 @@ function populateScoreRows(scores, scoresList) {
         }
 
         row.innerHTML = `
-            <td>${score.ranking}</td> <!-- Usar ranking para el número de posición -->
+            <td>${score.ranking}</td>
             <td>${medalHtml} ${score.name}</td>
             <td>${score.score}</td>
             <td>${score.date}</td>

@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-9336280075263389">
     <title>{% block title %}Fact Apex Game{% endblock %}</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Poppins:wght@100;400;700&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Poppins:wght@100;400;700&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='header-style.css') }}">
 </head>
@@ -23,6 +25,7 @@
         {% block content %}
         {% endblock %}
     </div>
+    <a href="/about"><div class="question-mark">?</div></a>
 </body>
 
 </html>

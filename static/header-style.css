@@ -3,9 +3,83 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
-  position: relative;
+  position: absolute;
   top: 10px;
   left: 0;
   right: 0;
   z-index: 1000;
+}
+@keyframes lights {
+  0% {
+    color: hsl(0, 0%, 100%); /* Oro */
+    text-shadow:
+      0 0 1em hsla(39, 100%, 50%, 0.2),
+      0 0 0.125em hsla(0, 0%, 100%, 0.3),
+      -1em -0.125em 0.5em hsla(0, 0%, 80%, 0),
+      1em 0.125em 0.5em hsla(30, 100%, 60%, 0);
+  }
+
+  30% {
+    color: hsl(0, 0%, 100%); /* Plata */
+    text-shadow:
+      0 0 1em hsla(0, 0%, 90%, 0.2),
+      0 0 0.125em hsla(39, 100%, 50%, 0.5),
+      -0.5em -0.125em 0.25em hsla(30, 100%, 50%, 0.2),
+      0.5em 0.125em 0.25em hsla(15, 100%, 50%, 0.4); /* Un tono de bronce */
+  }
+
+  40% {
+    color: hsl(30, 100%, 60%); /* Bronce */
+    text-shadow:
+      0 0 1em hsla(39, 100%, 50%, 0.2),
+      0 0 0.125em hsla(0, 0%, 70%, 0.5),
+      -0.25em -0.125em 0.125em hsla(30, 100%, 70%, 0.2),
+      0.25em 0.125em 0.125em hsla(15, 100%, 50%, 0.4);
+  }
+
+  70% {
+    color: hsl(0, 0%, 90%); /* Plata */
+    text-shadow:
+      0 0 1em hsla(0, 0%, 90%, 0.2),
+      0 0 0.125em hsla(39, 100%, 50%, 0.5),
+      0.5em -0.125em 0.25em hsla(30, 100%, 50%, 0.2),
+      -0.5em 0.125em 0.25em hsla(15, 100%, 50%, 0.4);
+  }
+
+  100% {
+    color: hsl(39, 100%, 50%); /* Oro */
+    text-shadow:
+      0 0 1em hsla(39, 100%, 50%, 0.2),
+      0 0 0.125em hsla(0, 0%, 100%, 0.3),
+      1em -0.125em 0.5em hsla(0, 0%, 80%, 0),
+      -1em 0.125em 0.5em hsla(30, 100%, 60%, 0);
+  }
+}
+
+h1 {
+  margin: auto;
+  animation: lights 5s linear infinite;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4em;
+  font-family: "Nerko One", cursive;
+}
+
+.question-mark {
+  position: fixed;
+  font-weight: 500;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #F9C642, #FFEB84);
+  color: black;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 50%;
+  transition: transform 0.3s ease-in-out;
+
+    &:hover {
+    transform: scale(1.5); /* Cambia el tamaño al hacer hover */
+    }
 }
