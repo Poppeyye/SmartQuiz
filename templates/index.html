@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="game-container common-container" id="game-container">
-    <h1>The Tripia</h1>
-    
+    <h1>🦉Tripia Game</h1>
+    <p id="slogan">Aquí empieza tu viaje a lo más alto</p>
     <div id="welcome-container">
         <input type="text" id="user-name" placeholder="Nombre divertido" />
         <button class="btn" id="start-button">¡A jugar!</button>
@@ -54,5 +54,33 @@
 </div>
 
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+<script>
+    
+const slogans = [
+    "¡Bienvenido/a al mejor Quiz de Internet!",
+    "Llegarás a lo más alto del Ranking?",
+    "Velocidad y Sabiduría, ¿serán suficiente?",
+    "Disfruta y comparte con tu mejor competencia"
+];
+const sloganElement = document.getElementById('slogan');
+let currentIndex = 0;
 
+// Función para cambiar el eslogan
+function changeSlogan() {
+    // Agrega la clase 'hidden' para hacer el parpadeo
+    sloganElement.classList.add('hidden');
+
+    // Cambia el índice del eslogan actual
+    currentIndex = (currentIndex + 1) % slogans.length;
+
+    // Cambiar el texto después de un breve retraso
+    setTimeout(() => {
+        sloganElement.textContent = slogans[currentIndex];
+        sloganElement.classList.remove('hidden');
+    }, 500); // coincide con la duración de la transición
+}
+
+// Cambia el eslogan cada 3 segundos
+setInterval(changeSlogan, 3000);
+</script>
 {% endblock %}

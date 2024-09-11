@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
-    const questionText = document.getElementById('question-text');
+    const rankingContainer = document.getElementById('ranking-container');
+    const slogan = document.getElementById('slogan');
     const optionButton1 = document.getElementById('option-button-1');
     const optionButton2 = document.getElementById('option-button-2');
     const timerText = document.getElementById('timer-text');
@@ -144,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function getQuestion() {
         // Mostrar elementos del temporizador y la barra de progreso
         progressBarContainer.style.display = 'flex';
+        slogan.style.display = 'none';
         timerText.style.display = 'flex';
         scoreText.style.display = 'flex';
         progressBar.style.width = '100%';
@@ -162,12 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(data.error);
                 return;
             }
-
-            const options = [data.headline, data.fake_new];
+            const headline = decodeString(data.headline)
+            const fake = decodeString(data.fake_news)
+            const options = [headline, fake];
             const shuffledOptions = options.sort(() => Math.random() - 0.5);
             optionButton1.textContent = shuffledOptions[0];
             optionButton2.textContent = shuffledOptions[1];
-            correctAnswer = data.headline;
+            correctAnswer = headline;
 
             answerButtons.style.display = 'flex';
             startCountdown();
@@ -275,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function getBestScores() {
         try {
+            rankingContainer.style.display = 'flex';
             const response = await fetch(`/get_best_scores/${selectedCategory}`);
             const data = await response.json();
             if (data.scores) {
@@ -295,6 +299,13 @@ document.addEventListener('DOMContentLoaded', () => {
         startTime = Date.now();
         updateProgressBar();
         countdownInterval = setInterval(updateProgressBar, 100);
+    }
+
+    function decodeString(s) {
+        let decodedBytes = atob(s);  // Decodificamos la cadena base64 a bytes
+        let uint8Array = new Uint8Array([...decodedBytes].map(char => char.charCodeAt(0))); // Convertimos a array de bytes
+        let decoder = new TextDecoder('utf-8');  // Creamos un decodificador de UTF-8
+        return decoder.decode(uint8Array);  // Decodificamos a string
     }
 
     function updateProgressBar() {
@@ -327,12 +338,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkAnswer(userAnswer) {
+        console.log(userAnswer)
         if (gameEnded) return;
         stopTimer();
 
         const endTime = Date.now();
         const timeTaken = (endTime - startTime) / 1000;
-
+        console.log(userAnswer)
+        console.log(correctAnswer)
         if (userAnswer === correctAnswer) {
             handleCorrectAnswer(timeTaken);
         } else {
@@ -468,14 +481,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         shareButton.addEventListener('click', () => {
-            // La URL que deseas compartir
-            const urlToShare = `https://127.0.0.1:5000/rankings?search=${userName}`; // Cambia esto por la URL que deseas compartir
+            const urlToShare = `http://top10rank-be229c7616bc.herokuapp.com/rankings?search=${userName}`;
+            const title = '¡Mira esta clasificación!'; // Un título atractivo para el contenido
         
-            // Crea un enlace de AddToAny para compartir
-            const shareURL = `https://www.addtoany.com/share_save?linkurl=${encodeURIComponent(urlToShare)}`;
-        
-            // Abre el enlace en una nueva ventana
-            window.open(shareURL, '_blank');
+            // Comprobar si la API de navegación está disponible
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: urlToShare
+                })
+                .then(() => console.log('Contenido compartido'))
+                .catch(error => console.error('Error al compartir:', error));
+            } else {
+                // Si la API no está disponible, puedes mostrar un mensaje al usuario o implementar una alternativa
+                alert('Tu dispositivo no soporta compartir de esta manera.');
+            }
         });
     }
 
@@ -495,7 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 userNameInput.value = userName;
                 resultText.style.display = 'none';
                 scoreText.style.display = 'none';
-                //rankingPopup.style.display = 'none';
+                slogan.style.display = 'flex';
+                rankingContainer.style.display = 'none';
             });
     }
 
@@ -516,4 +537,3 @@ document.addEventListener('DOMContentLoaded', () => {
         checkAnswer(optionButton2.textContent);
     });
 });
-

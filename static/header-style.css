@@ -9,6 +9,7 @@
   right: 0;
   z-index: 1000;
 }
+
 @keyframes lights {
   0% {
     color: hsl(0, 0%, 100%); /* Oro */
@@ -82,4 +83,24 @@ h1 {
     &:hover {
     transform: scale(1.5); /* Cambia el tamaño al hacer hover */
     }
+}
+#slogan {
+  font-size: 24px;
+  text-align: center;
+  transition: opacity 0.5s;
+  color: silver;
+  font-family: "Poppins", sans-serif;
+}
+.hidden {
+  opacity: 0;
+}
+
+@media (max-width: 600px) {
+  h1 {
+      font-size: 3em; /* Tamaño responsivo para el título */
+  }
+  #slogan{
+    font-size: 1em;
+    word-break: keep-all;
+  }
 }

@@ -9,26 +9,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categorySelector = document.getElementById('category-selector');
     const dateRangeSelector = document.getElementById('date-range-selector');
     
+    // Inicializa los puntajes
     allScores = await getAllScores(currentCategory, currentDateRange);
     updateScores(allScores);
 
+    // Conecta el selector de categorías
     categorySelector.addEventListener('change', async (event) => {
         currentCategory = event.target.value;
         allScores = await getAllScores(currentCategory, currentDateRange);
         updateScores(allScores);
     });
 
+    // Conecta el selector de rango de fechas
     dateRangeSelector.addEventListener('change', async (event) => {
         currentDateRange = event.target.value;
         allScores = await getAllScores(currentCategory, currentDateRange);
         updateScores(allScores);
     });
 
+    // Manejo del parámetro de búsqueda en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
     const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', (event) => {
-        const query = event.target.value.toLowerCase();
+
+    // Función para filtrar y mostrar los puntajes
+    const filterAndDisplayScores = (query) => {
         const filteredScores = allScores.filter(score => score.name.toLowerCase().includes(query));
         displayFilteredScores(filteredScores);
+    };
+
+    // Si hay un parámetro de búsqueda en la URL, úsalo para filtrar
+    if (searchParam) {
+        const query = searchParam.toLowerCase();
+        searchInput.value = searchParam; // Actualiza el input para que el usuario vea la búsqueda
+        filterAndDisplayScores(query); // Filtra y muestra los puntajes
+    }
+
+    // Agrega listener al input de búsqueda
+    searchInput.addEventListener('input', (event) => {
+        const query = event.target.value.toLowerCase();
+        filterAndDisplayScores(query); // Filtra y muestra los puntajes en tiempo real
     });
 });
 
@@ -88,8 +108,6 @@ function displayFilteredScores(filteredScores) {
             scoresList.innerHTML = ''; // Limpiar la tabla antes de llenar
 
             // Filtra los scores de la categoría actual
-            const categoryScores = allScores.filter(score => score.category.toLowerCase() === category);
-            // Muestra solo los scores filtrados que pertenecen a esa categoría
             const filteredCategoryScores = filteredScores.filter(score => score.category.toLowerCase() === category);
             populateScoreRows(filteredCategoryScores, scoresList);
         }
@@ -112,10 +130,9 @@ function populateScoreRows(scores, scoresList) {
         }
 
         row.innerHTML = `
-            <td>${score.ranking}</td>
-            <td>${medalHtml} ${score.name}</td>
+            <td>${medalHtml}${score.ranking}</td>
+            <td>${score.name}</td>
             <td>${score.score}</td>
-            <td>${score.date}</td>
             <td>${score.total_correct}</td>
             <td>${score.avg_time}</td>
         `;

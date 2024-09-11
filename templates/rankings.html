@@ -29,12 +29,11 @@
             <table class="leaderboard-table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Rank</th>
                         <th>Nombre</th>
-                        <th>Puntuación</th>
-                        <th>Fecha</th>
-                        <th>Total correctas</th>
-                        <th>Tiempo Medio (s)</th>
+                        <th>Puntos</th>
+                        <th>Total</th>
+                        <th>T. Medio (s)</th>
                     </tr>
                 </thead>
                 <tbody id="best-scores-{{ category|lower }}" class="ranking-list">
@@ -48,7 +47,6 @@
                                 {% else %}{{ score.name }}{% endif %}
                             </td>
                             <td>{{ score.points }}</td>
-                            <td>{{ score.date }}</td>
                             <td>{{ score.total_correct }}</td>
                             <td>{{ score.avg_time }}</td>
                         </tr>
@@ -62,20 +60,20 @@
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
     window.onload = function() {
-        const allCategories = "{{ categories | tojson }}"; // Convertir la lista de Jinja a un array de JavaScript
+        const allCategories = {{ categories|tojson }};; // Convertir la lista de Jinja a un array de JavaScript
         console.log(allCategories)
         const searchInput = document.getElementById('search-input');
         const categorySelector = document.getElementById('category-selector');
 
         // Función para mostrar/ocultar categorías según la selección
         function filterCategories() {
-            const selectedCategory = categorySelector.value;
+            const selectedCategory = categorySelector.value.toLowerCase(); // Convertir a minúsculas
             allCategories.forEach(category => {
-                const container = document.getElementById(`container-${category|lower}`);
-                if (selectedCategory === 'all' || selectedCategory === category|lower) {
-                    container.style.display = 'block';
+                const container = document.getElementById(`container-${category.toLowerCase()}`); // Convertir a minúsculas
+                if (selectedCategory === 'all' || selectedCategory === category.toLowerCase()) {
+                    container.style.display = 'block'; // Mostrar el contenedor
                 } else {
-                    container.style.display = 'none';
+                    container.style.display = 'none'; // Ocultar el contenedor
                 }
             });
         }

@@ -3,6 +3,13 @@ from flask import Blueprint, jsonify, session, request
 from sqlalchemy import inspect
 from backend.models import Question, db
 from backend.utils import generate_ia_questions, is_valid_name, require_session
+import base64
+import json
+
+def encode_string(s):
+    encoded_bytes = s.encode('utf-8')
+    return base64.b64encode(encoded_bytes).decode('utf-8')  
+
 
 questions_bp = Blueprint("questions", __name__)
 
@@ -37,8 +44,10 @@ def get_question(category):
     session["used_headlines"].append(selected_id)
 
     new_item = next(news for news in session["news_pool"] if news["id"] == selected_id)
-    question = {"headline": new_item["fact"], "fake_new": new_item["invent"]}
-
+    question = {
+        "headline": encode_string(new_item["fact"]),
+        "fake_news": encode_string(new_item["invent"])
+    }
     return jsonify(question)
 
 
