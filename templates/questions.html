@@ -3,16 +3,23 @@
 {% block content %}
 <div class="container">
     <h1>Crear Preguntas de Verdadero o Falso</h1>
-
     <form id="thematic-form">
-        <label for="thematic-input">Tema:</label>
-        <input type="text" id="thematic-input" required placeholder="Ingrese una temática" />
-
+        <label for="thematic-input">Categoría:</label>
+        <select id="thematic-input" required>
+            <option value="Deportes">Deportes</option>
+            <option value="Moda">Moda</option>
+            <option value="Historia">Historia</option>
+            <option value="Software">Software</option>
+            <option value="Economia">Economía</option>
+        </select> 
+        <label for="context-input">Para que nuestra genIA cree preguntas únicas, escribe algo de contexto. 
+            Por ejemplo, si eliges Deportes, puedes poner: "Fútbol, Cristiano Ronaldo, Real Madrid". Datos actualizados a 2023</label>
+        <input type="text" id="context-input" required placeholder="Añade contexto" />
         <label for="questions-count">Número de Preguntas:</label>
         <select id="questions-count" required>
-            <option value="5">5 Preguntas - 1 Euro</option>
-            <option value="10">10 Preguntas - 2 Euros</option>
-            <option value="15">15 Preguntas - 3 Euros</option>
+            <option value="5">5 Preguntas - 1 Cortado</option>
+            <option value="10">10 Preguntas - 1 Café doble</option>
+            <option value="15">15 Preguntas - 1 Café del Starbucks</option>
         </select>
 
         <button class="btn" type="submit" id="obtain-questions-button">Obtener Preguntas</button>
@@ -24,6 +31,22 @@
         <h2>Preguntas</h2>
         <div id="questions-list"></div>
         <button id="save-questions-button" class="btn">Guardar Preguntas</button>
+        
+        <!-- Sugerencia de donación -->
+        <div class="donation-container">
+            <h3>Te está gustando el juego? ☕</h3>
+            <p>Si te gusta este generador de preguntas, considera regalarme un café para apoyar el desarrollo local.</p>
+            <a href="https://www.buymeacoffee.com/alvaromartm" target="_blank">
+                <div class="embed-each-sec" id="btn-without-sup-count" style="display: block;">
+                    <button class="btn">
+                        <div class="flex">
+                            <span class="btn-icon">☕</span>
+                            <span class="btn-custom-text">Invítame a un café</span>
+                        </div>
+                    </button>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -54,7 +77,6 @@ label {
     margin-bottom: 12px;
 }
 
-/* Textarea styles */
 textarea {
     width: 100%;
     padding: 10px;
@@ -62,48 +84,22 @@ textarea {
     border: 2px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    resize: vertical; /* Permite solo el redimensionado vertical */
-    overflow-y: auto; /* Activa el scroll vertical */
-    min-height: 40px; /* Altura mínima */
-    max-height: 200px; /* Altura máxima */
+    resize: vertical;
+    min-height: 40px;
+    max-height: 200px;
 }
 
-/* Focus styles */
 textarea:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;
 }
 
-/* Placeholder styles */
-textarea::placeholder {
-    color: #888;
-    opacity: 1;
-}
 
-/* Custom background colors for the first and last textarea */
-label textarea:first-child {
-    background-color: #f0f8ff;
-}
 
-label textarea:last-child {
-    background-color: #fafad2;
-}
-
-/* Loading styles */
-#loading-indicator {
-    margin-top: 20px;
-    font-size: 1.2em;
-    color: #007bff;
-}
-
-/* Mobile-specific styles */
 @media (max-width: 768px) {
     textarea {
-        width: 100%;
-        height: auto;
-        max-height: 150px; /* Limita la altura en móvil */
+        max-height: 150px;
     }
 }
 </style>
@@ -113,25 +109,24 @@ label textarea:last-child {
     document.getElementById('thematic-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         thematicInput = document.getElementById('thematic-input').value;
+        contextInput = document.getElementById('context-input').value;
+        let combinedInput = `${thematicInput},${contextInput}`;
+
         const questionsCount = document.getElementById('questions-count').value;
         const obtainButton = document.getElementById('obtain-questions-button');
         const loadingIndicator = document.getElementById('loading-indicator');
         
-        // Desactivar el botón y mostrar el indicador de carga
         obtainButton.disabled = true;
         loadingIndicator.style.display = 'block';
 
-        // Llamar al endpoint de Flask para obtener las preguntas
-        const response = await fetch(`/create_questions?thematic=${encodeURIComponent(thematicInput)}&count=${encodeURIComponent(questionsCount)}`);
+        const response = await fetch(`/create_questions?thematic=${encodeURIComponent(thematicInput)}&context=${encodeURIComponent(contextInput)}&count=${encodeURIComponent(questionsCount)}`);
         const data = await response.json();
 
-        // Verificar si hay un error en la respuesta
         if (response.ok) {
-            const questions = data.category[thematicInput]; // Cambia 'futbol' por la categoría relevante si es dinámica
+            const questions = data.category[thematicInput];
 
-            // Limpiar la lista de preguntas y mostrarlas en el contenedor
             const questionsList = document.getElementById('questions-list');
-            questionsList.innerHTML = ''; // Limpiar contenido previo
+            questionsList.innerHTML = ''; 
 
             questions.forEach((question, index) => {
                 const questionItem = document.createElement('div');
@@ -146,51 +141,48 @@ label textarea:last-child {
                 questionsList.appendChild(questionItem);
             });
 
-            document.getElementById('questions-container').style.display = 'block'; // Mostrar preguntas
+            document.getElementById('questions-container').style.display = 'block';
         } else {
-            alert(data.error); // Mostrar error si existe
+            alert(data.error);
         }
 
-        // Reactivar el botón y ocultar el indicador de carga
         obtainButton.disabled = false;
         loadingIndicator.style.display = 'none';
     });
+
     document.getElementById('save-questions-button').addEventListener('click', function() {
-    const questionInputs = document.querySelectorAll('#questions-list .question-item');
-    const questionsToSave = [];
+        const questionInputs = document.querySelectorAll('#questions-list .question-item');
+        const questionsToSave = [];
 
-    questionInputs.forEach((input, index) => {
-        // Selecciona el primer y el segundo textarea directamente
-        const factInput = input.querySelector('textarea:nth-of-type(1)'); // Obtener el primer textarea
-        const inventInput = input.querySelector('textarea:nth-of-type(2)'); // Obtener el segundo textarea
+        questionInputs.forEach((input, index) => {
+            const factInput = input.querySelector('textarea:nth-of-type(1)');
+            const inventInput = input.querySelector('textarea:nth-of-type(2)');
 
-        // Comprobar si los inputs no son nulos y extraer valores
-        if (factInput && inventInput) {
-            questionsToSave.push({
-                fact: factInput.value,
-                invent: inventInput.value,
-                category: thematicInput // Asegúrate de que 'thematicInput' está definido en tu contexto
-            });
-        } else {
-            console.warn(`Los inputs de la pregunta ${index} no fueron encontrados.`);
-        }
+            if (factInput && inventInput) {
+                questionsToSave.push({
+                    fact: factInput.value,
+                    invent: inventInput.value,
+                    category: thematicInput
+                });
+            }
+        });
+
+        fetch('/save_questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(questionsToSave)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("Preguntas guardadas con éxito!");
+        })
+        .catch(error => {
+            console.error('Error al guardar las preguntas:', error);
+        });
     });
 
-    // Aquí deberías enviar las preguntas a tu endpoint de Flask para guardarlas
-    fetch('/save_questions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(questionsToSave)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("Preguntas guardadas con éxito!");
-    })
-    .catch(error => {
-        console.error('Error al guardar las preguntas:', error);
-    });
-});
+    
 </script>
 {% endblock %}

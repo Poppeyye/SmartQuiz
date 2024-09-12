@@ -558,6 +558,7 @@ a {
     word-wrap: break-word;
     font-weight: 600;
     min-width: 100px;
+    overflow-x: auto;
 }
 
 .leaderboard-table th {
@@ -566,7 +567,6 @@ a {
     font-size: 14px;
     top: 0;
     z-index: 1;
-    word-break: keep-all;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 15px;
     border-bottom: 1px solid #ffc107; /* Línea separadora amarilla */
@@ -747,4 +747,11 @@ select:hover {
 /* Estilo del pulgar cuando está en hover */
 ::-webkit-scrollbar-thumb:hover {
     background: silver; /* Color del pulgar al pasar el mouse */
+}
+
+label {
+    color: silver; /* Hace que el texto de las etiquetas sea blanco */
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    font-style: normal;
 }

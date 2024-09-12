@@ -36,7 +36,6 @@ def get_question(category):
     all_ids = set(news["id"] for news in session["news_pool"])
     used_ids = set(session["used_headlines"])
     unasked_ids = list(all_ids - used_ids)
-
     if not unasked_ids:
         return jsonify({"error": "All questions have been asked in this category"}), 204
 
@@ -65,7 +64,7 @@ def reset_score():
 @questions_bp.route("/end_game", methods=["POST"])
 @require_session
 def end_game():
-    session.clear()
+    session["used_headlines"] = []
     return jsonify({"message": "Juego terminado y sesión reiniciada"}), 200
 
 
@@ -85,12 +84,13 @@ def get_all_questions(category):
 def create_questions():
     # Obtener el parámetro 'thematic' de la consulta
     thematic = request.args.get('thematic')
+    context = request.args.get('context')
     n_questions = request.args.get('count')
     if not thematic:
         return jsonify({"error": "La temática es requerida"}), 400
 
     # Llamar a la función que crea las preguntas
-    questions = generate_ia_questions(thematic, n_questions)
+    questions = generate_ia_questions(thematic, context, n_questions)
 
     # Devolver la respuesta en el formato esperado
     return jsonify({"category": questions})

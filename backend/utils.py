@@ -26,7 +26,7 @@ def require_session(f):
     return decorated_function
 
 
-def generate_ia_questions(category,n):
+def generate_ia_questions(category,context,n):
     content = f"""Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"
                 "que el usuario elija. Un campo llamado fact que contendrá un hecho, realidad o frase que sea real."
                 "Un campo invent que contenga una invención que esté relacionada con el campo fact, pero que cambie ligeramente la verdacidad de lo anterior, intenando confundir al que lo lea."
@@ -39,7 +39,7 @@ def generate_ia_questions(category,n):
         messages=[
             {"role": "system",
              "content": content},
-            {"role": "user", "content": f"La categoria es: {category}"}
+            {"role": "user", "content": f"La categoria es: {category}, {context}"}
         ],
         response_format={"type": "json_schema",
                           "json_schema": {
@@ -75,9 +75,7 @@ def generate_ia_questions(category,n):
         }
     }
     }
-    )
-    response_dict = json.loads(response.choices[0].message.content)
-    
+    )    
     return json.loads(response.choices[0].message.content)
 
 

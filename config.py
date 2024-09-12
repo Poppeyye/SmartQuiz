@@ -19,4 +19,4 @@ class Config:
     SESSION_SQLALCHEMY = db
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
-    PERMANENT_SESSION_LIFETIME = timedelta(days=7)
+    PERMANENT_SESSION_LIFETIME = timedelta(days=1)
