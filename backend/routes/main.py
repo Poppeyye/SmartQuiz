@@ -6,7 +6,7 @@ main_bp = Blueprint("main", __name__)
 @main_bp.route("/")
 def index():
     session["used_headlines"] = []
-    return render_template("index.html")
+    return render_template("index.html", user_name=session.get('user_name', ''))
 
 
 @main_bp.route("/rankings")
