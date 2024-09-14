@@ -39,7 +39,7 @@ def generate_ia_questions(category,context,n):
         messages=[
             {"role": "system",
              "content": content},
-            {"role": "user", "content": f"La categoria es: {category}, {context}"}
+            {"role": "user", "content": f"La categoria es: {category}, y las preguntas deben hablar de: {context}"}
         ],
         response_format={"type": "json_schema",
                           "json_schema": {
