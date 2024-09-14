@@ -65,6 +65,7 @@ def reset_score():
 @require_session
 def end_game():
     session["used_headlines"] = []
+    session.pop('news_pool', None)
     return jsonify({"message": "Juego terminado y sesión reiniciada"}), 200
 
 
