@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, session, make_response, jsonify
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 main_bp = Blueprint("main", __name__)
 
