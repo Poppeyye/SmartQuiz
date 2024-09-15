@@ -2,14 +2,14 @@ from flask import Blueprint, request, jsonify, session
 from backend.models import PlayerScore, db
 from datetime import datetime
 from datetime import timedelta
-from backend.utils import is_valid_name, require_session
+from backend.utils import is_valid_name, require_jwt
 import pytz
 
 scores_bp = Blueprint("scores", __name__)
 
 
 @scores_bp.route("/add_score", methods=["POST"])
-@require_session
+@require_jwt  # Asegúrate de que el token JWT sea requerido para acceder
 def add_score():
     data = request.json
     player_name = session["user_name"]  # Obtiene el nombre del usuario de la sesión
@@ -119,7 +119,6 @@ def get_user_rank(category=None):
 
 
 @scores_bp.route("/get_all_scores_dates/<category>/<date_range>", methods=["GET"])
-@require_session
 def get_all_scores_dates(category, date_range):
     if category != "all":
         query = PlayerScore.query.filter_by(category=category.title())
@@ -166,3 +165,13 @@ def set_user_name():
 
     session["user_name"] = user_name
     return jsonify({"message": "User name set", "user_name": user_name}), 200
+
+
+@scores_bp.route("/reset_score")
+def reset_score():
+    if "total_score" in session:
+        session["total_score"] = 0
+    else:
+        return jsonify({"error": "No score to reset"}), 400
+    session.pop("used_headlines", None)
+    return jsonify({"message": "Score reset", "total_score": session["total_score"]})

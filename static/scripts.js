@@ -247,14 +247,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300); // Duración del desvanecimiento
         }, 3000); // 3 segundos
     }
+
+    function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                return cookie.substring(name.length + 1);
+            }
+        }
+        return   
+     null;
+    }
+
     async function submitScore(userName, totalScore, totalTimeTaken, correctAnswersCount ) {
         console.log("submit")
         console.log(correctAnswersCount)
+
         try {
             const response = await fetch('/add_score', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+
                 },
                 body: JSON.stringify({
                     name: userName,

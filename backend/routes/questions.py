@@ -2,7 +2,7 @@ import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import inspect
 from backend.models import Question, db
-from backend.utils import generate_ia_questions, is_valid_name, require_session
+from backend.utils import generate_ia_questions, is_valid_name
 import base64
 import json
 
@@ -24,7 +24,6 @@ def check_table():
 
 
 @questions_bp.route("/get_question/<category>")
-@require_session
 def get_question(category):
     if "news_pool" not in session:
         session["news_pool"] = get_all_questions(category)
@@ -50,19 +49,7 @@ def get_question(category):
     return jsonify(question)
 
 
-@questions_bp.route("/reset_score")
-@require_session
-def reset_score():
-    if "total_score" in session:
-        session["total_score"] = 0
-    else:
-        return jsonify({"error": "No score to reset"}), 400
-    session.pop("used_headlines", None)
-    return jsonify({"message": "Score reset", "total_score": session["total_score"]})
-
-
 @questions_bp.route("/end_game", methods=["POST"])
-@require_session
 def end_game():
     session["used_headlines"] = []
     session.pop('news_pool', None)

@@ -20,3 +20,8 @@ class Config:
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
+    JWT_SECRET_KEY = 'admin'
+    JWT_TOKEN_LOCATION = ['cookies']  # Las cookies son donde se almacenan los tokens
+    JWT_COOKIE_SECURE = True  # Solo permitir cookies en conexiones HTTPS
+    JWT_ACCESS_COOKIE_PATH = '/'  # Cookies accesibles en toda la app
+    JWT_COOKIE_CSRF_PROTECT = True  # Protección CSRF para cookies

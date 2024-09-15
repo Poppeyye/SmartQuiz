@@ -8,6 +8,7 @@ import os
 import re
 from functools import wraps
 from flask import session, jsonify
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 
 
 OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
@@ -17,13 +18,21 @@ def is_valid_name(name):
     # Comprueba que el nombre solo contenga letras y espacios, y tenga una longitud razonable
     return bool(re.match("^[A-Za-z0-9 ]+$", name)) and 1 <= len(name) <= 100
 
-def require_session(f):
+
+def require_jwt(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_name' not in session:  # Cambia 'user_name' por la variable que utilizas
+        try:
+            # Verificar el token JWT en la solicitud
+            verify_jwt_in_request()
+        except:
             return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Obtener el identity del token JWT (podría ser el nombre de usuario u otra información)
+        current_user = get_jwt_identity()
         return f(*args, **kwargs)
     return decorated_function
+
 
 
 def generate_ia_questions(category,context,n):
