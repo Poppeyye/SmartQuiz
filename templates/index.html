@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="game-container common-container" id="game-container">
+
     <h1>🦉Genias.io</h1>
     <p id="slogan">Aquí empieza tu viaje a lo más alto</p>
     <div id="welcome-container">
@@ -35,6 +36,7 @@
         </button>
     </div>
     <div id="question-container" style="display: none;">
+
         <p id="question-text">Selecciona la respuesta correcta:</p>
     </div>
     <div id="answer-buttons" style="display: none;">
@@ -53,6 +55,7 @@
     <h2>Top 10</h2>
     <ul id="best-scores-list"></ul> <!-- Lista de mejores puntuaciones -->
 </div>
+
 
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 <script>
@@ -84,4 +87,5 @@ function changeSlogan() {
 // Cambia el eslogan cada 3 segundos
 setInterval(changeSlogan, 3000);
 </script>
+
 {% endblock %}

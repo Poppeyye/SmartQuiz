@@ -17,8 +17,7 @@ OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
 client = OpenAI(api_key=OPEN_AI_KEY)
 
 def is_valid_name(name):
-    # Comprueba que el nombre solo contenga letras y espacios, y tenga una longitud razonable
-    return bool(re.match("^[A-Za-z0-9 ]+$", name)) and 1 <= len(name) <= 100
+    return 1 <= len(name) <= 100
 
 
 def require_jwt(func):

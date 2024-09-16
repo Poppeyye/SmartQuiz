@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     //const scoreTimer = document.getElementById('score-timer')
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
+    // music
+    const backgroundMusic = document.getElementById('background-music');
+    const correctSound = document.getElementById('correct-sound');
+    const wrongSound = document.getElementById('wrong-sound');
+    const muteButton = document.getElementById('mute-button');
+    let isMuted = false;  // Variable para comprobar si el audio está en silencio
 
     let correctAnswer = null;
     let timerInterval = null;
@@ -138,9 +144,40 @@ document.addEventListener('DOMContentLoaded', () => {
             return [];
         }
     }
+    // Función para reproducir el sonido de respuesta correcta
+    function playCorrectSound() {
+        if (!isMuted) {
+            correctSound.currentTime = 0; // Reiniciar el sonido
+            correctSound.play();
+        }
+    }
+
+    // Función para reproducir el sonido de respuesta incorrecta
+    function playWrongSound() {
+        if (!isMuted) {
+            wrongSound.currentTime = 0; // Reiniciar el sonido
+            wrongSound.play();
+        }
+    }
+
+    // Manejar el botón de silenciar
+    muteButton.addEventListener('click', () => {
+        isMuted = !isMuted;  // Cambiar el estado de muted
+        if (isMuted) {
+            backgroundMusic.pause();
+            muteButton.innerHTML = '🔇'; // Mostrar emoji de silencio
+        } else {
+            backgroundMusic.play();
+            muteButton.innerHTML = '🔊'; // Mostrar nota musical
+        }
+    });
 
     async function getQuestion() {
         // Mostrar elementos del temporizador y la barra de progreso
+        if (!isMuted){
+            backgroundMusic.play();
+        }
+        
         progressBarContainer.style.display = 'flex';
         slogan.style.display = 'none';
         timerText.style.display = 'flex';
@@ -350,8 +387,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const endTime = Date.now();
         const timeTaken = (endTime - startTime) / 1000;
         if (userAnswer === correctAnswer) {
+            correctSound.play()
             handleCorrectAnswer(timeTaken);
         } else {
+            wrongSound.play()
             gameEnded = true;
             endGame('Incorrecto!\n Puntuación total: ');
         }
@@ -409,7 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Establecer el mensaje de resultado
         stopTimer();
-
+        backgroundMusic.currentTime = 0
+        backgroundMusic.pause()
         resultText.textContent = `${msg}: ${totalScore}`;
         resultText.style.opacity = 1;
 

@@ -57,7 +57,7 @@ def end_game():
 
 
 def get_all_questions(category):
-    questions = Question.query.filter_by(category=category).all()
+    questions = Question.query.filter_by(category=category, validated=True).all()
     return [
         {
             "id": question.id,
@@ -93,7 +93,7 @@ def save_questions():
         fact = question.get('fact')
         invent = question.get('invent')
         category = question.get('category')
-        new_question = Question(fact=fact, invent=invent, category=category)
+        new_question = Question(fact=fact, invent=invent, category=category, validated=False)
         questions_to_save.append(new_question)
 
     # Agregar las preguntas a la base de datos

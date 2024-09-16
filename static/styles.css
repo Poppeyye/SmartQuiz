@@ -39,6 +39,7 @@ body {
     display: grid;
     justify-content: center;
     align-items: center;
+    max-width: 90%;
 }
 
 
@@ -548,11 +549,12 @@ a {
     margin-top: 10px;
     table-layout: fixed; /* Asegura que la tabla mantenga su tamaño */
     overflow-x: auto;
+    
 }
 
 .leaderboard-table td {
     padding: 15px;
-    text-align: justify;
+    text-align: left;
     border-bottom: 1px solid #dee2e6;
     transition: background-color 0.3s ease;
     word-wrap: break-word;
@@ -754,4 +756,46 @@ label {
     font-family: "Poppins", sans-serif;
     font-weight: 200;
     font-style: normal;
+}
+
+#mute-button {
+    background: transparent; /* Fondo transparente */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cambiar el cursor al pasar por encima */
+    position: absolute; /* Posicionamiento absoluto para colocar el botón en la esquina */
+    top: 10px; /* Ajustar según donde lo quieras colocar */
+    right: 20px; /* Ajustar según donde lo quieras colocar */
+    z-index: 3000;
+    width: 10px; /* Ajustar ancho */
+    height: 10px; /* Ajustar alto */
+    display: flex; /* Para centrar los iconos */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    transition: opacity 0.3s ease; /* Transición */
+}
+
+/* Iconos */
+#mute-button .icon {
+    font-size: 24px; /* Tamaño del icono */
+    width: 100%; /* Tomar todo el ancho del botón */
+    height: 100%; /* Tomar todo el alto del botón */
+    display: flex; /* Para centrar el icono */
+    align-items: center; /* Centrado verticalmente */
+    justify-content: center; /* Centrado horizontalmente */
+}
+
+#mute-button.active .icon-sound {
+    display: flex; /* Mostrar icono de sonido activo */
+}
+
+#mute-button.active .icon-muted {
+    display: none; /* Ocultar icono de silencio */
+}
+
+#mute-button:not(.active) .icon-sound {
+    display: none; /* Ocultar icono de sonido activo */
+}
+
+#mute-button:not(.active) .icon-muted {
+    display: flex; /* Mostrar icono de silencio */
 }

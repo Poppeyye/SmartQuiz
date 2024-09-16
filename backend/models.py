@@ -25,6 +25,7 @@ class Question(db.Model):
     fact = db.Column(db.String(500), nullable=False)
     invent = db.Column(db.String(500), nullable=False)
     category = db.Column(db.String(100), nullable=False)
+    validated = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
-        return f"<Question {self.id} {self.fact} {self.invent} {self.category}>"
+        return f"<Question {self.id} {self.fact} {self.invent} {self.category} {self.validated}>"

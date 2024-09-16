@@ -16,6 +16,10 @@
 
 <body>
     <nav class="menu">
+        <button id="mute-button" class="active">
+            <span class="icon icon-sound">🔊</span>
+            <span class="icon icon-muted" style="display: none;">🔇</span>
+        </button>
         <a class="btn" href="/">Juega</a>
         <a class="btn" href="/questions">Contribuye</a>
         <a class="btn" href="/rankings">Ranking</a>
@@ -25,6 +29,9 @@
         <!-- Contenido específico de cada página -->
         {% block content %}
         {% endblock %}
+        <audio id="background-music" src="{{ url_for('static', filename='audio/thinktime.mp3') }}" loop></audio>
+    <audio id="correct-sound" src="{{ url_for('static', filename='audio/right.mp3') }}"></audio>
+    <audio id="wrong-sound" src="{{ url_for('static', filename='audio/wrong.mp3') }}"></audio>
     </div>
     <a href="/about"><div class="question-mark">?</div></a>
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" 
