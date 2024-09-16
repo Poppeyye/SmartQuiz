@@ -24,13 +24,17 @@ def is_valid_name(name):
 def require_jwt(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        response = None
         try:
             verify_jwt_in_request()
+            response = make_response(func(*args, **kwargs))
+            response = refresh_access_token(response)
         except ExpiredSignatureError:
             refresh_token = request.cookies.get('refresh_token_cookie')
             if not refresh_token:
-                unset_jwt_cookies(request)  # Limpiar cookies inseguras
-                return jsonify({'error': 'Refresh token missing'}), 401
+                response = make_response(jsonify({'error': 'Refresh token missing'}))
+                unset_jwt_cookies(response)  # Correctamente limpiar las cookies JWT en el objeto de respuesta
+                return response, 401
 
             try:
                 user_identity = session.get('admin_id')
@@ -39,13 +43,15 @@ def require_jwt(func):
                 set_access_cookies(response, access_token)
                 return response
             except Exception as e:
-                unset_jwt_cookies(request)  # Limpiar cookies inseguras
-                return jsonify({'error': 'Cannot refresh token', 'msg': str(e)}), 401
+                response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}))
+                unset_jwt_cookies(response)  # Correctamente limpiar las cookies JWT en el objeto de respuesta
+                return response, 401
         except Exception as e:
             return jsonify({'error': 'Unauthorized access', 'msg': str(e)}), 403
 
-        response = make_response(func(*args, **kwargs))
-        response = refresh_access_token(response)
+        if not response:
+            response = make_response(func(*args, **kwargs))
+            response = refresh_access_token(response)
         return response
     
     return wrapper

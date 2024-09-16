@@ -7,6 +7,15 @@ from jwt.exceptions import ExpiredSignatureError
 
 main_bp = Blueprint("main", __name__)
 
+from functools import wraps
+from flask import jsonify, make_response, request, session
+from flask_jwt_extended import (
+    verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token,
+    create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
+)
+from jwt.exceptions import ExpiredSignatureError
+from datetime import datetime, timezone, timedelta
+
 def refresh_access_token(response):
     try:
         verify_jwt_in_request(optional=True)
@@ -15,7 +24,8 @@ def refresh_access_token(response):
         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
 
         if exp_timestamp and target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
+            access_token_in_request = get_jwt_identity()
+            access_token = create_access_token(identity=access_token_in_request)
             set_access_cookies(response, access_token)
     except (RuntimeError, KeyError, ExpiredSignatureError):
         if 'admin_id' in session:
@@ -39,8 +49,7 @@ def index():
     
     session["used_headlines"] = []
     session.pop('news_pool', None)
-    
-    # Refrescar token si es necesario
+
     response = refresh_access_token(response)
     return response
 
