@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         userName = userNameInput.value.trim();
-        console.log(userName)
         if (userName) {
             // Enviar el nombre del usuario al backend
             fetch('/set_user_name', {
@@ -80,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ user_name: userName }),
             })
             .then(response => {
-                console.log(response)
                 if (response.ok) {
                     welcomeContainer.style.display = 'none';
                     categoryContainer.style.display = 'block';
@@ -132,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/get_all_scores/${selectedCategory}`);
             const data = await response.json();
-            console.log(data)
             if (data.scores) {
                 return data.scores;
             }
@@ -158,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(selectCategory)
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
-            console.log(response)
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
@@ -193,9 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
             userRank = data.userRank;
             const totalUsers = data.totalUsers;
     
-            console.log("Total Users:", totalUsers);
-            console.log("User Rank:", userRank);
-    
             let message = '';
     
             if (userRank === 0 || userRank > totalUsers) {
@@ -219,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 previousUserRank = userRank;
             }
     
-            console.log(message);
         } catch (error) {
             console.error('Error fetching user rank:', error);
         }
@@ -261,8 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function submitScore(userName, totalScore, totalTimeTaken, correctAnswersCount ) {
-        console.log("submit")
-        console.log(correctAnswersCount)
 
         try {
             const response = await fetch('/add_score', {
@@ -287,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
-            console.log(result.message); // Mensaje de éxito
         } catch (error) {
             console.error('Error:', error);
         }
@@ -355,14 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkAnswer(userAnswer) {
-        console.log(userAnswer)
         if (gameEnded) return;
         stopTimer();
 
         const endTime = Date.now();
         const timeTaken = (endTime - startTime) / 1000;
-        console.log(userAnswer)
-        console.log(correctAnswer)
         if (userAnswer === correctAnswer) {
             handleCorrectAnswer(timeTaken);
         } else {
@@ -408,10 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
         totalScore = parseFloat(totalScore.toFixed(2));
         scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`; 
         correctAnswersCount += 1;
-        console.log(correctAnswersCount)
-        console.log(totalScore)
         totalTimeTaken += timeTaken;
-        console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             displayFunnyMessage(totalScore);
@@ -526,7 +509,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data.message);
                 welcomeContainer.style.display = 'flex';
                 answerButtons.style.display = 'none';
                 userNameInput.value = userName;
