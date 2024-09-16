@@ -30,7 +30,7 @@ def require_jwt(func):
             response = make_response(func(*args, **kwargs))
             response = refresh_access_token(response)
         except ExpiredSignatureError:
-            refresh_token = request.cookies.get('refresh_token_cookie')
+            refresh_token = request.cookies.get('csrf_refresh_token')
             if not refresh_token:
                 response = make_response(jsonify({'error': 'Refresh token missing'}))
                 unset_jwt_cookies(response)  # Correctamente limpiar las cookies JWT en el objeto de respuesta
