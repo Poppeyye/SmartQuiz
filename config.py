@@ -4,24 +4,17 @@ from backend.models import db
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'supersecretkey'
-    
-    # Determinar el entorno actual (dev o pro)
-    ENV = os.environ.get('ENV', 'dev')  # Por defecto, será 'dev' si no se establece
-    
-    # Elegir la URI de la base de datos según el entorno
-    if ENV == 'pro':
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DB_URL')
-    else:
-        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:admin@localhost:5432/postgres'
-
+    ENV = os.environ.get('ENV', 'dev')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DB_URL') if ENV == 'pro' else 'postgresql://postgres:admin@localhost:5432/postgres'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = 'sqlalchemy'
     SESSION_SQLALCHEMY = db
     SESSION_PERMANENT = False
-    SESSION_USE_SIGNER = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
     JWT_SECRET_KEY = 'admin'
-    JWT_TOKEN_LOCATION = ['cookies']  # Las cookies son donde se almacenan los tokens
-    JWT_COOKIE_SECURE = True  # Solo permitir cookies en conexiones HTTPS
-    JWT_ACCESS_COOKIE_PATH = '/'  # Cookies accesibles en toda la app
-    JWT_COOKIE_CSRF_PROTECT = True  # Protección CSRF para cookies
+    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_COOKIE_SECURE = os.environ.get('JWT_COOKIE_SECURE', 'False').lower() in ('true', '1', 't')
+    JWT_ACCESS_COOKIE_PATH = '/'
+    JWT_REFRESH_COOKIE_PATH = '/refresh'

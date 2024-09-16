@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/add_score', {
                 method: 'POST',
-                credentials: 'same-origin',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': getCookie('csrf_access_token'),

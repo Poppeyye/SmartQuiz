@@ -1,34 +1,53 @@
-from flask import Blueprint, render_template, session, make_response
-from flask_jwt_extended import create_access_token, set_access_cookies, create_refresh_token, set_refresh_cookies
+from flask import Blueprint, render_template, session, make_response, request
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity, create_access_token, set_access_cookies, create_refresh_token, set_refresh_cookies, verify_jwt_in_request
 import uuid
+from datetime import timedelta, timezone, datetime
+from jwt.exceptions import ExpiredSignatureError
+
 
 main_bp = Blueprint("main", __name__)
 
-@main_bp.route("/")
-def index():
-    # Si el usuario no tiene un 'user_id' en la sesión, creamos uno
-    if 'admin_id' not in session:
-        session['admin_id'] = str(uuid.uuid4())  # Generar un UUID si es nuevo
+def refresh_access_token(response):
+    try:
+        verify_jwt_in_request(optional=True)
+        exp_timestamp = get_jwt().get("exp")
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
 
-        # Crear access y refresh tokens para este usuario
+        if exp_timestamp and target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+    except (RuntimeError, KeyError, ExpiredSignatureError):
+        if 'admin_id' in session:
+            access_token = create_access_token(identity=session.get('admin_id'))
+            refresh_token = create_refresh_token(identity=session.get('admin_id'))
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+    return response
+
+
+@main_bp.route("/")
+@jwt_required(optional=True)
+def index():
+    response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
+    if 'admin_id' not in session:
+        session['admin_id'] = str(uuid.uuid4())
         access_token = create_access_token(identity=session['admin_id'])
         refresh_token = create_refresh_token(identity=session['admin_id'])
-
-        # Crear la respuesta y añadir las cookies
-        response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
-    else:
-        # Si ya tiene un user_id, no generamos nuevos tokens
-        response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
-
-    return response
-
-    # Reiniciar las variables de sesión si es necesario
+    
     session["used_headlines"] = []
     session.pop('news_pool', None)
-
+    
+    # Refrescar token si es necesario
+    response = refresh_access_token(response)
     return response
+
+@main_bp.after_request
+def refresh_expiring_jwts(response):
+    return refresh_access_token(response)
+
 
 
 @main_bp.route("/rankings")

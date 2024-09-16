@@ -4,7 +4,8 @@ from datetime import datetime
 from datetime import timedelta
 from backend.utils import is_valid_name, require_jwt
 import pytz
-
+from flask_wtf.csrf import CSRFProtect
+csrf = CSRFProtect()
 scores_bp = Blueprint("scores", __name__)
 
 

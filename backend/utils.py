@@ -1,14 +1,16 @@
 import json
 import time
 from functools import lru_cache
-
-import requests
 from openai import OpenAI
 import os
 import re
 from functools import wraps
-from flask import session, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from flask import request, jsonify, make_response, session
+from flask_jwt_extended import verify_jwt_in_request, unset_access_cookies,unset_jwt_cookies,get_jwt_identity, get_jwt, create_access_token, set_access_cookies
+from jwt.exceptions import ExpiredSignatureError
+from datetime import datetime, timezone, timedelta
+
+from backend.routes.main import refresh_access_token
 
 
 OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
@@ -19,19 +21,34 @@ def is_valid_name(name):
     return bool(re.match("^[A-Za-z0-9 ]+$", name)) and 1 <= len(name) <= 100
 
 
-def require_jwt(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
+def require_jwt(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         try:
-            # Verificar el token JWT en la solicitud
             verify_jwt_in_request()
-        except:
-            return jsonify({'error': 'Unauthorized access'}), 403
-        
-        # Obtener el identity del token JWT (podría ser el nombre de usuario u otra información)
-        current_user = get_jwt_identity()
-        return f(*args, **kwargs)
-    return decorated_function
+        except ExpiredSignatureError:
+            refresh_token = request.cookies.get('refresh_token_cookie')
+            if not refresh_token:
+                unset_jwt_cookies(request)  # Limpiar cookies inseguras
+                return jsonify({'error': 'Refresh token missing'}), 401
+
+            try:
+                user_identity = session.get('admin_id')
+                access_token = create_access_token(identity=user_identity)
+                response = make_response(func(*args, **kwargs))
+                set_access_cookies(response, access_token)
+                return response
+            except Exception as e:
+                unset_jwt_cookies(request)  # Limpiar cookies inseguras
+                return jsonify({'error': 'Cannot refresh token', 'msg': str(e)}), 401
+        except Exception as e:
+            return jsonify({'error': 'Unauthorized access', 'msg': str(e)}), 403
+
+        response = make_response(func(*args, **kwargs))
+        response = refresh_access_token(response)
+        return response
+    
+    return wrapper
 
 
 
