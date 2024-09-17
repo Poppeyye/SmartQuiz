@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const correctSound = document.getElementById('correct-sound');
     const wrongSound = document.getElementById('wrong-sound');
     const muteButton = document.getElementById('mute-button');
+    backgroundMusic.volume = 0.1;
+    correctSound.volume = 0.5;
+    wrongSound.volume = 0.5;
     let isMuted = false;  // Variable para comprobar si el audio está en silencio
 
     let correctAnswer = null;
@@ -159,17 +162,14 @@ document.addEventListener('DOMContentLoaded', () => {
             wrongSound.play();
         }
     }
-
+    const gameSounds = [correctSound, wrongSound, backgroundMusic]
     // Manejar el botón de silenciar
     muteButton.addEventListener('click', () => {
-        isMuted = !isMuted;  // Cambiar el estado de muted
-        if (isMuted) {
-            backgroundMusic.pause();
-            muteButton.innerHTML = '🔇'; // Mostrar emoji de silencio
-        } else {
-            backgroundMusic.play();
-            muteButton.innerHTML = '🔊'; // Mostrar nota musical
-        }
+        isMuted = !isMuted;
+        gameSounds.forEach(sound => {
+            sound.volume = isMuted ? 0 : 1;  // Ajustar el volumen a 0 o 1 según el estado de mute
+        });
+        muteButton.innerHTML = isMuted ? '🔇' : '🔊';
     });
 
     async function getQuestion() {

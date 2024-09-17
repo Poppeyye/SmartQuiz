@@ -21,39 +21,50 @@ body {
     min-height: 100vh;
     flex-direction: column;
     position: relative;
-    /* Fondo con gradientes suaves y colores más definidos */
     background: linear-gradient(to bottom right, #222222, #111111);
     background-size: cover;
     background-position: center;
-    height: 100%; /* Asegura que el body tenga al menos el alto de la ventana de visualización */
-    /* Añadir un ligero desenfoque para profundidad */
-    background-attachment: fixed; /* Fijo para que no se mueva al hacer scroll */
+    height: calc(100vh - 8.5rem);
+    background-attachment: fixed;
 }
 
-
 .main-container {
-    padding: 20px;
     left: 0;
     right: 0;
-    height: calc(100vh - 200px); /* Resta la altura del header para evitar la superposición */
+    height: calc(100vh - 12.5rem); /* Resta 200px en unidades relativas (12.5rem) */
     display: grid;
     justify-content: center;
     align-items: center;
-    max-width: 90%;
+    max-width: 100%;
 }
-
 
 #game-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    max-width: 1200px;
+    width: 50vw;
     text-align: center;
-    padding: 20px; /* Espaciado alrededor */
     margin: 0 auto;
 }
+
+/* Estilos para pantallas pequeñas como móviles */
+@media only screen and (max-width: 600px) {
+    body {
+        padding: 5px; /* Reduce padding en móviles */
+        min-height: 100vh;
+    }
+
+    .main-container {
+        height: calc(100vh - 10rem); /* Ajusta la altura para móviles */
+    }
+
+    #game-container {
+        width: 95%; /* Haz que el contenedor ocupe más espacio horizontal */
+    }
+}
+
+
 
 #progress-bar-container {
     width: 100%;
@@ -522,7 +533,7 @@ a {
     box-shadow: 0 4px 8px whitesmoke;
     margin: 20px auto; /* Añadir espacio entre los distintos leaderboards */
     padding: 5px;
-    width: 80%; /* Adaptar al ancho completo */
+    width: 95%; /* Adaptar al ancho completo */
     max-width: 100%; /* Limitar el ancho */
     max-height: 600px; /* Altura máxima para el contenedor */
     overflow-y: auto; /* Permitir el desplazamiento vertical */
@@ -553,11 +564,10 @@ a {
 }
 
 .leaderboard-table td {
-    padding: 15px;
     text-align: left;
+    margin-top: 5px;
     border-bottom: 1px solid #dee2e6;
     transition: background-color 0.3s ease;
-    word-wrap: break-word;
     font-weight: 600;
     min-width: 100px;
     overflow-x: auto;
@@ -570,7 +580,6 @@ a {
     top: 0;
     z-index: 1;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 15px;
     border-bottom: 1px solid #ffc107; /* Línea separadora amarilla */
     text-align: justify;
     transition: background 0.3s ease;
@@ -626,11 +635,10 @@ a {
 /* Ajustes específicos para pantallas pequeñas */
 @media (max-width: 600px) {
     .leaderboard-table th{
-        padding: 5px;
         font-size: 10px; /* Ajustar tamaño de fuente en pantallas pequeñas */
     }
     .leaderboard-table td {
-        padding: 10px;
+        margin-top: 5px;
         font-size: 14px; /* Ajustar tamaño de fuente en pantallas pequeñas */
     }
 
@@ -756,6 +764,13 @@ label {
     font-family: "Poppins", sans-serif;
     font-weight: 200;
     font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    text-align: center;
+    margin: 40px auto;
 }
 
 #mute-button {

@@ -4,7 +4,14 @@ from sqlalchemy import inspect
 from backend.models import Question, db
 from backend.utils import generate_ia_questions, is_valid_name
 import base64
-import json
+from spanlp.palabrota import Palabrota
+from spanlp.domain.countries import Country
+from spanlp.domain.strategies import JaccardIndex
+from spanlp.domain.strategies import Preprocessing, TextToLower, RemoveAccents, RemoveStopWords
+
+jaccard = JaccardIndex(threshold=0.9, normalize=False, n_gram=1)
+palabrota = Palabrota(countries=[Country.ESPANA, Country.MEXICO, Country.ARGENTINA, Country.VENEZUELA], distance_metric=jaccard)
+
 
 def encode_string(s):
     encoded_bytes = s.encode('utf-8')
@@ -74,6 +81,9 @@ def create_questions():
     thematic = request.args.get('thematic')
     context = request.args.get('context')
     n_questions = request.args.get('count')
+    context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
+    if palabrota.contains_palabrota(context):
+        return jsonify({"error": "Por favor, incluye un contexto libre de estupideces."}), 400
     if not thematic:
         return jsonify({"error": "La temática es requerida"}), 400
 

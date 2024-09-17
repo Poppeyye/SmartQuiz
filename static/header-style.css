@@ -62,7 +62,7 @@ h1 {
   animation: lights 5s linear infinite;
   font-weight: 400;
   font-style: normal;
-  font-size: 4em;
+  font-size: 3em;
   font-family: "Nerko One", cursive;
 }
 
@@ -85,11 +85,13 @@ h1 {
     }
 }
 #slogan {
-  font-size: 24px;
+  font-size: 14px;
   text-align: center;
   transition: opacity 0.5s;
   color: silver;
   font-family: "Poppins", sans-serif;
+  height: 50px;
+
 }
 .hidden {
   opacity: 0;
@@ -97,7 +99,7 @@ h1 {
 
 @media (max-width: 600px) {
   h1 {
-      font-size: 3em; /* Tamaño responsivo para el título */
+      font-size: 2em; /* Tamaño responsivo para el título */
   }
   #slogan{
     font-size: 1em;
