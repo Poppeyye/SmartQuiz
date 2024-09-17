@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreText = document.getElementById('score-text');
     const bestScoresList = document.getElementById('best-scores-list');
     const answerButtons = document.getElementById('answer-buttons');
-    const funnyMessage = document.getElementById('funny-message');
     //const scoreTimer = document.getElementById('score-timer')
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
@@ -229,20 +228,21 @@ document.addEventListener('DOMContentLoaded', () => {
             let message = '';
     
             if (userRank === 0 || userRank > totalUsers) {
-                message = '¡No se encontró tu puntuación en la lista!';
-            } else if (userRank <= Math.ceil(totalUsers * 0.25)) {
-                message = '¡Estás en el Top 25% de jugadores!';
-            } else if (userRank <= Math.ceil(totalUsers * 0.50)) {
-                message = '¡Estás en el Top 50% de jugadores!';
-            } else if (userRank <= Math.ceil(totalUsers * 0.75)) {
-                message = '¡Estás en el Top 75% de jugadores!';
+                message = '¡No se encontró tu puntuación en la lista! 🤔';
+            } else if (userRank === 1) {
+                message = '¡Felicidades! Eres el número 1 🥇🎉';
             } else if (userRank <= 3) {
-                message = '¡Estás en el Top 3!';
-            } else if (userRank == 1) {
-                message = 'Sin límite hacia arriba =D';
+                message = '¡Increíble! Estás en el Top 3 🌟🥈🥉';
+            } else if (userRank <= Math.ceil(totalUsers * 0.25)) {
+                message = '¡Estás en el Top 25% de jugadores! 🚀👏';
+            } else if (userRank <= Math.ceil(totalUsers * 0.50)) {
+                message = '¡Estás en el Top 50% de jugadores! 👍😊';
+            } else if (userRank <= Math.ceil(totalUsers * 0.75)) {
+                message = '¡Estás en el Top 75% de jugadores! 🙌💪';
             } else {
-                message = '¡Sigue intentándolo, lo harás mejor la próxima vez!';
+                message = '¡Sigue intentándolo, lo harás mejor la próxima vez! 💪😊';
             }
+    
     
             if (previousUserRank !== userRank) {
                 showRankingPopup(message);
@@ -402,24 +402,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const popup = document.createElement('div');
         popup.className = 'popup-message'; // Clase CSS para el pop-up
         popup.textContent = message;
-
+    
         // Agregar el pop-up al DOM
         document.body.appendChild(popup);
-
+    
+        // Forzar el reflujo/repaint para garantizar la aplicación correcta de la clase de estilo
+        void popup.offsetWidth;
+    
         // Mostrar el pop-up
         setTimeout(() => {
-            popup.style.opacity = 1; // Hacerlo visible
+            popup.classList.add('popup-message-show'); // Añadir la clase que apilará el estilo visible
         }, 10); // Un pequeño delay para que se aplique el estilo
-
+    
         // Ocultar el pop-up después de un tiempo
         setTimeout(() => {
-            popup.style.opacity = 0; // Comenzar a ocultar
+            popup.classList.remove('popup-message-show'); // Comenzar a ocultar
             setTimeout(() => {
                 document.body.removeChild(popup); // Eliminar del DOM después de la transición
             }, 300); // Esperar un poco antes de eliminar
         }, 1000); // Tiempo de visualización del pop-up
     }
-
     function handleCorrectAnswer(timeTaken) {
         const messages = ["Bien!", "Excelente!", "Sigue así!", "Muy bien hecho!", "Gran trabajo!", "Correcto!", "Olé!", "Eso es!", "Crack!", "GOAT!"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
@@ -563,7 +565,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resultText.style.opacity = 0;
         timerText.style.display = 'none'; // Ocultar el temporizador
         answerButtons.style.display = 'none'; // Ocultar botones de respuesta
-        funnyMessage.style.display = 'none'
         // Solo mostrar la puntuación anterior
         scoreText.style.display = 'block'; // Asegúrate de que la puntuación sea visible
     }

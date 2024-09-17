@@ -47,6 +47,7 @@ body {
     width: 50vw;
     text-align: center;
     margin: 0 auto;
+    position:relative
 }
 
 /* Estilos para pantallas pequeñas como móviles */
@@ -54,10 +55,6 @@ body {
     body {
         padding: 5px; /* Reduce padding en móviles */
         min-height: 100vh;
-    }
-
-    .main-container {
-        height: calc(100vh - 10rem); /* Ajusta la altura para móviles */
     }
 
     #game-container {
@@ -109,7 +106,7 @@ body {
 
 /* Estilo para el texto */
 #timer-text, #score-text, #result-text {
-    font-size: 2rem; /* Tamaño mayor para visibilidad */
+    font-size: 1.5rem; /* Tamaño mayor para visibilidad */
     margin: 5px 0;
     color: #F9C642; /* Color suave */
     text-align: center; 
@@ -149,13 +146,6 @@ body {
     margin: 20px 0; /* Ajustar márgenes para no tener overflow */
 }
 
-.score-text, #result-text, #funny-message {
-    font-size: 2rem;
-    margin-top: 20px;
-    opacity: 1;
-    animation: funAnimation 1.5s ease-in-out forwards;
-    transition: opacity 0.5s;
-}
 
 /* Animación para el texto */
 @keyframes funAnimation {
@@ -185,7 +175,7 @@ body {
     }
 
     #timer-text, #score-text, #result-text {
-        font-size: 1.5rem; 
+        font-size: 1rem; 
     }
 
     #score-timer {
@@ -551,14 +541,6 @@ a {
     
 }
 
-@media (max-width: 600px) {
-    .leaderboard-container {
-        max-height: 100%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
-}
-
 .leaderboard-table {
     table-layout: auto; 
     width: 100%;
@@ -832,4 +814,27 @@ label {
 
 #mute-button:not(.active) .icon-muted {
     display: flex; /* Mostrar icono de silencio */
+}
+
+.popup-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, gold, darkgoldenrod);
+    color: black;
+    padding: 15px 25px;
+    border-radius: 20px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+}
+
+.popup-message-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
