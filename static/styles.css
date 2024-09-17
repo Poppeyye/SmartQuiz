@@ -353,6 +353,18 @@ body {
     /* Increase blur for a smoother effect */
     filter: blur(50px); /* Adjust as needed */
   }
+
+  #additional-info {
+    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+}
+
+#additional-info.active {
+    opacity: 1;
+    max-height: 300px; /* Ajusta según sea necesario para tu diseño */
+}
 .btn {
     --btn-color: #7B5A2A;
     position: relative;
@@ -778,16 +790,17 @@ label {
     background: transparent; /* Fondo transparente */
     border: none; /* Sin borde */
     cursor: pointer; /* Cambiar el cursor al pasar por encima */
-    position: absolute; /* Posicionamiento absoluto para colocar el botón en la esquina */
-    top: 10px; /* Ajustar según donde lo quieras colocar */
-    right: 20px; /* Ajustar según donde lo quieras colocar */
-    z-index: 3000;
-    width: 10px; /* Ajustar ancho */
-    height: 10px; /* Ajustar alto */
+    position: fixed; /* Posicionamiento absoluto para colocar el botón */
+    bottom: 20px; /* Ajusta esto para alinearlo con la parte inferior del footer */
+    right: 20px; /* Ajusta esto según el espaciado que necesites desde el borde derecho */
+    z-index: 4000; /* Mantener un z-index alto para que esté en la parte superior */
+    width: 40px; /* Ajusta el ancho del botón */
+    height: 40px; /* Ajusta la altura del botón */
     display: flex; /* Para centrar los iconos */
     align-items: center; /* Centrar verticalmente */
     justify-content: center; /* Centrar horizontalmente */
-    transition: opacity 0.3s ease; /* Transición */
+    opacity: 0.8; /* Opcional - agregar un poco de opacidad para hacerlo más discreto */
+    transition: opacity 0.3s ease; /* Transición para hacer que el botón aparezca/disminuya */
 }
 
 /* Iconos */
@@ -816,6 +829,11 @@ label {
     display: flex; /* Mostrar icono de silencio */
 }
 
+/* Estilo adicional para que el botón parezca más discreto */
+#mute-button:hover {
+    opacity: 1; /* Aumentar opacidad al pasar el mouse para confirmar que es interactivo */
+}
+
 .popup-message {
     position: fixed;
     bottom: 20px;
@@ -838,3 +856,4 @@ label {
     transform: translateX(-50%) translateY(0);
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
+

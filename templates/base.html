@@ -6,24 +6,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-9336280075263389">
-    <title>{% block title %}Fact Apex Game{% endblock %}</title>
+    <title>{% block title %}Genias.io{% endblock %}</title>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Poppins:wght@100;400;700&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Poppins:wght@100;400;700&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='header-style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='footer-style.css') }}">
-
 </head>
 
 <body>
     <nav class="menu">
-        <button id="mute-button" class="active">
-            <span class="icon icon-sound">🔊</span>
-            <span class="icon icon-muted" style="display: none;">🔇</span>
-        </button>
         <a class="btn" href="/">Juega</a>
         <a class="btn" href="/questions">Contribuye</a>
-        <a class="btn" href="/rankings">Ranking</a>
+        <a class="btn" href="/rankings">Rankings</a>
         <!--<a class="btn" href="/questions">Create your questions</a>-->
     </nav>
     <div class="main-container">

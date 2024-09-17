@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
     const startButton = document.getElementById('start-button');
+
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
     const rankingContainer = document.getElementById('ranking-container');
@@ -23,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     backgroundMusic.volume = 0.1;
     correctSound.volume = 0.5;
     wrongSound.volume = 0.5;
-    let isMuted = false;  // Variable para comprobar si el audio está en silencio
 
     let correctAnswer = null;
     let timerInterval = null;
@@ -34,7 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameEnded = null;
     let correctAnswersCount = 0; // Contador de respuestas correctas
     let totalTimeTaken = 0; // Acumulador del tiempo total tomado por las respuestas
+    let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
+    
+    // Inicialización del mute en la GUI
+    toggleMute();
 
+    // Manejo del botón de mute
+    muteButton.addEventListener('click', () => {
+        isMuted = !isMuted;  // Cambia el estado de silencio
+        localStorage.setItem('isMuted', isMuted); // Almacena el nuevo estado
+        toggleMute(); // Llama a la función para manejar el mute
+    });
     // Función para mostrar la tabla de puntuaciones
     function displayBestScores() {
         // Limpiar la lista actual
@@ -162,14 +172,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     const gameSounds = [correctSound, wrongSound, backgroundMusic]
+  
+  
     // Manejar el botón de silenciar
-    muteButton.addEventListener('click', () => {
-        isMuted = !isMuted;
-        gameSounds.forEach(sound => {
-            sound.volume = isMuted ? 0 : 1;  // Ajustar el volumen a 0 o 1 según el estado de mute
-        });
-        muteButton.innerHTML = isMuted ? '🔇' : '🔊';
-    });
+    function toggleMute() {
+        if (isMuted) {
+            backgroundMusic.muted = true;
+            correctSound.muted = true;
+            wrongSound.muted = true;
+            muteButton.classList.add('active'); // Cambia el estado visual
+            muteButton.querySelector('.icon-sound').style.display = 'none'; // Oculta icono de sonido
+            muteButton.querySelector('.icon-muted').style.display = 'flex'; // Muestra icono de silencio
+        } else {
+            backgroundMusic.muted = false;
+            correctSound.muted = false;
+            wrongSound.muted = false;
+            muteButton.classList.remove('active'); // Cambia el estado visual
+            muteButton.querySelector('.icon-sound').style.display = 'flex'; // Muestra icono de sonido
+            muteButton.querySelector('.icon-muted').style.display = 'none'; // Oculta icono de silencio
+        }
+    }
 
     async function getQuestion() {
         // Mostrar elementos del temporizador y la barra de progreso
