@@ -14,28 +14,29 @@ body {
     font-weight: 200;
     font-style: normal;
     margin: 0px;
-    padding: 10px;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     flex-direction: column;
+    min-height: 100vh;
     position: relative;
     background: linear-gradient(to bottom right, #222222, #111111);
     background-size: cover;
     background-position: center;
-    height: calc(100vh - 8.5rem);
     background-attachment: fixed;
 }
 
 .main-container {
-    left: 0;
-    right: 0;
-    height: calc(100vh - 12.5rem); /* Resta 200px en unidades relativas (12.5rem) */
-    display: grid;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 100%;
+    padding-top: 60px; /* Espacio para el header */
+    padding-bottom: 60px; /* Espacio para el footer */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 #game-container {
@@ -511,9 +512,11 @@ a {
     text-align: center;
     margin-bottom: 20px;
 }
-#category-leaderboards{
+#category-leaderboards {
     position: relative;
+    width: 100%;
 }
+
 #category-leaderboards::before {
     content: "";
     position: absolute;
@@ -527,25 +530,27 @@ a {
     background-repeat: no-repeat;
     z-index: 1; /* Asegúrate de que la corona esté encima del contenido */
   }
+
 .leaderboard-container {
     background-color: #f8f9fa;
     border-radius: 12px;
-    box-shadow: 0 4px 8px whitesmoke;
-    margin: 20px auto; /* Añadir espacio entre los distintos leaderboards */
-    padding: 5px;
-    width: 95%; /* Adaptar al ancho completo */
-    max-width: 100%; /* Limitar el ancho */
-    max-height: 600px; /* Altura máxima para el contenedor */
-    overflow-y: auto; /* Permitir el desplazamiento vertical */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    padding: 10px;
+    width: 95%;
+    max-width: 800px;
+    max-height: 600px;
+    overflow-y: auto;
     transition: box-shadow 0.3s ease;
-    position: relative; /* Necesario para el pseudo-elemento de la corona */
-    border: 5px solid transparent; /* Espacio para la corona */
-    box-sizing: border-box; /* Incluye los bordes en el tamaño total */
     position: relative;
+    border: 1px solid #dee2e6;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
 }
 
-
-/* Media query para pantallas pequeñas */
 @media (max-width: 600px) {
     .leaderboard-container {
         max-height: 100%;
@@ -555,14 +560,25 @@ a {
 }
 
 .leaderboard-table {
+    table-layout: auto; 
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    table-layout: fixed; /* Asegura que la tabla mantenga su tamaño */
     overflow-x: auto;
-    
+}
+.scrollable-cell {
+    max-width: 150px; /* Ajusta el ancho máximo para que la celda no crezca más allá de este tamaño */
+    overflow: hidden; /* Oculta el contenido que se desborde */
+    white-space: nowrap; /* Evita que el contenido se rompa en varias líneas */
+    text-overflow: ellipsis; /* Agrega "..." cuando el texto no cabe */
+    position: relative;
 }
 
+.scrollable-cell:hover {
+    overflow-x: auto; /* Permite el scroll horizontal cuando el mouse está encima */
+    white-space: nowrap;
+    text-overflow: clip; /* Elimina el "..." al hacer scroll */
+}
 .leaderboard-table td {
     text-align: left;
     margin-top: 5px;
@@ -570,7 +586,9 @@ a {
     transition: background-color 0.3s ease;
     font-weight: 600;
     min-width: 100px;
-    overflow-x: auto;
+    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    overflow: hidden; /* Oculta el contenido desbordado */
+    text-overflow: ellipsis; /* Muestra "..." si el texto es muy largo */
 }
 
 .leaderboard-table th {
@@ -740,6 +758,7 @@ select:hover {
 }
 
 ::-webkit-scrollbar {
+    height: 4px;
     width: 8px; /* Ancho de la barra de desplazamiento vertical */
 }
 

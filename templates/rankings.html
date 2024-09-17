@@ -29,18 +29,18 @@
             <table class="leaderboard-table">
                 <thead>
                     <tr>
-                        <th style="width: 10%">Rank</th>
-                        <th style="width: 45%">Nombre</th>
-                        <th style="width: 15%">Puntos</th>
-                        <th style="width: 15%">Total</th>
-                        <th style="width: 15%">T.m(s)</th>
+                        <th>Rank</th>
+                        <th>Nombre</th>
+                        <th>Puntos</th>
+                        <th>Total</th>
+                        <th>T.m(s)</th>
                     </tr>
                 </thead>
                 <tbody id="best-scores-{{ category|lower }}" class="ranking-list">
                     {% for score in scores %}
                         <tr class="{% if loop.index <= 3 %}top-three{% endif %}">
                             <td>{{ loop.index }}</td>
-                            <td>
+                            <td class="scrollable-cell">
                                 {% if loop.index == 1 %}<img src="{{ url_for('static', filename='svgs/gold.svg') }}" alt="Medalla de Oro" width="20" height="20">{{ score.name }}
                                 {% elif loop.index == 2 %}<img src="{{ url_for('static', filename='svgs/silver.svg') }}" alt="Medalla de Plata" width="20" height="20">{{ score.name }}
                                 {% elif loop.index == 3 %}<img src="{{ url_for('static', filename='svgs/bronze.svg') }}" alt="Medalla de Bronce" width="20" height="20">{{ score.name }}

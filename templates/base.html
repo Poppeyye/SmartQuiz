@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nerko+One&family=Poppins:wght@100;400;700&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='header-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='footer-style.css') }}">
+
 </head>
 
 <body>
@@ -32,7 +34,12 @@
     <audio id="correct-sound" src="{{ url_for('static', filename='audio/right.mp3') }}"></audio>
     <audio id="wrong-sound" src="{{ url_for('static', filename='audio/wrong.mp3') }}"></audio>
     </div>
-    <a href="/about"><div class="question-mark">?</div></a>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 Your Website Name. All Rights Reserved.</p>
+        </div>
+    </footer>
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" 
     data-id="alvaromartm" data-description="Dame energía para seguir creando!" 
     data-message="" data-color="linear-gradient(135deg, #F9C642, #FFEB84)" data-position="left" data-x_margin="18" data-y_margin="18">

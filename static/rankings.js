@@ -131,7 +131,7 @@ function populateScoreRows(scores, scoresList) {
 
         row.innerHTML = `
             <td>${medalHtml}${score.ranking}</td>
-            <td>${score.name}</td>
+            <td class="scrollable-cell">${score.name}</td>
             <td>${score.score}</td>
             <td>${score.total_correct}</td>
             <td>${score.avg_time}</td>

@@ -4,10 +4,11 @@
   align-items: center;
   padding: 10px;
   position: absolute;
-  top: 10px;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  background-color: transparent; /* Fondo semitransparente si lo deseas */
 }
 
 @keyframes lights {
@@ -58,7 +59,7 @@
 }
 
 h1 {
-  margin: auto;
+  padding: 80px 0 0;
   animation: lights 5s linear infinite;
   font-weight: 400;
   font-style: normal;
