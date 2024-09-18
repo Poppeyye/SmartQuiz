@@ -81,14 +81,21 @@ def create_questions():
     thematic = request.args.get('thematic')
     context = request.args.get('context')
     n_questions = request.args.get('count')
+
     context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
+
     if palabrota.contains_palabrota(context):
         return jsonify({"error": "Por favor, incluye un contexto libre de estupideces."}), 400
+
     if not thematic:
         return jsonify({"error": "La temática es requerida"}), 400
 
-    # Llamar a la función que crea las preguntas
-    questions = generate_ia_questions(thematic, context, n_questions)
+    try:
+        # Llamar a la función que crea las preguntas
+        questions = generate_ia_questions(thematic, context, n_questions)
+    except Exception as e:
+        # Manejar cualquier excepción que ocurra en la función generate_ia_questions
+        return jsonify({"error": "Oops, algo ha ido mal. Refresca la página o vuelve a intentarlo."}), 500
 
     # Devolver la respuesta en el formato esperado
     return jsonify({"category": questions})

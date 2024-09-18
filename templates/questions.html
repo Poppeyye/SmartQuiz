@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h1>Crear Preguntas de Verdadero o Falso</h1>
+    <h1>Añade nuevas preguntas con Genia💡</h1>
     <form id="thematic-form">
         <label for="thematic-input">Categoría:</label>
         <select id="thematic-input" required>
@@ -14,13 +14,12 @@
         </select> 
         <label for="context-input">Para que nuestra genIA cree preguntas únicas, escribe algo de contexto. 
             Por ejemplo, si eliges Deportes, puedes poner: "Fútbol, Cristiano Ronaldo, Real Madrid". Datos actualizados a 2023</label>
-        <input type="text" id="context-input" required placeholder="Añade contexto" />
+            <input type="text" id="context-input" required placeholder="Añade contexto" maxlength="150" />
         <label for="questions-count">Número de Preguntas:</label>
         <select id="questions-count" required>
             <option value="5">5 Preguntas - 1 Cortado</option>
             <option value="10">10 Preguntas - 1 Café doble</option>
             <option value="15">15 Preguntas - 1 Café del Starbucks</option>
-            <option value="100">100</option>
         </select>
 
         <button class="btn" type="submit" id="obtain-questions-button">Obtener Preguntas</button>
