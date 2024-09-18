@@ -135,6 +135,7 @@ function populateScoreRows(scores, scoresList) {
             <td>${score.score}</td>
             <td>${score.total_correct}</td>
             <td>${score.avg_time}</td>
+            <td>${score.date}</td>
         `;
         scoresList.appendChild(row);
     });

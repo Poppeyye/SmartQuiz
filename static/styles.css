@@ -533,7 +533,7 @@ a {
     z-index: 1; /* Asegúrate de que la corona esté encima del contenido */
   }
 
-.leaderboard-container {
+  .leaderboard-container {
     background-color: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -550,8 +550,9 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
 }
+
+
 
 .leaderboard-table {
     table-layout: auto; 
@@ -560,6 +561,7 @@ a {
     margin-top: 10px;
     overflow-x: auto;
 }
+
 .scrollable-cell {
     max-width: 150px; /* Ajusta el ancho máximo para que la celda no crezca más allá de este tamaño */
     overflow: hidden; /* Oculta el contenido que se desborde */
@@ -569,9 +571,9 @@ a {
 }
 
 .scrollable-cell:hover {
-    overflow-x: auto; /* Permite el scroll horizontal cuando el mouse está encima */
+    overflow-x: auto;
     white-space: nowrap;
-    text-overflow: clip; /* Elimina el "..." al hacer scroll */
+    text-overflow: clip;
 }
 .leaderboard-table td {
     text-align: left;
@@ -767,10 +769,6 @@ select:hover {
     border-radius: 10px; /* Bordes redondeados para el pulgar */
 }
 
-/* Estilo del pulgar cuando está en hover */
-::-webkit-scrollbar-thumb:hover {
-    background: silver; /* Color del pulgar al pasar el mouse */
-}
 
 label {
     color: silver; /* Hace que el texto de las etiquetas sea blanco */

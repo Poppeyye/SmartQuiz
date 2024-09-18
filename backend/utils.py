@@ -1,16 +1,7 @@
 import json
-import time
 from functools import lru_cache
 from openai import OpenAI
 import os
-import re
-from functools import wraps
-from flask import request, jsonify, make_response, session
-from flask_jwt_extended import verify_jwt_in_request, unset_access_cookies,unset_jwt_cookies,get_jwt_identity, get_jwt, create_access_token, set_access_cookies
-from jwt.exceptions import ExpiredSignatureError
-from datetime import datetime, timezone, timedelta
-
-from backend.routes.main import refresh_access_token
 
 
 OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
@@ -18,44 +9,6 @@ client = OpenAI(api_key=OPEN_AI_KEY)
 
 def is_valid_name(name):
     return 1 <= len(name) <= 100
-
-
-def require_jwt(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        response = None
-        try:
-            verify_jwt_in_request()
-            response = make_response(func(*args, **kwargs))
-            response = refresh_access_token(response)
-        except ExpiredSignatureError:
-            refresh_token = request.cookies.get('csrf_refresh_token')
-            if not refresh_token:
-                response = make_response(jsonify({'error': 'Refresh token missing'}))
-                unset_jwt_cookies(response)  # Correctamente limpiar las cookies JWT en el objeto de respuesta
-                return response, 401
-
-            try:
-                user_identity = session.get('admin_id')
-                access_token = create_access_token(identity=user_identity)
-                response = make_response(func(*args, **kwargs))
-                set_access_cookies(response, access_token)
-                return response
-            except Exception as e:
-                response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}))
-                unset_jwt_cookies(response)  # Correctamente limpiar las cookies JWT en el objeto de respuesta
-                return response, 401
-        except Exception as e:
-            return jsonify({'error': 'Unauthorized access', 'msg': str(e)}), 403
-
-        if not response:
-            response = make_response(func(*args, **kwargs))
-            response = refresh_access_token(response)
-        return response
-    
-    return wrapper
-
-
 
 def generate_ia_questions(category,context,n):
     content = f"""Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"

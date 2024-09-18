@@ -335,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Error al agregar la puntuación');
             }
 
-            const result = await response.json();
         } catch (error) {
             console.error('Error:', error);
         }

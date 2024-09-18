@@ -1,40 +1,65 @@
-from flask import Blueprint, render_template, session, make_response, request
-from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity, create_access_token, set_access_cookies, create_refresh_token, set_refresh_cookies, verify_jwt_in_request
-import uuid
-from datetime import timedelta, timezone, datetime
-from jwt.exceptions import ExpiredSignatureError
-
-
-main_bp = Blueprint("main", __name__)
-
 from functools import wraps
-from flask import jsonify, make_response, request, session
+from flask import Blueprint, jsonify, make_response, request, session, render_template
 from flask_jwt_extended import (
     verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token,
-    create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
+    create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies,
+    jwt_required
 )
 from jwt.exceptions import ExpiredSignatureError
 from datetime import datetime, timezone, timedelta
+import uuid
 
-def refresh_access_token(response):
+main_bp = Blueprint('main', __name__)
+
+def refresh_access_token_if_needed(response):
     try:
         verify_jwt_in_request(optional=True)
         exp_timestamp = get_jwt().get("exp")
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-
-        if exp_timestamp and target_timestamp > exp_timestamp:
-            access_token_in_request = get_jwt_identity()
-            access_token = create_access_token(identity=access_token_in_request)
+        if exp_timestamp and exp_timestamp < now.timestamp() + 300:  # Refresh if less than 5 minutes left
+            access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
-    except (RuntimeError, KeyError, ExpiredSignatureError):
+    except ExpiredSignatureError:
         if 'admin_id' in session:
-            access_token = create_access_token(identity=session.get('admin_id'))
-            refresh_token = create_refresh_token(identity=session.get('admin_id'))
+            access_token = create_access_token(identity=session['admin_id'])
+            refresh_token = create_refresh_token(identity=session['admin_id'])
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
     return response
 
+def require_jwt(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        response = None
+        try:
+            verify_jwt_in_request()
+            response = make_response(func(*args, **kwargs))
+            response = refresh_access_token_if_needed(response)
+        except ExpiredSignatureError:
+            refresh_token = request.cookies.get('csrf_refresh_token')
+            if not refresh_token:
+                response = make_response(jsonify({'error': 'Refresh token missing'}))
+                unset_jwt_cookies(response)
+                return response, 401
+
+            try:
+                user_identity = session.get('admin_id')
+                access_token = create_access_token(identity=user_identity)
+                response = make_response(func(*args, **kwargs))
+                set_access_cookies(response, access_token)
+            except Exception as e:
+                response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}))
+                unset_jwt_cookies(response)
+                return response, 401
+        except Exception as e:
+            return jsonify({'error': 'Unauthorized access', 'msg': str(e)}), 403
+
+        if not response:
+            response = make_response(func(*args, **kwargs))
+            response = refresh_access_token_if_needed(response)
+        return response
+    
+    return wrapper
 
 @main_bp.route("/")
 @jwt_required(optional=True)
@@ -46,17 +71,7 @@ def index():
         refresh_token = create_refresh_token(identity=session['admin_id'])
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
-    
-    session["used_headlines"] = []
-    session.pop('news_pool', None)
-
-    response = refresh_access_token(response)
     return response
-
-@main_bp.after_request
-def refresh_expiring_jwts(response):
-    return refresh_access_token(response)
-
 
 
 @main_bp.route("/rankings")

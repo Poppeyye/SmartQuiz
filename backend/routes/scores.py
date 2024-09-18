@@ -2,9 +2,11 @@ from flask import Blueprint, request, jsonify, session
 from backend.models import PlayerScore, db
 from datetime import datetime
 from datetime import timedelta
-from backend.utils import is_valid_name, require_jwt
+from backend.utils import is_valid_name
 import pytz
 from flask_wtf.csrf import CSRFProtect
+from backend.routes.main import require_jwt
+
 csrf = CSRFProtect()
 scores_bp = Blueprint("scores", __name__)
 
@@ -13,7 +15,8 @@ scores_bp = Blueprint("scores", __name__)
 @require_jwt  # Asegúrate de que el token JWT sea requerido para acceder
 def add_score():
     data = request.json
-    player_name = session["user_name"]  # Obtiene el nombre del usuario de la sesión
+    player_name = session.get("user_name", None)  # Obtiene el nombre del usuario de la sesión
+    admin_id = session.get("admin_id", None)  # Obtiene el admin_id de la sesión (asegúrate de que exista en la sesión)
     new_score_value = data.get("score")
     category = data.get("category")
     total_correct = data.get("total_correct")
@@ -21,19 +24,39 @@ def add_score():
 
     if not isinstance(new_score_value, (int, float)):
         return jsonify({"error": "Score must be a number"}), 400
-    new_score = PlayerScore(
-        name=player_name,
-        score=new_score_value,
-        date=datetime.now(),
-        category=category,
-        total_correct=total_correct,
-        total_time=total_time,
-        avg_time=round(total_time / total_correct, 2) if total_correct != 0 else 0.0,
-    )
-    db.session.add(new_score)
-    db.session.commit()
-    return jsonify({"message": "Puntuación agregada con éxito"}), 201
+    
+    if player_name is None or admin_id is None:
+        return jsonify({"error": "Invalid session data"}), 400
 
+    existing_record = PlayerScore.query.filter_by(user_id=admin_id, name=player_name, category=category).first()
+
+    if existing_record:
+        # Actualiza el registro existente
+        if new_score_value > existing_record.score:
+            existing_record.score = new_score_value
+            existing_record.date = datetime.now()
+            existing_record.total_correct = total_correct
+            existing_record.total_time = total_time
+            existing_record.avg_time = round(total_time / total_correct, 2) if total_correct != 0 else 0.0
+            db.session.commit()
+            return jsonify({"message": "Puntuación actualizada con éxito"}), 200
+        else:
+            return jsonify({"message": "Puntuación menor que la existente"}), 204
+    else:
+        # Crea un nuevo registro
+        new_score = PlayerScore(
+            user_id=admin_id,
+            name=player_name,
+            score=new_score_value,
+            date=datetime.now(),
+            category=category,
+            total_correct=total_correct,
+            total_time=total_time,
+            avg_time=round(total_time / total_correct, 2) if total_correct != 0 else 0.0,
+        )
+        db.session.add(new_score)
+        db.session.commit()
+        return jsonify({"message": "Puntuación agregada con éxito"}), 201
 
 @scores_bp.route("/scores", methods=["GET"])
 def get_scores():
@@ -158,6 +181,7 @@ def get_all_scores_dates(category, date_range):
 
 
 @scores_bp.route("/set_user_name", methods=["POST"])
+@require_jwt
 def set_user_name():
     data = request.json
     user_name = data["user_name"]

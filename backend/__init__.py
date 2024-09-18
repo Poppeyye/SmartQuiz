@@ -12,7 +12,8 @@ def create_app():
  
     jwt.init_app(app)
     db.init_app(app)
-
+    with app.app_context():
+        db.create_all()
     # Registro de blueprints
     from backend.routes.main import main_bp
     from backend.routes.scores import scores_bp
