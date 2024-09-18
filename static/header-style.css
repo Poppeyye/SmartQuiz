@@ -11,6 +11,14 @@
   background-color: transparent; /* Fondo semitransparente si lo deseas */
 }
 
+/* Estilos responsivos para pantallas más pequeñas */
+@media (max-width: 767px) {
+  .menu {
+    padding: 10px 20px; /* Añadir espacio en los laterales */
+    font-size: 0.8em; /* Reducir el tamaño del texto en móviles */
+  }
+}
+
 @keyframes lights {
   0% {
     color: hsl(0, 0%, 100%); /* Oro */
@@ -67,6 +75,42 @@ h1 {
   font-family: "Nerko One", cursive;
 }
 
+.badge {
+  position: absolute;
+  left: -7px;
+  top: 20px;
+  background-color: #f37c32;
+  -webkit-transform: rotate(-45deg) scale(1) skew(0deg) translate(10px);
+  -moz-transform: rotate(-45deg) scale(1) skew(0deg) translate(10px);
+  -o-transform: rotate(-45deg) scale(1) skew(0deg) translate(10px);
+  -ms-transform: rotate(-45deg) scale(1) skew(0deg) translate(10px);
+  transform: rotate(-45deg) scale(1) skew(0deg) translate(10px);
+  text-align: center;
+  color: white;
+  padding: 0 0.5em;
+  border-top: 0px;
+  line-height: 20px;
+  margin: 0;
+  z-index: 1001;
+}
+
+.badge:after {
+  content: ' ';
+  position: absolute;
+  right: -20px;
+  top: 0px;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #f37c32;
+}
+
+.badge:before {
+  content: ' ';
+  position: absolute;
+  left: -20px;
+  top: 0;
+  border-left: 20px solid transparent;
+  border-bottom: 20px solid #f37c32;
+}
 .question-mark {
   position: fixed;
   font-weight: 500;
