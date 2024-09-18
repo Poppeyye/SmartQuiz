@@ -91,8 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Enviar el nombre del usuario al backend
             fetch('/set_user_name', {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+
                 },
                 body: JSON.stringify({ user_name: userName }),
             })
@@ -210,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(countdownInterval);
             gameEnded = false; // Asegúrate de reiniciar el estado del juego
         }
-        console.log(selectCategory)
         try {
             const response = await fetch(`/get_question/${selectedCategory}`);
             const data = await response.json();
