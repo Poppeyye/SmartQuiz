@@ -13,7 +13,7 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     JWT_SECRET_KEY = 'admin'
     JWT_TOKEN_LOCATION = ["cookies"]
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
     JWT_COOKIE_CSRF_PROTECT = True
     JWT_COOKIE_SECURE = os.environ.get('JWT_COOKIE_SECURE', 'False').lower() in ('true', '1', 't')
     JWT_ACCESS_COOKIE_PATH = '/'

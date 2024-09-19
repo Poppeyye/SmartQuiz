@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import Blueprint, jsonify, make_response, request, session, render_template
 from flask_jwt_extended import (
-    verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token,
-    create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies,
-    jwt_required
+    verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token, 
+    create_refresh_token, set_access_cookies, set_refresh_cookies, 
+    unset_jwt_cookies, jwt_required, decode_token
 )
 from jwt.exceptions import ExpiredSignatureError
 from datetime import datetime, timezone, timedelta
@@ -17,14 +17,14 @@ def refresh_access_token_if_needed(response):
         exp_timestamp = get_jwt().get("exp")
         now = datetime.now(timezone.utc)
         if exp_timestamp and exp_timestamp < now.timestamp() + 300:  # Refresh if less than 5 minutes left
-            access_token = create_access_token(identity=get_jwt_identity())
+            user_identity = get_jwt_identity()
+            access_token = create_access_token(identity=user_identity)
             set_access_cookies(response, access_token)
     except ExpiredSignatureError:
         if 'admin_id' in session:
-            access_token = create_access_token(identity=session['admin_id'])
-            refresh_token = create_refresh_token(identity=session['admin_id'])
+            user_identity = session['admin_id']
+            access_token = create_access_token(identity=user_identity)
             set_access_cookies(response, access_token)
-            set_refresh_cookies(response, refresh_token)
     return response
 
 def require_jwt(func):
@@ -36,17 +36,25 @@ def require_jwt(func):
             response = make_response(func(*args, **kwargs))
             response = refresh_access_token_if_needed(response)
         except ExpiredSignatureError:
-            refresh_token = request.cookies.get('csrf_refresh_token')
+            refresh_token = request.cookies.get('refresh_token_cookie')  # Assumes refresh token stored in cookie named refresh_token_cookie
             if not refresh_token:
                 response = make_response(jsonify({'error': 'Refresh token missing'}))
                 unset_jwt_cookies(response)
                 return response, 401
 
             try:
-                user_identity = session.get('admin_id')
+                # Decode the refresh token to get the identity
+                decoded_refresh_token = decode_token(refresh_token)
+                user_identity = decoded_refresh_token['sub']
+                # Optionally, you might want to verify if the refresh token is in the database to avoid blacklisted refresh tokens
+                # Example: if not db_refresh_token_exists():
+                #              raise Exception('Refresh token not recognized')
+                
                 access_token = create_access_token(identity=user_identity)
+                refresh_token = create_refresh_token(identity=user_identity)
                 response = make_response(func(*args, **kwargs))
                 set_access_cookies(response, access_token)
+                set_refresh_cookies(response, refresh_token)
             except Exception as e:
                 response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}))
                 unset_jwt_cookies(response)
@@ -62,7 +70,6 @@ def require_jwt(func):
     return wrapper
 
 @main_bp.route("/")
-@jwt_required(optional=True)
 def index():
     response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
     if 'admin_id' not in session:
@@ -71,8 +78,9 @@ def index():
         refresh_token = create_refresh_token(identity=session['admin_id'])
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
+    else:
+        response = refresh_access_token_if_needed(response)
     return response
-
 
 @main_bp.route("/rankings")
 def rankings():
