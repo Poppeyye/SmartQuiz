@@ -72,6 +72,7 @@ def require_jwt(func):
 @main_bp.route("/")
 def index():
     response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
+    
     if 'admin_id' not in session:
         session['admin_id'] = str(uuid.uuid4())
         access_token = create_access_token(identity=session['admin_id'])
@@ -80,6 +81,10 @@ def index():
         set_refresh_cookies(response, refresh_token)
     else:
         response = refresh_access_token_if_needed(response)
+        
+    session["used_headlines"] = []
+    session.pop('news_pool', None)
+
     return response
 
 @main_bp.route("/rankings")
