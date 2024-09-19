@@ -28,35 +28,45 @@ def add_score():
     if player_name is None or admin_id is None:
         return jsonify({"error": "Invalid session data"}), 400
 
-    existing_record = PlayerScore.query.filter_by(user_id=admin_id, name=player_name, category=category).first()
+    try:
+        # Busca si existe un registro para el mismo user_id, category y name en la misma categoría
+        existing_record = PlayerScore.query.filter_by(
+            user_id=admin_id, category=category, name=player_name
+        ).order_by(PlayerScore.score.desc()).first()
 
-    if existing_record:
-        # Actualiza el registro existente
-        if new_score_value > existing_record.score:
-            existing_record.score = new_score_value
-            existing_record.date = datetime.now()
-            existing_record.total_correct = total_correct
-            existing_record.total_time = total_time
-            existing_record.avg_time = round(total_time / total_correct, 2) if total_correct != 0 else 0.0
-            db.session.commit()
-            return jsonify({"message": "Puntuación actualizada con éxito"}), 200
+        if existing_record:
+            # Actualiza el registro existente si el puntaje nuevo es mayor
+            if new_score_value > existing_record.score:
+                existing_record.score = new_score_value
+                existing_record.date = datetime.now()
+                existing_record.total_correct = total_correct
+                existing_record.total_time = total_time
+                existing_record.avg_time = round(total_time / total_correct, 2) if total_correct != 0 else 0.0
+                db.session.commit()
+                return jsonify({"message": "Puntuación actualizada con éxito"}), 200
+            else:
+                return jsonify({"message": "Puntuación menor o igual que la existente"}), 204
         else:
-            return jsonify({"message": "Puntuación menor que la existente"}), 204
-    else:
-        # Crea un nuevo registro
-        new_score = PlayerScore(
-            user_id=admin_id,
-            name=player_name,
-            score=new_score_value,
-            date=datetime.now(),
-            category=category,
-            total_correct=total_correct,
-            total_time=total_time,
-            avg_time=round(total_time / total_correct, 2) if total_correct != 0 else 0.0,
-        )
-        db.session.add(new_score)
-        db.session.commit()
-        return jsonify({"message": "Puntuación agregada con éxito"}), 201
+            # Crea un nuevo registro si no existe
+            new_score = PlayerScore(
+                user_id=admin_id,
+                name=player_name,
+                score=new_score_value,
+                date=datetime.now(),
+                category=category,
+                total_correct=total_correct,
+                total_time=total_time,
+                avg_time=round(total_time / total_correct, 2) if total_correct != 0 else 0.0,
+            )
+            db.session.add(new_score)
+            db.session.commit()
+            return jsonify({"message": "Puntuación agregada con éxito"}), 201
+
+    except Exception as e:
+        # Si ocurre un error, se hace rollback de la sesión para evitar el PendingRollbackError
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 
 @scores_bp.route("/scores", methods=["GET"])
 def get_scores():

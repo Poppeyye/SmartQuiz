@@ -3,14 +3,14 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-
 class PlayerScore(db.Model):
     __tablename__ = 'player_score'
-    user_id = db.Column(db.String(100), primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(100), primary_key=False)
+    category = db.Column(db.String(100), primary_key=False)
+    name = db.Column(db.String(100), primary_key=False)
     score = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, default=datetime.now())
-    category = db.Column(db.String(100), nullable=False)
     total_time = db.Column(db.Float, nullable=False)
     total_correct = db.Column(db.Float, nullable=False)
     avg_time = db.Column(db.Float, nullable=False)
