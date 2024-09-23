@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Blueprint, jsonify, make_response, request, session, render_template
+from flask import Blueprint, jsonify, make_response, request, session, render_template, redirect
 from flask_jwt_extended import (
     verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token, 
     create_refresh_token, set_access_cookies, set_refresh_cookies, 
@@ -68,7 +68,12 @@ def require_jwt(func):
         return response
     
     return wrapper
-
+@main_bp.before_request
+def redirect_non_www():
+    """Redirecciona de genias.io a www.genias.io"""
+    if request.host == 'genias.io':
+        return redirect(f"https://www.genias.io{request.path}", code=301)
+    
 @main_bp.route("/")
 def index():
     response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
