@@ -7,7 +7,9 @@
         <label for="thematic-input">Categoría:</label>
         <select id="thematic-input" required>
             {% for category in categories %}
-                <option value="{{ category }}">{{ category }}</option>
+                {% if category not in ['flags', 'LogicGame'] %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endif %}
             {% endfor %}
         </select>
         
@@ -307,5 +309,9 @@ textarea:focus {
     });
 
     
+</script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" 
+data-id="alvaromartm" data-description="Dame energía para seguir creando!" 
+data-message="" data-color="linear-gradient(135deg, #F9C642, #FFEB84)" data-position="left" data-x_margin="18" data-y_margin="18">
 </script>
 {% endblock %}

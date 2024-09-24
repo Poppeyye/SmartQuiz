@@ -38,3 +38,13 @@ class Countries(db.Model):
     nom = db.Column(db.String(500), nullable=False)
     iso2 = db.Column(db.String(500), nullable=False)
     iso3 = db.Column(db.String(500), nullable=False)
+
+
+class LogicGames(db.Model):
+    __tablename__ = "logic_games"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    question = db.Column(db.String(500), nullable=False)
+    correct = db.Column(db.String(500), nullable=False)
+    wrong = db.Column(db.String(500), nullable=False)
+    difficulty = db.Column(db.String(500), nullable=False)
+    numero = db.Column(db.String(500), nullable=False)

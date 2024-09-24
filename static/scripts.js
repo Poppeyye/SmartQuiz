@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreText = document.getElementById('score-text');
     const bestScoresList = document.getElementById('best-scores-list');
     const answerButtons = document.getElementById('answer-buttons');
+    const questionText = document.getElementById('question-text');
+    const flagImage = document.querySelector('#answer-buttons picture img');
+
     //const scoreTimer = document.getElementById('score-timer')
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
@@ -226,8 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let endpoint;
         if (selectedCategory === "flags") {
             endpoint = `/get_country_question`;
-        } else if (selectedCategory === "flags") {
-            endpoint = `/get_question/${selectedCategory}`;
+        } else if (selectedCategory === "LogicGame") {
+            endpoint = `/get_logic_game/`;
+        }
+        else {
+            endpoint = `/get_question/${selectedCategory}`
         }
     
         try {
@@ -243,9 +249,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { correct_country, random_country } = data;
                 const options = [correct_country, random_country];
                 const shuffledOptions = options.sort(() => Math.random() - 0.5);
-                    
+                flagImage.style.display = 'inline';
+
                 // Actualizar la imagen de la bandera
-                const flagImage = document.querySelector('#answer-buttons picture img');
                 flagImage.src = `https://flagcdn.com/160x120/${correct_country.iso_code.toLowerCase()}.png`;
     
                 // Actualizar las opciones de los botones
@@ -254,7 +260,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 // Almacenar la respuesta correcta
                 correctAnswer = correct_country.name;
-            } else {
+            } 
+            else if (selectedCategory==="LogicGame") {
+                const logicQuestion = data.question;
+                const wrong = decodeString(data.wrong);
+                const correct = decodeString(data.correct);
+                const options = [wrong, correct];
+                const shuffledOptions = options.sort(() => Math.random() - 0.5);
+                optionButton1.textContent = shuffledOptions[0];
+                optionButton2.textContent = shuffledOptions[1];
+                const questionContainer = document.getElementById('question-container');
+
+                questionText.textContent = logicQuestion;
+
+                questionContainer.style.display = "block";
+                const difficulty = data.difficulty;
+                correctAnswer = correct;
+
+            }
+            else {
                 const headline = decodeString(data.headline);
                 const fake = decodeString(data.fake_news);
                 const options = [headline, fake];
@@ -618,6 +642,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 scoreText.style.display = 'none';
                 slogan.style.display = 'flex';
                 rankingContainer.style.display = 'none';
+                questionText.style.display = 'none'
+
+                flagImage.style.display = 'none';
+
+                
             });
     }
 

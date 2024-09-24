@@ -24,7 +24,6 @@ body {
     background-position: center;
     background-attachment: fixed;
 }
-
 .main-container {
     flex-grow: 1;
     display: flex;
@@ -41,15 +40,23 @@ body {
 
 #game-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Esto es correcto si quieres apilar otros elementos */
     justify-content: center;
     align-items: center;
     width: 50vw;
     text-align: center;
     margin: 0 auto;
-    position:relative
+    position:relative;
 }
 
+/* Contenedor específico para los botones */
+#answer-buttons {
+    display: flex; /* Usamos flex aquí */
+    flex-wrap: wrap; /* Permitir que se envuelvan si no hay suficiente espacio */
+    justify-content: center; /* Centra los botones */
+    gap: 10px; /* Espacio entre botones */
+    width: 80%; /* Asegúrate de que ocupe el ancho completo que necesita */
+}
 /* Estilos para pantallas pequeñas como móviles */
 @media only screen and (max-width: 600px) {
     body {
@@ -86,10 +93,12 @@ body {
 
 #category-container, #question-container {
     width: 100%;
-    margin: 20px 0;
+    margin: 5px 0;
     position: relative; /* Para que el z-index funcione */
     z-index: 1; /* Asegura que esté detrás del progress bar */
 }
+
+
 
 #score-timer {
     display: flex;
