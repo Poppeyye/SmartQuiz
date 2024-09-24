@@ -71,13 +71,14 @@ def require_jwt(func):
 
 @main_bp.context_processor
 def inject_categories():
-    categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia']
+    categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'flags']
     category_names = {
         'Deportes': 'Deportes',
         'Moda': 'Moda y Estilo',
         'Historia': 'Historia, Geografía y Literatura',
         'Software': 'Informática y Matemáticas',
-        'Economia': 'Economía y Finanzas'
+        'Economia': 'Economía y Finanzas',
+        'flags': 'Banderas'
     }
     return dict(categories=categories, category_names=category_names)
 
@@ -97,6 +98,7 @@ def index():
         
     session["used_headlines"] = []
     session.pop('news_pool', None)
+    session.pop('country_pool', None)
 
     return response
 

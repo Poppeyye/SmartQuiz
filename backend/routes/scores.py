@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, session
 from backend.models import PlayerScore, db
 from datetime import datetime
 from datetime import timedelta
-from backend.utils import is_valid_name
 import pytz
 from flask_wtf.csrf import CSRFProtect
 from backend.routes.main import require_jwt
@@ -189,6 +188,9 @@ def get_all_scores_dates(category, date_range):
             )
     return jsonify({"scores": results})
 
+
+def is_valid_name(name):
+    return 1 <= len(name) <= 100
 
 @scores_bp.route("/set_user_name", methods=["POST"])
 @require_jwt

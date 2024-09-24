@@ -23,7 +23,7 @@
         <div class="leaderboard-container" id="container-{{ category|lower }}">
             <h2 class="category-title">
                 <img src="{{ url_for('static', filename='svgs/' ~ category ~ '.svg') }}" alt="{{ category }}" class="icon">
-                <span>{{ category }}</span>
+                <span>{{ category_names[category] }}</span>
             </h2>
             <table class="leaderboard-table">
                 <thead>

@@ -210,36 +210,64 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isMuted){
             backgroundMusic.play();
         }
-        
+    
         progressBarContainer.style.display = 'flex';
         slogan.style.display = 'none';
         timerText.style.display = 'flex';
         scoreText.style.display = 'flex';
         progressBar.style.width = '100%';
-
+    
         // Detener el temporizador anterior si existe
         if (countdownInterval) {
             clearInterval(countdownInterval);
             gameEnded = false; // Asegúrate de reiniciar el estado del juego
         }
+    
+        let endpoint;
+        if (selectedCategory === "flags") {
+            endpoint = `/get_country_question`;
+        } else if (selectedCategory === "flags") {
+            endpoint = `/get_question/${selectedCategory}`;
+        }
+    
         try {
-            const response = await fetch(`/get_question/${selectedCategory}`);
+            const response = await fetch(endpoint);
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
                 return;
             }
-            const headline = decodeString(data.headline)
-            const fake = decodeString(data.fake_news)
-            const options = [headline, fake];
-            const shuffledOptions = options.sort(() => Math.random() - 0.5);
-            optionButton1.textContent = shuffledOptions[0];
-            optionButton2.textContent = shuffledOptions[1];
-            correctAnswer = headline;
+    
+            if (selectedCategory === "flags") {
 
+                const { correct_country, random_country } = data;
+                const options = [correct_country, random_country];
+                const shuffledOptions = options.sort(() => Math.random() - 0.5);
+                    
+                // Actualizar la imagen de la bandera
+                const flagImage = document.querySelector('#answer-buttons picture img');
+                flagImage.src = `https://flagcdn.com/160x120/${correct_country.iso_code.toLowerCase()}.png`;
+    
+                // Actualizar las opciones de los botones
+                optionButton1.textContent = shuffledOptions[0].name;
+                optionButton2.textContent = shuffledOptions[1].name;
+    
+                // Almacenar la respuesta correcta
+                correctAnswer = correct_country.name;
+            } else {
+                const headline = decodeString(data.headline);
+                const fake = decodeString(data.fake_news);
+                const options = [headline, fake];
+                const shuffledOptions = options.sort(() => Math.random() - 0.5);
+                optionButton1.textContent = shuffledOptions[0];
+                optionButton2.textContent = shuffledOptions[1];
+                correctAnswer = headline;
+
+            }
+    
+            // Mostrar los botones de respuesta
             answerButtons.style.display = 'flex';
             startCountdown();
-
         } catch (error) {
             console.error('Error fetching question:', error);
         }

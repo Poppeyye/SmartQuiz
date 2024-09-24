@@ -1,8 +1,8 @@
 import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import inspect
-from backend.models import Question, db
-from backend.utils import generate_ia_questions, is_valid_name
+from backend.models import Question, db, Countries
+from backend.brain import generate_ia_questions
 import base64
 from spanlp.palabrota import Palabrota
 from spanlp.domain.countries import Country
@@ -10,7 +10,7 @@ from spanlp.domain.strategies import JaccardIndex
 from spanlp.domain.strategies import Preprocessing, TextToLower, RemoveAccents, RemoveStopWords
 
 jaccard = JaccardIndex(threshold=0.9, normalize=False, n_gram=1)
-palabrota = Palabrota(countries=[Country.ESPANA, Country.MEXICO, Country.ARGENTINA, Country.VENEZUELA], distance_metric=jaccard)
+palabrota = Palabrota(countries=[Country.ESPANA, Country.MEXICO, Country.ARGENTINA], distance_metric=jaccard)
 
 
 def encode_string(s):
@@ -55,11 +55,53 @@ def get_question(category):
     }
     return jsonify(question)
 
+@questions_bp.route("/get_country_question")
+def get_country_question():
+    if "country_pool" not in session:
+        session["country_pool"] = [country.id for country in Countries.query.all()]
+        session["used_headlines"] = []
+
+    if not session["country_pool"]:
+        return jsonify({"error": "No countries available"}), 204
+
+    all_ids = set(session["country_pool"])
+    used_ids = set(session["used_headlines"])
+    unasked_ids = list(all_ids - used_ids)
+    if not unasked_ids:
+        return jsonify({"error": "All questions have been asked"}), 204
+
+    correct_id = random.choice(unasked_ids)
+    session["used_headlines"].append(correct_id)
+
+    unasked_ids.remove(correct_id)
+    if not unasked_ids:
+        return jsonify({"error": "Not enough countries available"}), 204
+
+    incorrect_id = random.choice(unasked_ids)
+
+    correct_country = Countries.query.get(correct_id)
+    incorrect_country = Countries.query.get(incorrect_id)
+    if not correct_country or not incorrect_country:
+        return jsonify({"error": "Could not find selected countries"}), 500
+
+    question = {
+        "correct_country": {
+            "name": correct_country.nombre,
+            "iso_code": correct_country.iso2
+        },
+        "random_country": {
+            "name": incorrect_country.nombre,
+            "iso_code": incorrect_country.iso2
+        }
+    }
+
+    return jsonify(question)
 
 @questions_bp.route("/end_game", methods=["POST"])
 def end_game():
     session["used_headlines"] = []
     session.pop('news_pool', None)
+    session.pop('country_pool', None)
     return jsonify({"message": "Juego terminado y sesión reiniciada"}), 200
 
 

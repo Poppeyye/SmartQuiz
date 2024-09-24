@@ -29,3 +29,12 @@ class Question(db.Model):
 
     def __repr__(self):
         return f"<Question {self.id} {self.fact} {self.invent} {self.category} {self.validated}>"
+    
+class Countries(db.Model):
+    __tablename__ = "countries"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nombre = db.Column(db.String(500), nullable=False)
+    name = db.Column(db.String(500), nullable=False)
+    nom = db.Column(db.String(500), nullable=False)
+    iso2 = db.Column(db.String(500), nullable=False)
+    iso3 = db.Column(db.String(500), nullable=False)
