@@ -68,11 +68,19 @@ def require_jwt(func):
         return response
     
     return wrapper
-@main_bp.before_request
-def redirect_non_www():
-    """Redirecciona de genias.io a www.genias.io"""
-    if request.host == 'genias.io':
-        return redirect(f"https://www.genias.io{request.path}", code=301)
+
+@main_bp.context_processor
+def inject_categories():
+    categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia']
+    category_names = {
+        'Deportes': 'Deportes',
+        'Moda': 'Moda y Estilo',
+        'Historia': 'Historia, Geografía y Literatura',
+        'Software': 'Informática y Matemáticas',
+        'Economia': 'Economía y Finanzas'
+    }
+    return dict(categories=categories, category_names=category_names)
+
     
 @main_bp.route("/")
 def index():

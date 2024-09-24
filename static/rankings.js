@@ -2,8 +2,6 @@ let allScores = [];
 let currentCategory = 'all';
 let currentDateRange = 'all';
 
-// Define categorías estándar aquí
-const ALL_CATEGORIES = ['deportes', 'historia', 'software', 'moda', 'economia'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     const categorySelector = document.getElementById('category-selector');
@@ -84,15 +82,16 @@ function updateScores(scores) {
 
 // Muestra los puntajes
 function displayScores(scores) {
-    ALL_CATEGORIES.forEach(category => {
-        const listId = `best-scores-${category}`;
+    console.log(allCategories)
+    allCategories.forEach(category => {
+        const listId = `best-scores-${category.toLowerCase()}`;
         const scoresList = document.getElementById(listId);
 
         if (scoresList) { // Verificar si scoresList existe
             scoresList.innerHTML = ''; // Limpiamos la lista al inicio
 
             // Solo mostramos los 20 mejores para cada categoría
-            const categoryScores = scores.filter(score => score.category.toLowerCase() === category).slice(0, 20);
+            const categoryScores = scores.filter(score => score.category.toLowerCase() === category.toLowerCase()).slice(0, 20);
             populateScoreRows(categoryScores, scoresList);
         }
     });
@@ -100,8 +99,8 @@ function displayScores(scores) {
 
 // Muestra los puntajes filtrados
 function displayFilteredScores(filteredScores) {
-    ALL_CATEGORIES.forEach(category => {
-        const listId = `best-scores-${category}`;
+    allCategories.forEach(category => {
+        const listId = `best-scores-${category.toLowerCase()}`;
         const scoresList = document.getElementById(listId);
 
         if (scoresList) {

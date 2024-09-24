@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<h1 class="h1">🏆 Ranking Gloal</h1>
-{% set categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia'] %}
+<h1 class="h1">🏆 Ranking Global</h1>
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Buscar por nombre..." />
     <select id="category-selector">
@@ -61,8 +60,6 @@
 <script src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
     window.onload = function() {
-        const allCategories = {{ categories|tojson }};; // Convertir la lista de Jinja a un array de JavaScript
-        console.log(allCategories)
         const searchInput = document.getElementById('search-input');
         const categorySelector = document.getElementById('category-selector');
 

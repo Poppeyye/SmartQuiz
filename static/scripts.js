@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
     const startButton = document.getElementById('start-button');
-
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
     const rankingContainer = document.getElementById('ranking-container');
@@ -35,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctAnswersCount = 0; // Contador de respuestas correctas
     let totalTimeTaken = 0; // Acumulador del tiempo total tomado por las respuestas
     let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
-    
+
     // Inicialización del mute en la GUI
     toggleMute();
 
@@ -115,13 +114,23 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor ingrese su nombre.');
         }
     }
-
+    
     // Funciones para la selección de categoría
-    document.getElementById('category-sports').addEventListener('click', () => { selectCategory('Deportes'); });
-    document.getElementById('category-history').addEventListener('click', () => { selectCategory('Historia'); });
-    document.getElementById('category-technology').addEventListener('click', () => { selectCategory('Software'); });
-    document.getElementById('category-economy').addEventListener('click', () => { selectCategory('Economia'); });
-    document.getElementById('category-fashion').addEventListener('click', () => { selectCategory('Moda'); });
+    allCategories.forEach(category => {
+        // Convertir el nombre de la categoría a minúsculas para coincidir con los IDs generados en HTML
+        const categoryId = 'category-' + category.toLowerCase();
+
+        // Seleccionar el botón correspondiente por su ID
+        const button = document.getElementById(categoryId);
+
+        // Verificar si el botón existe (en caso de que haya errores en el ID)
+        if (button) {
+            button.addEventListener('click', () => {
+                // Llamar a la función selectCategory pasando el nombre de la categoría
+                selectCategory(category);
+            });
+        }
+    });
 
     function selectCategory(category) {
         selectedCategory = category;

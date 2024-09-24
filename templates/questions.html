@@ -6,12 +6,11 @@
     <form id="thematic-form">
         <label for="thematic-input">Categoría:</label>
         <select id="thematic-input" required>
-            <option value="Deportes">Deportes</option>
-            <option value="Moda">Moda</option>
-            <option value="Historia">Historia</option>
-            <option value="Software">Software</option>
-            <option value="Economia">Economía</option>
-        </select> 
+            {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+        
         <label for="context-input">Para que nuestra genIA cree preguntas únicas, escribe algo de contexto. 
             Por ejemplo, si eliges Deportes, puedes poner: "Fútbol, Cristiano Ronaldo, Real Madrid". Datos actualizados a 2023</label>
             <input type="text" id="context-input" required placeholder="Añade contexto" maxlength="150" />

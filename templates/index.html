@@ -14,29 +14,16 @@
         <button class="btn" id="start-button">¡A jugar!</button>
     </div>
 
-
     <div id="category-container" style="display: none;">
-        <button class="btn" id="category-sports">
-            <img src="{{ url_for('static', filename='svgs/Deportes.svg') }}" alt="Deportes" class="icon">
-            <span>Deportes</span>
-        </button>
-        <button class="btn" id="category-fashion">
-            <img src="{{ url_for('static', filename='svgs/Moda.svg') }}" alt="Moda" class="icon">
-            <span>Moda</span>
-        </button>
-        <button class="btn" id="category-history">
-            <img src="{{ url_for('static', filename='svgs/Historia.svg') }}" alt="Historia" class="icon">
-            <span>Historia, Geografía y Literatura</span>
-        </button>
-        <button class="btn" id="category-technology">
-            <img src="{{ url_for('static', filename='svgs/Software.svg') }}" alt="Informática" class="icon">
-            <span>Informática y Matemáticas</span>
-        </button>
-        <button class="btn" id="category-economy">
-            <img src="{{ url_for('static', filename='svgs/Economia.svg') }}" alt="Economia" class="icon">
-            <span>Economía</span>
-        </button>
+        {% for category in categories %}
+            <button class="btn" id="category-{{ category|lower }}">
+                <img src="{{ url_for('static', filename='svgs/' ~ category ~ '.svg') }}" alt="{{ category }}" class="icon">
+                <span>{{ category_names[category] }}</span>
+            </button>
+        {% endfor %}
     </div>
+    
+    
     <div id="question-container" style="display: none;">
 
         <p id="question-text">Selecciona la respuesta correcta:</p>
