@@ -107,7 +107,7 @@ function displayFilteredScores(filteredScores) {
             scoresList.innerHTML = ''; // Limpiar la tabla antes de llenar
 
             // Filtra los scores de la categoría actual
-            const filteredCategoryScores = filteredScores.filter(score => score.category.toLowerCase() === category);
+            const filteredCategoryScores = filteredScores.filter(score => score.category.toLowerCase() === category.toLowerCase());
             populateScoreRows(filteredCategoryScores, scoresList);
         }
     });
