@@ -301,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 optionButton1.textContent = shuffledOptions[0];
                 optionButton2.textContent = shuffledOptions[1];
                 const questionContainer = document.getElementById('question-container');
+                questionText.style.display = 'block'
 
                 questionText.textContent = logicQuestion;
 
