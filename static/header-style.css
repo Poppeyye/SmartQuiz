@@ -11,10 +11,7 @@
   background-color: transparent; /* Fondo semitransparente si lo deseas */
 }
 
-.menu a:hover {
-  color: #fff; /* El texto se vuelve blanco al pasar el mouse */
-  transform: scale(1.1); /* Efecto de zoom ligero */
-}
+
 /* Estilos responsivos para pantallas más pequeñas */
 @media (max-width: 767px) {
   .menu {

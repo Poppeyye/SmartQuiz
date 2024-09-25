@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000); // Tiempo de visualización del pop-up
     }
     function handleCorrectAnswer(timeTaken) {
-        const messages = ["Bien!", "Excelente!", "Sigue así!", "Muy bien hecho!", "Gran trabajo!", "Correcto!", "Olé!", "Eso es!", "Crack!", "GOAT!"];
+        const messages = ["Bien!", "Excelente!", "Sigue así!", "Muy bien hecho!", "Gran trabajo!", "Correcto!", "Olé!", "Eso es!", "Crack!"];
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
         // Mostrar el mensaje en el pop-up
@@ -584,41 +584,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`Juego terminado. Puntuación final: ${totalScore}`);
     }
-    function showFinalOverlay() {
-        // Creamos el overlay
+    async function showFinalOverlay() {
+        // Crear el overlay
         const overlay = document.createElement('div');
         overlay.className = 'final-overlay';
-
+        for (let i = 0; i < 10; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            overlay.appendChild(confetti);
+        }
         // Crear el cuadro del mensaje
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';
 
-        const title = document.createElement('h2');
-        title.textContent = '¡Juego Terminado!';
-        title.className = 'overlay-title';
-
         const rankMessage = document.createElement('p');
-        rankMessage.textContent = `Tu puesto en el ranking es: ${userRank}`;
         rankMessage.className = 'rank-message';
-
+    
+        // Ajustar el título del mensaje según el userRank
+        if (userRank > 100) {
+            rankMessage.textContent = `Sigue Intentandolo ${userName}!`;
+        } else if (userRank > 20) {
+            rankMessage.textContent = `Buen Intento ${userName}`;
+        } else if (userRank > 2) {
+            rankMessage.textContent = `Wow, Impresionante ${userName}`;
+        } else if (userRank === 2 || userRank === 3) {
+            rankMessage.textContent = `Enhorabuena! ${userName}`;
+        } else if (userRank === 1) {
+            rankMessage.textContent = `Espectacular! Has ganado ${userName}`;
+        }
+        const userRanking = document.createElement('p');
+        userRanking.className = 'overlay-title';
+        userRanking.textContent = userRank
+    
         const playAgainMessage = document.createElement('p');
         playAgainMessage.textContent = '¿Qué quieres hacer ahora?';
         playAgainMessage.className = 'overlay-subtitle';
-
+    
         const returnButton = document.createElement('button');
         returnButton.textContent = 'Volver a Jugar';
         returnButton.className = 'btn';
-
+    
         const rankingButton = document.createElement('button');
         rankingButton.textContent = 'Ver Rankings';
         rankingButton.className = 'btn';
-
+    
         const shareButton = document.createElement('button');
         shareButton.textContent = 'Compartir Resultado';
         shareButton.className = 'btn';
-
+    
         // Agregar los elementos al cuadro del mensaje
-        messageBox.appendChild(title);
+        messageBox.appendChild(userRanking);
         messageBox.appendChild(rankMessage);
         messageBox.appendChild(playAgainMessage);
         messageBox.appendChild(returnButton);
@@ -626,7 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.appendChild(shareButton);
         overlay.appendChild(messageBox);
         document.body.appendChild(overlay);
-
+    
         // Manejar eventos de los botones
         returnButton.addEventListener('click', () => {
             document.body.removeChild(overlay);
@@ -637,22 +652,34 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(overlay);
             window.location.href = '/rankings';
         });
-
-        shareButton.addEventListener('click', () => {
-            const urlToShare = `http://top10rank-be229c7616bc.herokuapp.com/rankings?search=${userName}`;
-            const title = '¡Mira esta clasificación!'; // Un título atractivo para el contenido
-        
-            // Comprobar si la API de navegación está disponible
-            if (navigator.share) {
-                navigator.share({
-                    title: title,
-                    url: urlToShare
-                })
-                .then(() => console.log('Contenido compartido'))
-                .catch(error => console.error('Error al compartir:', error));
-            } else {
-                // Si la API no está disponible, puedes mostrar un mensaje al usuario o implementar una alternativa
-                alert('Tu dispositivo no soporta compartir de esta manera.');
+    
+        shareButton.addEventListener('click', async () => {
+            const urlToShare = `https://www.genias.io/rankings?search=${userName}`;
+            const shareTitle = '¡Mira esta clasificación!'; // Un título atractivo para el contenido
+    
+            // Capturar el screenshot del overlay utilizando html2canvas
+            try {
+                const canvas = await html2canvas(messageBox);
+                // Usar toBlob en el canvas
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+    
+                    // Verificar si la API de compartir está disponible
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            title: shareTitle,
+                            text: rankMessage.textContent,
+                            files: [file],
+                            url: urlToShare
+                        }).then(() => console.log('Contenido compartido'))
+                        .catch(error => console.error('Error al compartir:', error));
+                    } else {
+                        // Alternativa si la API no está disponible
+                        alert('Tu dispositivo no soporta compartir esta funcionalidad.');
+                    }
+                });
+            } catch (error) {
+                console.error('Error al capturar el screenshot:', error);
             }
         });
     }

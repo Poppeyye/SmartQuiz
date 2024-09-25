@@ -8,7 +8,6 @@ html, body {
     padding: 0;
 }
 
-
 body {
     font-family: "Poppins", sans-serif;
     font-weight: 200;
@@ -410,6 +409,8 @@ body {
 
 .btn:hover {
     box-shadow: 2px 2px 0 0 var(--btn-color);
+    color: #fff; /* El texto se vuelve blanco al pasar el mouse */
+    transform: scale(1.1); /* Efecto de zoom ligero */
 }
 
 .btn:active {
@@ -459,56 +460,165 @@ a {
     height: 20px;
 }
 
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+.confetti {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    background-color: #ffcc00;
+    transform: translateY(-100vh);
+    animation: confetti-fall linear infinite;
+}
+
+.confetti:nth-child(1) {
+    left: 10%;
+    animation-duration: 3s;
+    animation-delay: 0s;
+}
+
+.confetti:nth-child(2) {
+    left: 20%;
+    animation-duration: 4s;
+    animation-delay: 1s;
+}
+
+.confetti:nth-child(3) {
+    left: 30%;
+    animation-duration: 2.5s;
+    animation-delay: 0.5s;
+}
+
+.confetti:nth-child(4) {
+    left: 40%;
+    animation-duration: 3.2s;
+    animation-delay: 1.2s;
+}
+
+.confetti:nth-child(5) {
+    left: 50%;
+    animation-duration: 3s;
+    animation-delay: 0.7s;
+}
+
+.confetti:nth-child(6) {
+    left: 60%;
+    animation-duration: 4.5s;
+    animation-delay: 0.3s;
+}
+
+.confetti:nth-child(7) {
+    left: 70%;
+    animation-duration: 2.8s;
+    animation-delay: 0.9s;
+}
+
+.confetti:nth-child(8) {
+    left: 80%;
+    animation-duration: 3.6s;
+    animation-delay: 1.5s;
+}
+
+.confetti:nth-child(9) {
+    left: 90%;
+    animation-duration: 2.7s;
+    animation-delay: 0.2s;
+}
+
 .final-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    overflow: hidden;
 }
-
-.message-box {
-    background-color: hsl(35, 50%, 80%);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    animation: bounce 5s infinite;
-}
-
-.overlay-title {
-    font-size: 2rem;
-    color: #e63946;
-    margin-bottom: 20px;
-}
-
-.rank-message {
-    font-size: 1.5rem;
-    color: #1d3557;
-}
-
-.overlay-subtitle {
-    font-size: 1.2rem;
-    margin: 20px 0;
-}
-
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+    0%, 100% {
         transform: translateY(0);
     }
-    40% {
-        transform: translateY(-20px);
-    }
-    60% {
+    50% {
         transform: translateY(-10px);
     }
 }
+
+@keyframes swing {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.message-box {
+    background: linear-gradient(135deg, hsl(50, 100%, 90%), hsl(35, 100%, 80%));
+    padding: 50px;
+    border-radius: 25px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 223, 0, 0.7);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: swing 5s infinite ease-in-out, bounce 3s infinite ease-in-out;
+    border: 2px solid hsl(35, 100%, 50%);
+    font-family: 'Cursive', sans-serif;
+    font-size: 1.5em;
+    color: hsl(35, 100%, 30%);
+    max-width: 500px;
+    margin: 50px auto;
+}
+
+.message-box::before {
+    content: "🎉";
+    position: absolute;
+    font-size: 4em;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 3s infinite;
+}
+
+.overlay-title {
+    font-size: 2.5rem;
+    color: #ff6f61;
+    margin-bottom: 25px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.rank-message {
+    font-size: 1.8rem;
+    color: #3d5a80;
+    margin-bottom: 25px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.overlay-subtitle {
+    font-size: 1.4rem;
+    margin: 25px 0;
+    color: #98c1d9;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+
 .main-title {
     text-align: center;
     margin: 20px 0;
