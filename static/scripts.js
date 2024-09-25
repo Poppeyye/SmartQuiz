@@ -139,11 +139,42 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedCategory = category;
         categoryContainer.style.display = 'none';
         getBestScores();
-        //resetUI();
         totalScore = 0;
-        getQuestion();
+    
+        // Mostrar el contador de "Preparados, listos, ya" dentro de #question-container
+        const questionContainer = document.getElementById('question-container');
+        const countdownText = document.createElement('p');
+        countdownText.style.fontSize = '4rem';
+        countdownText.style.textAlign = 'center';
+        countdownText.style.color = 'rgba(252, 211, 77, 0.8)';
+        questionContainer.appendChild(countdownText);
+        questionContainer.style.display = 'block'; // Asegurarse de que el contenedor esté visible
+        
+        let countdown = 3;
+    
+        // Actualizar el texto del countdown inmediatamente
+        function updateCountdownText() {
+            countdownText.innerText = countdown === 3 ? "Prepárate!" : countdown === 2 ? "Ya?" : "Adelante!";
+        }
+    
+        // Llamar la primera vez para que se muestre "¡Preparados!" inmediatamente
+        updateCountdownText();
+    
+        const countdownInterval = setInterval(() => {
+            countdown--;
+    
+            if (countdown > 0) {
+                updateCountdownText();
+            } else {
+                clearInterval(countdownInterval);
+                questionContainer.removeChild(countdownText); // Eliminar el texto después de terminar
+                getQuestion(); // Llamar a getQuestion después de la cuenta regresiva
+            }
+        }, 1000); // Cada segundo cambia el texto
     }
-
+    
+    
+    
     function updateBestScores(userName, score) {
         const existingScoreIndex = bestScores.findIndex(entry => entry.name.toLowerCase() === userName.toLowerCase());
 

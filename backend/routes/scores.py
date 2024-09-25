@@ -96,7 +96,7 @@ def get_all_scores(category=None):
     if category is None:
         scores = PlayerScore.query.all()
     else:
-        scores = PlayerScore.query.filter_by(category=category.title()).all()
+        scores = PlayerScore.query.filter_by(category=category).all()
 
     scores_by_category = {}
     for score in scores:
