@@ -413,10 +413,6 @@ body {
     transform: scale(1.1); /* Efecto de zoom ligero */
 }
 
-.btn:active {
-    transition: 50ms ease;
-    box-shadow: 0 0 0 0 var(--btn-color);
-}
 
 .btn:focus-visible {
     outline: 0;
