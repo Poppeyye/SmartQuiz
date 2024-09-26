@@ -209,15 +209,6 @@ body {
     z-index: 1000;
 }
 
-.message-box {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    max-width: 90%; /* Evitar overflow en pantallas pequeñas */
-}
-
 .play-again-message {
     font-size: 1.2rem;
 }
@@ -267,18 +258,6 @@ body {
     min-width: 200px; /* Ancho mínimo para asegurar que el texto se vea bien */
 }
 
-.final-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con opacidad */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
 
 #ranking-container {
     position: fixed;
@@ -525,11 +504,16 @@ a {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     overflow: hidden;
+}
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 
 @keyframes bounce {
@@ -554,53 +538,110 @@ a {
 }
 
 .message-box {
-    background: linear-gradient(135deg, hsl(50, 100%, 90%), hsl(35, 100%, 80%));
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 223, 0, 0.7);
+    background-image: linear-gradient(to bottom right, #222222, #111111);
+    padding: 30px 60px;
+    border-radius: 50px;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: gold;
     text-align: center;
     position: relative;
     z-index: 1;
-    animation: swing 5s infinite ease-in-out, bounce 3s infinite ease-in-out;
-    border: 2px solid hsl(35, 100%, 50%);
-    font-family: 'Cursive', sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     font-size: 1.5em;
     color: hsl(35, 100%, 30%);
-    max-width: 500px;
+    max-width: 600px;
     margin: 50px auto;
+    min-height: 40vh;
+    box-sizing: border-box;
+    text-shadow: 2px 2px 4px rgba(255, 223, 0, 0.7);
+}
+
+.message-box-label {
+    font-family: "Poppins", sans-serif;
+    position: absolute;
+    bottom: 0;
+    left: 90%;
+    transform: translateX(-50%);
+    font-size: 0.5em;
+    color: gold;
+    background: transparent;
+    padding: 5px 10px;
+    border-radius: 10px;
+    z-index: 2;
 }
 
 .message-box::before {
     content: "🎉";
     position: absolute;
-    font-size: 4em;
-    top: -50px;
-    left: 20px;
-    transform: translateX(-50%);
-    animation: bounce 3s infinite;
+    font-size: 2em;
+    bottom: 5px;
+    left: 15px;
+    animation: bounce 3s infinite ease-in-out;
 }
 
-.overlay-title {
-    font-size: 2.5rem;
-    color: #ff6f61;
-    margin-bottom: 25px;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-}
 
-.rank-message {
-    font-size: 1.8rem;
-    color: #3d5a80;
-    margin-bottom: 25px;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+.overlay-category {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.5rem;
+    color: silver; 
+    margin: 0;
+    padding: 0;
+    position: absolute; 
+    bottom: 5px; /* Ajustado para más espacio */
+    left: 50%; 
+    transform: translateX(-50%); 
+    text-align: center;
+    text-shadow: 2px 2px rgba(192, 192, 192, 0.5);
 }
 
 .overlay-subtitle {
-    font-size: 1.4rem;
-    margin: 25px 0;
-    color: #98c1d9;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: "Poppins", sans-serif;
+    top: 15px; 
+    font-size: 2rem;
+    color: silver;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
 }
 
+.overlay-username {
+    font-family: 'Great Vibes', cursive;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(2rem, 4vw, 4rem);
+    color: whitesmoke;
+    position: absolute;
+    left: 50%;
+    text-align: center;
+    width: 90%;
+    max-width: 100%;
+    overflow-wrap: unset;
+    white-space: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.overlay-h1 {
+    font-family: "Poppins", sans-serif;
+    position: absolute;
+    top: 0px; /* Ajustar para poner en la parte superior si es necesario */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: silver;
+    text-align: center;
+    width: 100%;
+}
+
+.h3 {
+    font-size: 2rem;
+    margin: 10px 0;
+    color: hsl(35, 100%, 40%);
+    text-shadow: 1px 1px hsl(35, 100%, 20%);
+}
 
 .main-title {
     text-align: center;

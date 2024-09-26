@@ -75,11 +75,11 @@ def inject_categories():
     category_names = {
         'Deportes': 'Deportes',
         'Moda': 'Moda y Estilo',
-        'Historia': 'Historia, Geografía y Literatura',
+        'Historia': 'Historia y Geografía',
         'Software': 'Informática y Matemáticas',
         'Economia': 'Economía y Finanzas',
-        'flags': 'Banderas',
-        'LogicGame': 'Desafío'
+        'flags': 'Banderas del Mundo',
+        'LogicGame': 'Desafío Mental'
     }
     return dict(categories=categories, category_names=category_names)
 

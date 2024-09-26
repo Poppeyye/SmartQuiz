@@ -584,37 +584,58 @@ document.addEventListener('DOMContentLoaded', () => {
         // Crear el overlay
         const overlay = document.createElement('div');
         overlay.className = 'final-overlay';
-        for (let i = 0; i < 10; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            overlay.appendChild(confetti);
-        }
+    
+        // Crear el título Genias.io en el overlay
+   
+    
         // Crear el cuadro del mensaje
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';
+        const userRanking = document.createElement('p');
+        userRanking.className = 'overlay-subtitle';
+        userRanking.textContent = `Ranking: #${userRank}`;
 
+        const nameOverlay = document.createElement('p');
+        nameOverlay.className = 'overlay-username';
+        nameOverlay.textContent = `${userName}`;
+        messageBox.appendChild(nameOverlay);
+        
+        const labelOverlay = document.createElement('span');
+        labelOverlay.className = 'message-box-label'; // Asigna la clase para el estilo
+        labelOverlay.textContent = 'genias.io'; // Establece el texto del span
+        messageBox.appendChild(labelOverlay);
+        const overlayTitle = document.createElement('overlay-h1');
+        //overlayTitle.textContent = 'Genias.io';
+        overlayTitle.className = 'overlay-title';
         const rankMessage = document.createElement('p');
         rankMessage.className = 'rank-message';
-    
+        
         // Ajustar el título del mensaje según el userRank
-        if (userRank > 100) {
-            rankMessage.textContent = `Sigue Intentandolo ${userName}!`;
-        } else if (userRank > 20) {
-            rankMessage.textContent = `Buen Intento ${userName}`;
-        } else if (userRank > 2) {
-            rankMessage.textContent = `Wow, Impresionante ${userName}`;
-        } else if (userRank === 2 || userRank === 3) {
-            rankMessage.textContent = `Enhorabuena! ${userName}`;
+        if (userRank ===3) {
+            nameOverlay.textContent = `${userName}🥉`;
+        } else if (userRank === 2) {
+            nameOverlay.textContent = `${userName}🥈`;
         } else if (userRank === 1) {
-            rankMessage.textContent = `Espectacular! Has ganado ${userName}!`;
+            nameOverlay.textContent = `${userName}🥇`;
         }
-        const userRanking = document.createElement('p');
-        userRanking.className = 'overlay-title';
-        userRanking.textContent = `Ranking: ${userRank}`;
     
-        const playAgainMessage = document.createElement('p');
-        playAgainMessage.textContent = '¿Qué quieres hacer ahora?';
-        playAgainMessage.className = 'overlay-subtitle';
+        messageBox.appendChild(nameOverlay);
+
+
+        const categoryMessage = document.createElement('p');
+
+        categoryMessage.className = 'overlay-category';
+        categoryMessage.textContent = `${categoryNames[selectedCategory]}`;
+        // Agregar los elementos al cuadro del mensaje (sin los botones)
+        messageBox.appendChild(userRanking);
+        messageBox.appendChild(rankMessage);
+        messageBox.appendChild(categoryMessage);
+
+        overlay.appendChild(messageBox);
+    
+        // Crear un contenedor para los botones dentro del overlay, pero fuera del messageBox
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
     
         const returnButton = document.createElement('button');
         returnButton.textContent = 'Volver a Jugar';
@@ -628,14 +649,15 @@ document.addEventListener('DOMContentLoaded', () => {
         shareButton.textContent = 'Compartir Resultado';
         shareButton.className = 'btn';
     
-        // Agregar los elementos al cuadro del mensaje
-        messageBox.appendChild(userRanking);
-        messageBox.appendChild(rankMessage);
-        messageBox.appendChild(playAgainMessage);
-        messageBox.appendChild(returnButton);
-        messageBox.appendChild(rankingButton);
-        messageBox.appendChild(shareButton);
-        overlay.appendChild(messageBox);
+        // Agregar los botones al contenedor de botones
+        buttonContainer.appendChild(returnButton);
+        buttonContainer.appendChild(rankingButton);
+        buttonContainer.appendChild(shareButton);
+    
+        // Agregar el contenedor de botones dentro del overlay (debajo del messageBox)
+        overlay.appendChild(buttonContainer);
+    
+        // Agregar el overlay al body
         document.body.appendChild(overlay);
     
         // Manejar eventos de los botones
@@ -643,6 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(overlay);
             goToMainScreen();
         });
+    
         rankingButton.addEventListener('click', () => {
             stopTimer();
             document.body.removeChild(overlay);
@@ -650,13 +673,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     
         shareButton.addEventListener('click', async () => {
-            const urlToShare = `https://www.genias.io/rankings?search=${userName}`;
-            const shareTitle = '¡Mira esta clasificación!'; // Un título atractivo para el contenido
+            const urlToShare = `https://genias.io/rankings?search=${userName}`;
+            const shareTitle = '¡Mira esta clasificación!';
     
-            // Capturar el screenshot del overlay utilizando html2canvas
+            // Capturar el screenshot del cuadro de mensaje usando html2canvas
             try {
                 const canvas = await html2canvas(messageBox);
-                // Usar toBlob en el canvas
                 canvas.toBlob((blob) => {
                     const file = new File([blob], 'screenshot.png', { type: 'image/png' });
     
@@ -670,7 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }).then(() => console.log('Contenido compartido'))
                         .catch(error => console.error('Error al compartir:', error));
                     } else {
-                        // Alternativa si la API no está disponible
                         alert('Tu dispositivo no soporta compartir esta funcionalidad.');
                     }
                 });
@@ -679,6 +700,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    
 
     function goToMainScreen() {
         // Eliminar el ranking pop-up, si existe
