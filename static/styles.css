@@ -407,25 +407,12 @@ body {
     flex-shrink: 0;
 }
 
-.btn:hover {
-    box-shadow: 2px 2px 0 0 var(--btn-color);
-    color: #fff; /* El texto se vuelve blanco al pasar el mouse */
-    transform: scale(1.1); /* Efecto de zoom ligero */
-}
-
-
-.btn:focus-visible {
-    outline: 0;
-    box-shadow: 3px 3px 0 0 var(--btn-color), 0 0 0 2px rgba(0, 0, 0, 0.2);
-}
-
-.btn:focus-visible::after {
-    position: absolute;
-    left: 50%;
-    top: calc(100% + 12px);
-    transform: translateX(-50%);
-    content: "\21E7";
-    animation: float .5s ease-in-out infinite;
+@media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+        box-shadow: 2px 2px 0 0 var(--btn-color);
+        color: #fff;
+        transform: scale(1.1);
+    }
 }
 
 a {
