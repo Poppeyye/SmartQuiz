@@ -7,20 +7,20 @@ OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
 client = OpenAI(api_key=OPEN_AI_KEY)
 
 def generate_ia_questions(category,context,n):
-    if category=="game":
+    if category=="LogicGame":
         content = f"""Eres un asistente imaginativo que vas crear un juego en una respuesta JSON que debe cumplir con lo siguiente:
-        1- Un total de {n} preguntas de elegir entre 2 opciones en el que el nivel 1 sea sencillo y el {n} el más difícil poniendo a partes iguales en cada dificultad (Si 100 es el numero entonces 25 preguntas en cada una).
-        2- Debes incluir juegos de lógica, matemáticas, series...
-        3- En el JSON debes incluir los campos: dificultad (sencillo, intermedio, dificil, muy dificil, casi imposible), pregunta, respuesta correcta, respuesta incorrecta, número de pregunta ordenado por dificultad
-        4- Debe ser desafiante.
-        Cuando el usuario te diga que comiences, debes generar el JSON
+        1- Un total de {n} preguntas de elegir entre 2 opciones en el que el nivel 1 sea dificil y el {n} el más difícil(experto) que solo uno pocos sepan resolver.
+        2- Debes incluir juegos con trampa, de pensar, cuentas matemáticas y preguntas con ingenio.
+        3- En el JSON debes incluir los campos: dificultad (dificil, muy dificil, experto), pregunta, respuesta correcta, respuesta incorrecta, número de pregunta ordenado por dificultad
+        4- Debe ser desafiante y un reto mental.
+        El usuario puede añadir más juegos que se suman a los juegos ya mencionados.
         """
         response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system",
                     "content": content},
-                    {"role": "user", "content": f"Comienza"}
+                    {"role": "user", "content": context}
                 ],
                 response_format={"type": "json_schema",
                                 "json_schema": {

@@ -61,33 +61,29 @@ def get_logic_game():
     # Cargamos la pool de preguntas desde la base de datos si es la primera vez
     if "logic_game_pool" not in session:
         session["logic_game_pool"] = get_logic_game_questions()  # Función que carga preguntas
-        session["current_index"] = 0  # Índice para seguir la siguiente pregunta a devolver
+        session["used_headlines"] = []  # Índice para seguir la siguiente pregunta a devolver
 
     # Si no hay preguntas disponibles en la pool, retornamos error.
     if not session["logic_game_pool"]:
         return jsonify({"error": "No questions available for this category"}), 204
 
-    # Obtenemos el índice de la pregunta actual
-    current_index = session["current_index"]
-    
-    # Verificamos si el índice es válido
-    if current_index >= len(session["logic_game_pool"]):
+    # Creamos la estructura de la pregunta a retornar
+    all_ids = set(news["id"] for news in session["logic_game_pool"])
+    used_ids = set(session["used_headlines"])
+    unasked_ids = list(all_ids - used_ids)
+    if not unasked_ids:
         return jsonify({"error": "All questions have been asked in this category"}), 204
 
-    # Seleccionamos la pregunta correspondiente al índice actual
-    new_item = session["logic_game_pool"][current_index]
+    selected_id = random.choice(unasked_ids)
+    session["used_headlines"].append(selected_id)
 
-    # Creamos la estructura de la pregunta a retornar
+    new_item = next(news for news in session["logic_game_pool"] if news["id"] == selected_id)
+
     question = {
         "question": new_item["question"],
         "correct": encode_string(new_item["correct"]),
-        "wrong": encode_string(new_item["wrong"]),
-        "difficulty": new_item["difficulty"],         
-        "numero": new_item["numero"],          
+        "wrong": encode_string(new_item["wrong"])
     }
-
-    # Incrementamos el índice para la próxima llamada
-    session["current_index"] += 1
 
     return jsonify(question)
 
@@ -156,33 +152,21 @@ def get_all_questions(category):
     ]
 
 def get_logic_game_questions():
-    difficulties = ['sencillo', 'intermedio', 'dificil', 'muy dificil', 'casi imposible']
     questions = []
-    
-    for difficulty in difficulties:
-        query = (
-            LogicGames.query.filter_by(difficulty=difficulty)
-            .order_by(func.random())
-            .limit(10)
-            .all()
-        )
-        questions.extend(query)
-    
-    # Crear un diccionario para mapear las dificultades a valores numéricos
-    difficulty_order = {difficulty: idx for idx, difficulty in enumerate(difficulties)}
-    
-    # Ordenar por dificultad utilizando el mapeo de valores numéricos
-    questions.sort(key=lambda x: difficulty_order.get(x.difficulty, float('inf')))
-    
-    # Crear la lista de preguntas formateadas
+    query = (
+        LogicGames.query
+        .order_by(func.random())
+        .limit(150)
+        .all()
+    )
+    questions.extend(query)
+   
     return [
         {
             "id": question.id,
             "question": question.question,
             "correct": question.correct,
-            "wrong": question.wrong,
-            "difficulty": question.difficulty,
-            "numero": question.numero,
+            "wrong": question.wrong
         }
         for question in questions
     ]
@@ -218,6 +202,31 @@ def create_questions():
 
     # Devolver la respuesta en el formato esperado
     return jsonify({"category": questions})
+
+@questions_bp.route('/create_logic_game', methods=['GET'])
+def create_logic_game():
+    if 'call_count' in session:
+        session['call_count'] += 1
+    else:
+        session['call_count'] = 1
+
+    if session['call_count'] > 3:
+        return jsonify({"message": "Lo siento, has alcanzado el límite por hoy :D"}), 400
+    # Obtener el parámetro 'thematic' de la consulta
+    thematic = request.args.get('thematic')
+    context = request.args.get('context')
+    n_questions = request.args.get('count')
+
+    try:
+        # Llamar a la función que crea las preguntas
+        questions = generate_ia_questions(thematic, context, n_questions)
+    except Exception as e:
+        # Manejar cualquier excepción que ocurra en la función generate_ia_questions
+        return jsonify({"error": "Oops, algo ha ido mal. Refresca la página o vuelve a intentarlo."}), 500
+
+    # Devolver la respuesta en el formato esperado
+    return jsonify({"category": questions})
+
 
 @questions_bp.route('/save_questions', methods=['POST'])
 def save_questions():

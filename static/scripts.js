@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         // Actualizar el texto del countdown inmediatamente
         function updateCountdownText() {
-            countdownText.innerText = countdown === 3 ? "Prepárate!" : countdown === 2 ? "Ya?" : "Adelante!";
+            countdownText.innerText = countdown === 3 ? "3..." : countdown === 2 ? "2..." : "1...";
         }
     
         // Llamar la primera vez para que se muestre "¡Preparados!" inmediatamente
@@ -306,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 questionText.textContent = logicQuestion;
 
                 questionContainer.style.display = "block";
-                const difficulty = data.difficulty;
                 correctAnswer = correct;
 
             }
@@ -388,9 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Desaparecer el pop-up después de 3 segundos
         setTimeout(() => {
             rankingPopup.style.opacity = 0; // Hacerlo invisible primero
-            setTimeout(() => {
-                document.body.removeChild(rankingPopup); // Remover del DOM después de que se desvanezca
-            }, 300); // Duración del desvanecimiento
         }, 3000); // 3 segundos
     }
 
@@ -610,11 +606,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (userRank === 2 || userRank === 3) {
             rankMessage.textContent = `Enhorabuena! ${userName}`;
         } else if (userRank === 1) {
-            rankMessage.textContent = `Espectacular! Has ganado ${userName}`;
+            rankMessage.textContent = `Espectacular! Has ganado ${userName}!`;
         }
         const userRanking = document.createElement('p');
         userRanking.className = 'overlay-title';
-        userRanking.textContent = userRank
+        userRanking.textContent = `Ranking: ${userRank}`;
     
         const playAgainMessage = document.createElement('p');
         playAgainMessage.textContent = '¿Qué quieres hacer ahora?';
@@ -686,7 +682,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function goToMainScreen() {
         // Eliminar el ranking pop-up, si existe
-        //const rankingPopup = document.querySelector('.ranking-popup');
 
         // Realizar la búsqueda para finalizar el juego
         fetch('/end_game', {
