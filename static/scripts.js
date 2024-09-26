@@ -269,6 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
         try {
             const response = await fetch(endpoint);
+            if (response.status === 204) {
+                endGame('Has terminado todas las preguntas');
+                return;
+            }
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
@@ -583,11 +587,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showFinalOverlay() {
         // Crear el overlay
         const overlay = document.createElement('div');
-        overlay.className = 'final-overlay';
-    
-        // Crear el título Genias.io en el overlay
-   
-    
+        overlay.className = 'final-overlay';   
+        for (let i = 0; i < 10; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            overlay.appendChild(confetti);
+        }
         // Crear el cuadro del mensaje
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';

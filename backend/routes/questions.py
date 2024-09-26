@@ -10,6 +10,7 @@ from spanlp.domain.strategies import JaccardIndex
 from spanlp.domain.strategies import Preprocessing, TextToLower, RemoveAccents, RemoveStopWords
 from sqlalchemy.sql.expression import func
 import random
+from backend.routes.main import require_jwt
 
 jaccard = JaccardIndex(threshold=0.9, normalize=False, n_gram=1)
 palabrota = Palabrota(countries=[Country.ESPANA, Country.MEXICO, Country.ARGENTINA], distance_metric=jaccard)
@@ -23,16 +24,8 @@ def encode_string(s):
 questions_bp = Blueprint("questions", __name__)
 
 
-@questions_bp.route("/check_table")
-def check_table():
-    inspector = inspect(db.engine)
-    if inspector.has_table("questions"):
-        return jsonify({"exists": True})
-    else:
-        return jsonify({"exists": False})
-
-
 @questions_bp.route("/get_question/<category>")
+@require_jwt
 def get_question(category):
     if "news_pool" not in session:
         session["news_pool"] = get_all_questions(category)
@@ -45,7 +38,8 @@ def get_question(category):
     used_ids = set(session["used_headlines"])
     unasked_ids = list(all_ids - used_ids)
     if not unasked_ids:
-        return jsonify({"error": "All questions have been asked in this category"}), 204
+        return jsonify({"msg": "All questions have been asked in this category"}), 204
+
 
     selected_id = random.choice(unasked_ids)
     session["used_headlines"].append(selected_id)
@@ -57,6 +51,7 @@ def get_question(category):
     }
     return jsonify(question)
 @questions_bp.route("/get_logic_game/")
+@require_jwt
 def get_logic_game():
     # Cargamos la pool de preguntas desde la base de datos si es la primera vez
     if "logic_game_pool" not in session:
@@ -88,6 +83,7 @@ def get_logic_game():
     return jsonify(question)
 
 @questions_bp.route("/get_country_question")
+@require_jwt
 def get_country_question():
     if "country_pool" not in session:
         session["country_pool"] = [country.id for country in Countries.query.all()]
@@ -172,6 +168,7 @@ def get_logic_game_questions():
     ]
 
 @questions_bp.route('/create_questions', methods=['GET'])
+@require_jwt
 def create_questions():
     if 'call_count' in session:
         session['call_count'] += 1
@@ -179,7 +176,7 @@ def create_questions():
         session['call_count'] = 1
 
     if session['call_count'] > 3:
-        return jsonify({"message": "Lo siento, has alcanzado el límite por hoy :D"}), 400
+        return jsonify({"error": "Lo siento, has alcanzado el límite por hoy :D"}), 500
     # Obtener el parámetro 'thematic' de la consulta
     thematic = request.args.get('thematic')
     context = request.args.get('context')
@@ -204,6 +201,7 @@ def create_questions():
     return jsonify({"category": questions})
 
 @questions_bp.route('/create_logic_game', methods=['GET'])
+@require_jwt
 def create_logic_game():
     if 'call_count' in session:
         session['call_count'] += 1
@@ -229,6 +227,7 @@ def create_logic_game():
 
 
 @questions_bp.route('/save_questions', methods=['POST'])
+@require_jwt
 def save_questions():
     data = request.json
     questions_to_save = []
