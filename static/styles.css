@@ -667,6 +667,13 @@ a {
     width: 100%;
 }
 
+.category-title span {
+    color: whitesmoke;
+    font-family: 'Great Vibes';
+    font-size: 1.8em;
+    font-weight: 200;
+}
+
 #category-leaderboards::before {
     content: "";
     position: absolute;
@@ -682,7 +689,6 @@ a {
   }
 
   .leaderboard-container {
-    background-color: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
@@ -708,6 +714,7 @@ a {
     border-collapse: collapse;
     margin-top: 10px;
     overflow-x: auto;
+    color: white;
 }
 
 .scrollable-cell {
@@ -748,11 +755,11 @@ a {
 }
 .leaderboard-table td {
     /* ... other styles ... */
-    background-color: #f2f2f2; /* Default color for even rows */
+    background-color: #f3e8e881; /* Default color for even rows */
   }
   
   .leaderboard-table td:nth-child(odd) {
-    background-color: #f8f9fa; /* Color for odd rows */
+    background-color: #f8f9fa60; /* Color for odd rows */
   }
 
 .leaderboard-table th:hover {
@@ -760,12 +767,11 @@ a {
 }
 
 .leaderboard-table tr {
-    background-color: #ffffff;
     transition: background-color 0.3s ease;
 }
 
 .leaderboard-table tr:hover {
-    background-color: #e9ecef;
+    background-color: rgba(255, 217, 0, 0.356);
     transform: scale(1.01);
     transition: transform 0.2s ease;
 }

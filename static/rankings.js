@@ -76,7 +76,7 @@ async function getAllScores(category, dateRange) {
 // Función para actualizar los puntajes según la categoría y rango de fecha seleccionados
 function updateScores(scores) {
     const filteredScores = currentCategory === 'all' ? scores :
-        scores.filter(score => score.category.toLowerCase() === currentCategory);
+        scores.filter(score => score.category === currentCategory);
     displayScores(filteredScores);
 }
 

@@ -4,11 +4,10 @@
 
 <h1 class="h1">🏆 Ranking Global</h1>
 <div class="search-container">
-    <input type="text" id="search-input" placeholder="Buscar por nombre..." />
     <select id="category-selector">
         <option value="all">Todas las Categorías</option>
         {% for category in categories %}
-            <option value="{{ category|lower }}">{{ category_names[category] }}</option>
+            <option value="{{ category }}">{{ category_names[category] }}</option>
         {% endfor %}
     </select>
     <select id="date-range-selector">
@@ -16,6 +15,7 @@
         <option value="7">Últimos 7 días</option>
         <option value="30">Últimos 30 días</option>
     </select>
+    <input type="text" id="search-input" placeholder="Buscar por nombre..." />
 </div>
 
 <div id="category-leaderboards">
