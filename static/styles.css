@@ -52,9 +52,50 @@ body {
 #answer-buttons {
     display: flex; /* Usamos flex aquí */
     flex-wrap: wrap; /* Permitir que se envuelvan si no hay suficiente espacio */
+    flex-direction: column;
+    margin: 20px 0; /* Ajustar márgenes para no tener overflow */
     justify-content: center; /* Centra los botones */
     gap: 10px; /* Espacio entre botones */
     width: 80%; /* Asegúrate de que ocupe el ancho completo que necesita */
+}
+.question-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%; /* Cambiado a 100% en lugar de 100vh */
+    box-sizing: border-box; /* Asegura que el padding y el borde no desborden el ancho */
+}
+
+#questions-container {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho de la página */
+    margin: 0 auto; 
+}
+
+#questions-list {
+    width: 100%; /* Hace que el listado de preguntas ocupe todo el ancho */
+    max-width: 1200px; /* Opción: Limitar el ancho si no quieres que sea excesivo */
+}
+
+#created-by-input {
+    margin-top: 20px;
+    width: 50%; /* Para centrar el input con un ancho ajustado */
+    text-align: center; /* Centrar el texto dentro del input */
+}
+
+.created-by-label {
+    display: inline-block; /* Asegúrate de que se comporte como un elementos en bloque, pero en línea */
+    color: rgba(245,245,245,0.5); /* Color del texto */
+    padding: 5px 10px; /* Espaciado interno */
+    border-radius: 12px; /* Bordes redondeados */
+    font-family: 'Arial', sans-serif; /* Fuente */
+    font-size: 10px; /* Tamaño de la fuente */
+    margin-bottom: 10px; /* Margen inferior para espaciar de los botones */
 }
 /* Estilos para pantallas pequeñas como móviles */
 @media only screen and (max-width: 600px) {
@@ -145,13 +186,6 @@ body {
     margin: 20px 0;
     color: #F9C642; /* Color suave */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
-}
-
-#answer-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: 20px 0; /* Ajustar márgenes para no tener overflow */
 }
 
 
@@ -552,7 +586,7 @@ a {
     color: hsl(35, 100%, 30%);
     max-width: 600px;
     margin: 50px auto;
-    min-height: 40vh;
+    height: 45vh;
     box-sizing: border-box;
     text-shadow: 2px 2px 4px rgba(255, 223, 0, 0.7);
 }

@@ -314,13 +314,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
             else {
+                
+                // Supongamos que `data` es un objeto que contiene `headline`, `fake_news` y `created_by`
                 const headline = decodeString(data.headline);
                 const fake = decodeString(data.fake_news);
                 const options = [headline, fake];
+                const createdBySpan = document.getElementById('created-by-span'); // Corrige esto para acceder al span
+                // Shuffle options
                 const shuffledOptions = options.sort(() => Math.random() - 0.5);
                 optionButton1.textContent = shuffledOptions[0];
                 optionButton2.textContent = shuffledOptions[1];
                 correctAnswer = headline;
+                
+                // Set the creator's name in the createdBySpan
+                createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
 
             }
     

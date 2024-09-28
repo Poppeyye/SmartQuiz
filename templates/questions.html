@@ -41,6 +41,7 @@
     <div id="questions-container" style="display:none;">
         <h2>Preguntas</h2>
         <div id="questions-list"></div>
+        <input type="text" id="created-by-input" required placeholder="Nombre" maxlength="100" />
         <button id="save-questions-button" class="btn">Guardar Preguntas</button>
         
         <!-- Sugerencia de donación -->
@@ -159,14 +160,6 @@
     font-size: 18px;
     color: #333;
 }
-/* General styles */
-.question-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
 
 .question-item > label {
     font-size: 1em;
@@ -258,9 +251,8 @@ textarea:focus {
                 questionsList.appendChild(questionItem);
             });
 
-            document.getElementById('questions-container').style.display = 'block';
+            document.getElementById('questions-container').style.display = 'flex';
 
-            // Mueve el botón de Buy Me a Coffee tras generar las preguntas
         } 
         else {
             alert(data.error);
@@ -289,9 +281,8 @@ textarea:focus {
                 questionsList.appendChild(questionItem);
             });
 
-            document.getElementById('questions-container').style.display = 'block';
-
-            // Mueve el botón de Buy Me a Coffee tras generar las preguntas
+            document.getElementById('questions-container').style.display = 'flex';
+            document.getElementById('created-by-input').style.display = 'flex';
         } else {
             alert(data.error);
         }
@@ -316,12 +307,13 @@ document.getElementById('save-questions-button').addEventListener('click', funct
     questionInputs.forEach((input) => {
         const factInput = input.querySelector('textarea:nth-of-type(1)');
         const inventInput = input.querySelector('textarea:nth-of-type(2)');
-
+        const createdByInput = document.getElementById('created-by-input').value;
         if (factInput && inventInput) {
             questionsToSave.push({
                 fact: factInput.value,
                 invent: inventInput.value,
-                category: thematicInput // Asegúrate de que 'thematicInput' esté definido en tu código
+                category: thematicInput,
+                created_by: createdByInput
             });
         }
     });

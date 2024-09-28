@@ -47,7 +47,8 @@ def get_question(category):
     new_item = next(news for news in session["news_pool"] if news["id"] == selected_id)
     question = {
         "headline": encode_string(new_item["fact"]),
-        "fake_news": encode_string(new_item["invent"])
+        "fake_news": encode_string(new_item["invent"]),
+        "created_by": new_item["created_by"]
     }
     return jsonify(question)
 @questions_bp.route("/get_logic_game/")
@@ -143,6 +144,7 @@ def get_all_questions(category):
             "fact": question.fact,
             "invent": question.invent,
             "category": question.category,
+            "created_by": question.created_by
         }
         for question in questions
     ]
@@ -183,7 +185,7 @@ def create_questions():
     n_questions = request.args.get('count')
 
     context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
-
+    # TODO a veces falla
     if palabrota.contains_palabrota(context):
         return jsonify({"error": "Vuelve a intentarlo, gracias :D"}), 400
 
@@ -237,7 +239,8 @@ def save_questions():
         fact = question.get('fact')
         invent = question.get('invent')
         category = question.get('category')
-        new_question = Question(fact=fact, invent=invent, category=category, validated=False)
+        created_by = question.get('created_by')
+        new_question = Question(fact=fact, invent=invent, category=category, validated=False, created_by= created_by)
         questions_to_save.append(new_question)
 
     # Agregar las preguntas a la base de datos
