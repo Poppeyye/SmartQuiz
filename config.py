@@ -9,12 +9,13 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = 'sqlalchemy'
     SESSION_SQLALCHEMY = db
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     JWT_SECRET_KEY = 'admin'
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=60)
     JWT_COOKIE_CSRF_PROTECT = True
-    JWT_COOKIE_SECURE = os.environ.get('JWT_COOKIE_SECURE', 'False').lower() in ('true', '1', 't')
+    JWT_COOKIE_SECURE = True
     JWT_ACCESS_COOKIE_PATH = '/'
     JWT_REFRESH_COOKIE_PATH = '/refresh'
+    SESSION_SQLALCHEMY_TABLE = 'sessions'
