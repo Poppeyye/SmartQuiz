@@ -188,37 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bestScores.length > 10) bestScores.pop();
         //displayFunnyMessage(userName, score)
         displayBestScores();
-    }
-
-    async function getAllScores() {
-        try {
-            const response = await fetch(`/get_all_scores/${selectedCategory}`);
-            const data = await response.json();
-            if (data.scores) {
-                return data.scores;
-            }
-        } catch (error) {
-            console.error('Error fetching all scores:', error);
-            return [];
-        }
-    }
-    // Función para reproducir el sonido de respuesta correcta
-    function playCorrectSound() {
-        if (!isMuted) {
-            correctSound.currentTime = 0; // Reiniciar el sonido
-            correctSound.play();
-        }
-    }
-
-    // Función para reproducir el sonido de respuesta incorrecta
-    function playWrongSound() {
-        if (!isMuted) {
-            wrongSound.currentTime = 0; // Reiniciar el sonido
-            wrongSound.play();
-        }
-    }
-    const gameSounds = [correctSound, wrongSound, backgroundMusic]
-  
+    }  
   
     // Manejar el botón de silenciar
     function toggleMute() {
