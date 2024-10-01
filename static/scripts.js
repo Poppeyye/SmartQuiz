@@ -686,15 +686,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     function goToMainScreen() {
-        // Eliminar el ranking pop-up, si existe
 
-        // Realizar la búsqueda para finalizar el juego
         fetch('/end_game', {
             method: 'POST',
         })
             .then(response => response.json())
             .then(data => {
-                welcomeContainer.style.display = 'flex';
+                welcomeContainer.style.display = 'none';
+                categoryContainer.style.display = 'block';
                 answerButtons.style.display = 'none';
                 userNameInput.value = userName;
                 resultText.style.display = 'none';
@@ -707,14 +706,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 
             });
-    }
-
-    function resetUI() {
-        resultText.style.opacity = 0;
-        timerText.style.display = 'none'; // Ocultar el temporizador
-        answerButtons.style.display = 'none'; // Ocultar botones de respuesta
-        // Solo mostrar la puntuación anterior
-        scoreText.style.display = 'block'; // Asegúrate de que la puntuación sea visible
     }
 
     optionButton1.addEventListener('click', () => {

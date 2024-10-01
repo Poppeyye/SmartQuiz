@@ -1,10 +1,13 @@
 from flask import Blueprint, request, jsonify, session
-from backend.models import PlayerScore, db
+from backend.models import PlayerScore, Users, db
 from datetime import datetime
 from datetime import timedelta
 import pytz
 from flask_wtf.csrf import CSRFProtect
 from backend.routes.main import require_jwt
+import random
+import string
+from werkzeug.security import generate_password_hash
 
 csrf = CSRFProtect()
 scores_bp = Blueprint("scores", __name__)
@@ -197,12 +200,57 @@ def is_valid_name(name):
 def set_user_name():
     data = request.json
     user_name = data["user_name"]
+    
+    # Verificación de la validez del nombre de usuario
     if not is_valid_name(user_name):
         return jsonify({"error": "Invalid username"}), 400
 
+    # Generar una contraseña de 4 caracteres (letras mayúsculas y dígitos)
+    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    
+    # Aquí podrías hashear la contraseña si es necesario antes de almacenarla
+    
+    # Guardar el nombre de usuario y la contraseña en la sesión (si es temporal) o en la base de datos
     session["user_name"] = user_name
-    return jsonify({"message": "User name set", "user_name": user_name}), 200
+    session["password"] = password  # O bien, almacenarlo en la base de datos
 
+    return jsonify({
+        "message": "User name and password set",
+        "user_name": user_name,
+        "password": password
+    }), 200
+
+@scores_bp.route("/save_user", methods=["POST"])
+@require_jwt
+def save_user():
+    data = request.json
+    user_name = data["user_name"]
+
+    # Verificar si el nombre de usuario es válido
+    if not is_valid_name(user_name):
+        return jsonify({"error": "Invalid username"}), 400
+
+    # Verificar si el usuario ya existe
+    existing_user = Users.query.filter_by(username=user_name).first()
+    if existing_user:
+        return jsonify({"error": "Username already exists"}), 400
+
+    # Generar una contraseña de 4 caracteres (letras mayúsculas y dígitos)
+    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+
+    # Hashear la contraseña
+    hashed_password = generate_password_hash(password)
+
+    # Crear un nuevo usuario y guardarlo en la base de datos
+    new_user = Users(username=user_name, pin_code=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        "message": "User created successfully",
+        "user_name": user_name,
+        "password": password  # Devolver la contraseña generada para que el usuario la pueda ver
+    }), 201
 
 @scores_bp.route("/reset_score")
 def reset_score():

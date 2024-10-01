@@ -867,11 +867,18 @@ a {
 
 .search-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin: 50px 0;
+    margin: 40px 0;
+    gap: 10px;
 }
+@media (max-width: 600px) {
+    .search-container{
+        flex-direction: column;
+    }
+}
+
 #category-selector,
 #date-range-selector {
     cursor: pointer;
@@ -882,14 +889,6 @@ a {
 #category-selector:hover,
 #date-range-selector:hover {
     background-color: #fff3cd;
-}
-.search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 50px 0;
-    gap: 10px;
 }
 
 input[type="text"],
