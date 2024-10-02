@@ -17,5 +17,5 @@ class Config:
     JWT_COOKIE_CSRF_PROTECT = True
     JWT_COOKIE_SECURE = True
     JWT_ACCESS_COOKIE_PATH = '/'
-    JWT_REFRESH_COOKIE_PATH = '/refresh'
+    JWT_REFRESH_COOKIE_PATH = '/'
     SESSION_SQLALCHEMY_TABLE = 'sessions'

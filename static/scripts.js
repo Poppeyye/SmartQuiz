@@ -342,8 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
             if (previousUserRank !== userRank) {
-                showRankingPopup(message);
                 previousUserRank = userRank;
+                showRankingPopup(message);
             }
     
         } catch (error) {
