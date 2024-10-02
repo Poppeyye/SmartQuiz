@@ -196,7 +196,6 @@ def is_valid_name(name):
     return 1 <= len(name) <= 100
 
 @scores_bp.route("/set_user_name", methods=["POST"])
-@require_jwt
 def set_user_name():
     data = request.json
     user_name = data["user_name"]
