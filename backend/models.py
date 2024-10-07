@@ -7,7 +7,6 @@ db = SQLAlchemy()
 class PlayerScore(db.Model):
     __tablename__ = 'player_score'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String(100), primary_key=False)
     category = db.Column(db.String(100), primary_key=False)
     name = db.Column(db.String(100), primary_key=False)
     score = db.Column(db.Float, nullable=False)
@@ -54,13 +53,12 @@ class LogicGames(db.Model):
 
 class Users(db.Model):
     __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    pin_code = db.Column(db.String(4), nullable=False)
+    username = db.Column(db.String(100), primary_key=True, nullable=False)
+    pin_code_hash = db.Column(db.String(255), nullable=False)  # Cambiar a pin_code_hash
     created_at = db.Column(db.DateTime, default=datetime.now())   
     
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    def set_pin_code(self, pin_code):
+        self.pin_code_hash = generate_password_hash(pin_code)  # Guardar el hash del pin_code
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def check_pin_code(self, pin_code):
+        return check_password_hash(self.pin_code_hash, pin_code)  # Comprobar hash del pin_code

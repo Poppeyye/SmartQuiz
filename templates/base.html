@@ -77,13 +77,20 @@
 
     <footer class="footer">
         <div class="footer-bottom">
-            <p> <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a></p>
+            <p>
+                <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a> |
+                <span>Pin del usuario: </span>
+                <span id="pinDisplay" >****</span> 
+                <button id="togglePin" onclick="togglePin(pin_code)">Ver PIN</button>
+            </p>
         </div>
     </footer>
-<script type="text/javascript">
-    const allCategories = {{ categories|tojson }};
-    const categoryNames = {{ category_names|tojson }};
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
+<script type="text/javascript">
+const allCategories = {{ categories|tojson }};
+const categoryNames = {{ category_names|tojson }};
+let pin_code = "{{ pin_code | default('') }}";
 </script>
 
 </body>

@@ -73,7 +73,8 @@ def require_jwt(func):
 # Ruta principal donde se crean los tokens si no existen
 @main_bp.route("/")
 def index():
-    response = make_response(render_template("index.html", user_name=session.get('user_name', '')))
+    response = make_response(render_template("index.html", user_name=session.get('user_name', ''),
+                                             pin_code=session.get('pin_code', '')))
     
     if 'admin_id' not in session:
         session['admin_id'] = str(uuid.uuid4())

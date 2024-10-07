@@ -19,7 +19,7 @@
             No te preocupes, puedes editarlas luego.<br>
             Datos actualizados a 2023</label>
         
-            <input type="text" id="context-input" required placeholder="Añade contexto" maxlength="150" />
+            <input type="text" id="context-input" class="custom-input" required placeholder="Añade contexto" maxlength="150" />
         <label for="questions-count">Cuántas preguntas quieres generar?:</label>
         <select id="questions-count" required>
             <option value="5">5 Preguntas - ☕</option>
@@ -41,7 +41,7 @@
     <div id="questions-container" style="display:none;">
         <h2>Preguntas</h2>
         <div id="questions-list"></div>
-        <input type="text" id="created-by-input" required placeholder="Nombre" maxlength="100" />
+        <input type="text" id="created-by-input" class="custom-input" required placeholder="Nombre" maxlength="100" />
         <button id="save-questions-button" class="btn">Guardar Preguntas</button>
         
         <!-- Sugerencia de donación -->

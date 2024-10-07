@@ -1,5 +1,34 @@
+const pinDisplay = document.getElementById("pinDisplay");
+const toggleButton = document.getElementById("togglePin");
+
+pinDisplay.textContent = "****";
+
+function togglePin() {
+    if (pinDisplay.textContent === "****") {
+        pinDisplay.textContent = pin_code; // Muestra el pin
+        toggleButton.textContent = "Ocultar PIN";
+    } else {
+        pinDisplay.textContent = "****"; // Oculta el pin
+        toggleButton.textContent = "Ver PIN";
+    }
+}
+
+function mostrarPinSiDisponible(pin_code) {
+    if (pin_code) {
+        toggleButton.style.display = "inline"; // Muestra el botón para alternar
+        pinDisplay.style.display = "inline"; // Muestra el bloque del PIN
+        pinDisplay.textContent = "****"; // Asegúrate que inicia como ****
+    } else {
+        pinDisplay.style.display = "none"; // Esconde el bloque del PIN si no hay
+        toggleButton.style.display = "none"; // Esconde el botón si no hay PIN
+    }
+}
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
+    const pinCode = document.getElementById('pin-code');
+    const usernameStatus = document.getElementById('username-status');
+    const pinContainer = document.getElementById('pin-container');
+
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
@@ -37,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctAnswersCount = 0; // Contador de respuestas correctas
     let totalTimeTaken = 0; // Acumulador del tiempo total tomado por las respuestas
     let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
-
+    
     // Inicialización del mute en la GUI
     toggleMute();
 
@@ -47,6 +76,67 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('isMuted', isMuted); // Almacena el nuevo estado
         toggleMute(); // Llama a la función para manejar el mute
     });
+
+    let debounceTimer;
+
+    userNameInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer); // Limpiar el timer anterior
+    
+        const userName = userNameInput.value.trim();
+        
+        // Solo llamar a la API si el nombre tiene al menos 3 caracteres
+        if (userName.length > 3) {
+            debounceTimer = setTimeout(() => {
+                checkUserNameAvailability(userName);
+            }, 300); // 300 ms de debounce
+        } else {
+            usernameStatus.textContent = ''; // Reiniciar el estado si es muy corto
+        }
+    });
+
+    function checkUserNameAvailability(userName) {
+        fetch('/check_user_name', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+            },
+            body: JSON.stringify({ user_name: userName }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.available) {
+                usernameStatus.style.color = 'green';
+                usernameStatus.style.fontWeight = '400'
+                usernameStatus.textContent = 'Nombre de usuario disponible';
+                startButton.disabled = false;  // Habilita el botón si está disponible
+                pinContainer.style.display = 'none';  // Oculta el contenedor del PIN
+            } else if (data.no_pin) {
+                usernameStatus.style.color = 'white';
+                usernameStatus.style.fontWeight = '400'
+                usernameStatus.textContent = 'Introduce el PIN para validar tu identidad';
+                pinContainer.style.display = 'flex';  // Muestra el PIN
+            } else if (data.validated) {
+                usernameStatus.style.color = 'white';
+                usernameStatus.style.fontWeight = '400'
+                usernameStatus.textContent = 'Pin correcto, puedes usar este nombre';
+            }
+            else {
+                usernameStatus.style.color = 'red';
+                usernameStatus.textContent = 'Nombre de usuario no disponible';
+                startButton.disabled = true;   // Deshabilita el botón si no está disponible
+                pinContainer.style.display = 'none';  // Oculta el contenedor del PIN
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            usernameStatus.textContent = 'Error verificando el nombre de usuario';
+            startButton.disabled = true;  // Deshabilita el botón en caso de error
+            pinContainer.style.display = 'none';  // Oculta el contenedor del PIN
+        });
+    }
+    
     // Función para mostrar la tabla de puntuaciones
     function displayBestScores() {
         // Limpiar la lista actual
@@ -87,37 +177,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    mostrarPinSiDisponible(pin_code); // Muestra el pin si está disponible
+    
     function startGame() {
-        userName = userNameInput.value.trim();
-        if (userName) {
-            // Enviar el nombre del usuario al backend
+        const userName = userNameInput.value.trim();
+        const pin_code_input = pinCode.value; // Asegúrate de tener el valor del PIN
+        if (userName.length >= 3) { // Verifica que el nombre de usuario tenga al menos 3 caracteres
             fetch('/set_user_name', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-
                 },
-                body: JSON.stringify({ user_name: userName }),
+                body: JSON.stringify({ user_name: userName, pin_code: pin_code_input }),
             })
             .then(response => {
                 if (response.ok) {
-                    welcomeContainer.style.display = 'none';
-                    categoryContainer.style.display = 'block';
+                    return response.json(); 
                 } else {
-                    alert('Hubo un error al establecer el nombre de usuario. Por favor, inténtalo de nuevo.');
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error); // Extrae el mensaje de error
+                    });
                 }
             })
+            .then(data => {
+                pin_code = data.pin_code; // Actualiza el pin_code con el nuevo PIN
+                mostrarPinSiDisponible(pin_code); // Muestra el nuevo PIN
+                welcomeContainer.style.display = 'none';
+                categoryContainer.style.display = 'block';
+            })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Ocurrió un error al iniciar el juego.');
+                console.error(error); // Manejo de error
+                alert(error.message); // Muestra el mensaje de error al usuario
             });
         } else {
-            alert('Por favor ingrese su nombre.');
+            alert('El nombre de usuario debe tener más de 3 caracteres');
         }
-    }
-    
+    } 
     // Funciones para la selección de categoría
     allCategories.forEach(category => {
         // Convertir el nombre de la categoría a minúsculas para coincidir con los IDs generados en HTML
@@ -575,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.className = 'message-box';
         const userRanking = document.createElement('p');
         userRanking.className = 'overlay-subtitle';
-        userRanking.textContent = `Ranking: #${userRank}`;
+        userRanking.textContent = `${totalScore} 📣 #${userRank}`;
 
         const nameOverlay = document.createElement('p');
         nameOverlay.className = 'overlay-username';

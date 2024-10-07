@@ -891,7 +891,7 @@ a {
     background-color: #fff3cd;
 }
 
-input[type="text"],
+.custom-input,
 select {
     width: 100%;
     max-width: 300px;
@@ -906,7 +906,7 @@ select {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-input[type="text"]::placeholder {
+.custom-input::placeholder {
     font-weight: 600;
     font-size: 1rem;
     font-family: "Poppins", sans-serif;
@@ -915,7 +915,7 @@ input[type="text"]::placeholder {
     color:#7B5A2A;
 }
 
-input[type="text"]:focus,
+.custom-input:focus,
 select:focus {
     outline: none;
     border-color: #ffa000;
@@ -934,7 +934,7 @@ select:hover {
     background-color: #fff3cd;
 }
 
-input[type="text"]:hover,
+.custom-input:hover,
 select:hover {
     border-color: #ffa000;
     box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
@@ -1040,5 +1040,30 @@ label {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pin-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px; /* Ajusta el espacio según sea necesario */
+}
+
+.pin-input {
+    padding: 10px;
+    font-size: 18px; /* Ajusta el tamaño según sea necesario */
+    width: 120px; /* Ajusta el ancho según sea necesario */
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: transparent; /* Fondo transparente */
+    margin-right: 10px;
+    color: white;
+}
+
+.toggle-visibility {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px; /* Ajusta el tamaño según sea necesario */
 }
 

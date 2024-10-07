@@ -7,7 +7,7 @@ from flask_wtf.csrf import CSRFProtect
 from backend.routes.main import require_jwt
 import random
 import string
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 
 csrf = CSRFProtect()
 scores_bp = Blueprint("scores", __name__)
@@ -18,7 +18,6 @@ scores_bp = Blueprint("scores", __name__)
 def add_score():
     data = request.json
     player_name = session.get("user_name", None)  # Obtiene el nombre del usuario de la sesión
-    admin_id = session.get("admin_id", None)  # Obtiene el admin_id de la sesión (asegúrate de que exista en la sesión)
     new_score_value = data.get("score")
     category = data.get("category")
     total_correct = data.get("total_correct")
@@ -27,13 +26,13 @@ def add_score():
     if not isinstance(new_score_value, (int, float)):
         return jsonify({"error": "Score must be a number"}), 400
     
-    if player_name is None or admin_id is None:
+    if player_name is None:
         return jsonify({"error": "Invalid session data"}), 400
 
     try:
-        # Busca si existe un registro para el mismo user_id, category y name en la misma categoría
+        # Busca si existe un registro para el mismo name, category y name en la misma categoría
         existing_record = PlayerScore.query.filter_by(
-            user_id=admin_id, category=category, name=player_name
+            category=category, name=player_name
         ).order_by(PlayerScore.score.desc()).first()
 
         if existing_record:
@@ -51,7 +50,6 @@ def add_score():
         else:
             # Crea un nuevo registro si no existe
             new_score = PlayerScore(
-                user_id=admin_id,
                 name=player_name,
                 score=new_score_value,
                 date=datetime.now(),
@@ -195,61 +193,70 @@ def get_all_scores_dates(category, date_range):
 def is_valid_name(name):
     return 1 <= len(name) <= 100
 
-@scores_bp.route("/set_user_name", methods=["POST"])
+@scores_bp.route("/set_user_name", methods=["POST", "GET"])
+@require_jwt
 def set_user_name():
     data = request.json
     user_name = data["user_name"]
-    
-    # Verificación de la validez del nombre de usuario
+    pin_code = data["pin_code"] or session.get("pin_code")
+        
     if not is_valid_name(user_name):
-        return jsonify({"error": "Invalid username"}), 400
-
-    # Generar una contraseña de 4 caracteres (letras mayúsculas y dígitos)
-    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-    
-    # Aquí podrías hashear la contraseña si es necesario antes de almacenarla
-    
-    # Guardar el nombre de usuario y la contraseña en la sesión (si es temporal) o en la base de datos
-    session["user_name"] = user_name
-    session["password"] = password  # O bien, almacenarlo en la base de datos
-
-    return jsonify({
-        "message": "User name and password set",
-        "user_name": user_name,
-        "password": password
-    }), 200
-
-@scores_bp.route("/save_user", methods=["POST"])
-@require_jwt
-def save_user():
-    data = request.json
-    user_name = data["user_name"]
-
-    # Verificar si el nombre de usuario es válido
-    if not is_valid_name(user_name):
-        return jsonify({"error": "Invalid username"}), 400
-
-    # Verificar si el usuario ya existe
+        return jsonify({"error": "Invalid username"}), 400    
     existing_user = Users.query.filter_by(username=user_name).first()
     if existing_user:
-        return jsonify({"error": "Username already exists"}), 400
+        if existing_user.check_pin_code(pin_code):
+            session["user_name"] = user_name
+            session["pin_code"] = pin_code  # Este es el pin_code en texto plano
+            return jsonify({
+                "message": "User name and PIN code set",
+                "user_name": user_name,
+                "pin_code": pin_code
+            }), 200
+        else:
+            return jsonify({"error": "Invalid pin code"}), 400
 
-    # Generar una contraseña de 4 caracteres (letras mayúsculas y dígitos)
-    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    else:
+        pin_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        new_user = Users(username=user_name)
+        new_user.set_pin_code(pin_code)
+        
+        db.session.add(new_user)
+        db.session.commit()
+        
+        session["user_name"] = user_name
+        session["pin_code"] = pin_code
 
-    # Hashear la contraseña
-    hashed_password = generate_password_hash(password)
+        return jsonify({
+            "message": "User name and PIN code set",
+            "user_name": user_name,
+            "pin_code": pin_code
+        }), 200
 
-    # Crear un nuevo usuario y guardarlo en la base de datos
-    new_user = Users(username=user_name, pin_code=hashed_password)
-    db.session.add(new_user)
-    db.session.commit()
+@scores_bp.route("/check_user_name", methods=["POST"])
+def check_user_name():
+    data = request.json
+    user_name = data.get("user_name")
 
-    return jsonify({
-        "message": "User created successfully",
-        "user_name": user_name,
-        "password": password  # Devolver la contraseña generada para que el usuario la pueda ver
-    }), 201
+    if not is_valid_name(user_name):
+        return jsonify({"error": "Invalid username"}), 400
+
+    existing_user = Users.query.filter_by(username=user_name).first()
+
+    if not existing_user:
+        return jsonify({"available": True}), 200
+
+    # Comprobar si hay un pin_code en la sesión
+    session_pin_code = data.get("pin_code") or session.get("pin_code")
+    if session_pin_code is None:
+        return jsonify({"no_pin": True, "error": "Pin code needed"}), 206
+
+    # Comprobar si el pin_code de la sesión coincide con el hash almacenado
+    if existing_user.check_pin_code(session_pin_code):
+        return jsonify({"validated": True}), 200
+    else:
+        return jsonify({"no_pin": True, "error": "Pin code needed"}), 206
+
+
 
 @scores_bp.route("/reset_score")
 def reset_score():

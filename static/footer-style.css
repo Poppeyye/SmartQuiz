@@ -22,3 +22,26 @@
 .footer-bottom p {
   margin: 0;
 }
+
+
+#pinDisplay {
+  font-size: 12px; /* El tamaño de fuente */
+  border: 1px solid gold; /* Bordes del color del botón */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px 15px; /* Relleno alrededor del texto */
+  margin-right: 10px; /* Espacio a la derecha */
+}
+
+#togglePin {
+  background-color: transparent; /* Color de fondo azul */
+  color: white; /* Color del texto blanco */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 16px; /* Tamaño de fuente */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  transition: background-color 0.3s; /* Transición suave para el fondo */
+}
+
+#togglePin:hover {
+  background-color: gold; /* Color más oscuro al pasar el mouse */
+}

@@ -10,7 +10,16 @@
     <h1>🦉Genias.io</h1>
     <p id="slogan">Aquí empieza tu viaje a lo más alto</p>
     <div id="welcome-container">
-        <input type="text" id="user-name" placeholder="Nombre divertido" value="{{ user_name }}" />
+        <input type="text" id="user-name" class="custom-input" placeholder="Nombre divertido" value="{{ user_name }}" />
+        <span id="username-status" style="color: red;"></span>
+        <div class="pin-container" id="pin-container" style="display: none;">
+            <input type="password" class="pin-input" id="pin-code" placeholder="PIN CODE" maxlength="4" />
+            <button class="toggle-visibility" id="toggle-visibility" onclick="togglePinVisibility()">
+                👁️
+            </button>
+        </div>
+        
+           
         <button class="btn" id="start-button">¡A jugar!</button>
     </div>
 
@@ -56,7 +65,6 @@
 </div>
 
 
-<script src="{{ url_for('static', filename='scripts.js') }}"></script>
 <script>
     
 const slogans = [
@@ -85,6 +93,20 @@ function changeSlogan() {
 
 // Cambia el eslogan cada 3 segundos
 setInterval(changeSlogan, 3000);
+
+function togglePinVisibility() {
+    const pinCode = document.getElementById('pin-code');
+    const toggleButton = document.getElementById('toggle-visibility');
+    
+    if (pinCode.type === 'password') {
+        pinCode.type = 'text'; // Cambia a texto para mostrar el PIN
+        toggleButton.textContent = '🙈'; // Cambia el ícono a un mono
+    } else {
+        pinCode.type = 'password'; // Cambia a password para ocultar el PIN
+        toggleButton.textContent = '👁️'; // Cambia el ícono a un ojo
+    }
+}
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 {% endblock %}
