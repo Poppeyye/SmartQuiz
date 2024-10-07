@@ -6,7 +6,7 @@ from flask_jwt_extended import (
     unset_jwt_cookies, jwt_required, decode_token
 )
 from jwt.exceptions import ExpiredSignatureError
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import uuid
 
 main_bp = Blueprint('main', __name__)
