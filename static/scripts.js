@@ -78,8 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let debounceTimer;
-    userName = userNameInput.value.trim();
+    
     userNameInput.addEventListener('input', () => {
+        userName = userNameInput.value.trim();
         clearTimeout(debounceTimer); // Limpiar el timer anterior
     
         // Solo llamar a la API si el nombre tiene al menos 3 caracteres
