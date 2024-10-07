@@ -78,12 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let debounceTimer;
-
+    userName = userNameInput.value.trim();
     userNameInput.addEventListener('input', () => {
         clearTimeout(debounceTimer); // Limpiar el timer anterior
     
-        const userName = userNameInput.value.trim();
-        
         // Solo llamar a la API si el nombre tiene al menos 3 caracteres
         if (userName.length > 3) {
             debounceTimer = setTimeout(() => {
@@ -178,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     mostrarPinSiDisponible(pin_code); // Muestra el pin si está disponible
-    
+
     function startGame() {
         const userName = userNameInput.value.trim();
         const pin_code_input = pinCode.value; // Asegúrate de tener el valor del PIN
