@@ -28,7 +28,7 @@
   font-size: 12px; /* El tamaño de fuente */
   border: 1px solid gold; /* Bordes del color del botón */
   border-radius: 8px; /* Bordes redondeados */
-  padding: 10px 15px; /* Relleno alrededor del texto */
+  padding: 5px 10px; /* Relleno alrededor del texto */
   margin-right: 10px; /* Espacio a la derecha */
 }
 
@@ -43,5 +43,5 @@
 }
 
 #togglePin:hover {
-  background-color: gold; /* Color más oscuro al pasar el mouse */
+  color: gold; /* Color más oscuro al pasar el mouse */
 }

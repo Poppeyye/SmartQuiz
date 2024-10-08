@@ -79,9 +79,8 @@
         <div class="footer-bottom">
             <p>
                 <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a> |
-                <span>Pin del usuario: </span>
-                <span id="pinDisplay" >****</span> 
                 <button id="togglePin" onclick="togglePin(pin_code)">Ver PIN</button>
+                <span id="pinDisplay" >****</span> 
             </p>
         </div>
     </footer>
@@ -91,6 +90,7 @@
 const allCategories = {{ categories|tojson }};
 const categoryNames = {{ category_names|tojson }};
 let pin_code = "{{ pin_code | default('') }}";
+let userName = "{{ user_name | default('') }}";
 </script>
 
 </body>

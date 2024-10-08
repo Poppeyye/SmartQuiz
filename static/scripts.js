@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let timerInterval = null;
     let totalScore = 0;
     let bestScores = [];
-    let userName = '';
     let selectedCategory = '';
     let gameEnded = null;
     let correctAnswersCount = 0; // Contador de respuestas correctas

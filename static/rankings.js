@@ -82,7 +82,6 @@ function updateScores(scores) {
 
 // Muestra los puntajes
 function displayScores(scores) {
-    console.log(allCategories)
     allCategories.forEach(category => {
         const listId = `best-scores-${category.toLowerCase()}`;
         const scoresList = document.getElementById(listId);

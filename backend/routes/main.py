@@ -97,15 +97,18 @@ def index():
 # Rutas adicionales
 @main_bp.route("/rankings")
 def rankings():
-    return render_template("rankings.html")
+    return make_response(render_template("rankings.html", user_name=session.get('user_name', ''),
+                                             pin_code=session.get('pin_code', '')))
 
 @main_bp.route("/about")
 def about():
-    return render_template("about.html")
+    return make_response(render_template("about.html", user_name=session.get('user_name', ''),
+                                             pin_code=session.get('pin_code', '')))
 
 @main_bp.route("/questions")
 def questions():
-    return render_template("questions.html")
+    return make_response(render_template("questions.html", user_name=session.get('user_name', ''),
+                                             pin_code=session.get('pin_code', '')))
 
 
 @main_bp.context_processor
