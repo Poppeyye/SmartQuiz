@@ -1,15 +1,15 @@
 from functools import wraps
-from flask import Blueprint, jsonify, make_response, request, session, render_template
+from flask import Blueprint, jsonify, make_response, request, send_from_directory, session, render_template, current_app
 from flask_jwt_extended import (
     verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token, 
     create_refresh_token, set_access_cookies, set_refresh_cookies, 
     unset_jwt_cookies, jwt_required, decode_token
 )
 from jwt.exceptions import ExpiredSignatureError
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import uuid
 
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint('main', __name__, static_folder='static')
 
 # Función para renovar el access token si está por expirar
 def refresh_access_token_if_needed(response):
@@ -109,6 +109,37 @@ def about():
 def questions():
     return make_response(render_template("questions.html", user_name=session.get('user_name', ''),
                                              pin_code=session.get('pin_code', '')))
+
+
+@main_bp.route("/robots.txt")
+def robots_txt():
+    return send_from_directory(current_app.static_folder, "robots.txt")
+
+
+@main_bp.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+    """Generate sitemap.xml dynamically, including only specific routes."""
+    pages = []
+    ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
+
+    # Definir las rutas que deseas incluir en el sitemap
+    included_routes = ['/', '/rankings', '/questions']
+
+    # Accede a las rutas de la aplicación principal
+    for rule in current_app.url_map.iter_rules():
+        # Incluir solo las rutas específicas
+        if rule.rule in included_routes and "GET" in rule.methods and len(rule.arguments) == 0:
+            url = request.host_url.rstrip('/') + str(rule.rule)
+            pages.append({
+                'loc': url,
+                'lastmod': ten_days_ago  # Puedes personalizar esta fecha si es necesario
+            })
+
+    # Renderizar el sitemap XML usando una plantilla Jinja2
+    sitemap_xml = render_template('sitemap_template.xml', pages=pages)
+    response = make_response(sitemap_xml)
+    response.headers["Content-Type"] = "application/xml"
+    return response
 
 
 @main_bp.context_processor
