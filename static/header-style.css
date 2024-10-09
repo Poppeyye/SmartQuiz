@@ -2,21 +2,63 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 10px; /* Ajusta el padding para tener más espacio */
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 10px; /* Solo si esto es necesario, puedes ajustarlo */
+  left: 50%;
+  transform: translateX(-50%); /* Centra el menú horizontalmente */
   z-index: 1000;
-  background-color: transparent; /* Fondo semitransparente si lo deseas */
+  border-radius: 10px; /* Es opcional, para bordes redondeados */
+  box-shadow: 0 1px 5px rgba(252, 211, 77, 0.1); /* Opcional, añade sombra */
+  width: auto; /* Permite que ocupe solo el ancho necesario */
 }
 
+.navMenu {
+  display: flex; /* Cambia a flex para mejor alineación */
+  gap: 20px; /* Espacio entre los elementos del menú */
+  position: relative; /* Necesario para el posicionamiento del .dot */
+}
 
-/* Estilos responsivos para pantallas más pequeñas */
-@media (max-width: 767px) {
-  .menu {
-    padding: 10px 20px; /* Añadir espacio en los laterales */
-    font-size: 0.8em; /* Reducir el tamaño del texto en móviles */
+.navMenu a {
+  font-family: "Poppins", sans-serif;
+  color: #f6f4e6;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.8em; /* Font-size puede ser ajustado según sea necesario */
+  font-weight: 400;
+  position: relative; /* Necesario para el posicionamiento del .dot */
+  padding: 5px 0; /* Espacio alrededor del texto */
+}
+
+.navMenu a:hover {
+  color: rgba(252, 211, 77, 0.9); /* Al cambiar el color al pasar el ratón */
+}
+
+.navMenu .dot {
+  width: 6px;
+  height: 6px;
+  background: rgba(252, 211, 77, 0.9);
+  border-radius: 50%;
+  position: absolute; /* Cambiado a absolute */
+  bottom: -10px; /* Colocado justo debajo del enlace */
+  left: 50%; /* Centrado horizontalmente respecto al enlace */
+  transform: translateX(-50%) scale(0); /* Inicialmente no visible */
+  opacity: 0; /* Inicialmente oculto */
+  transition: all 0.2s ease-in-out;
+}
+
+.navMenu a:hover .dot {
+  transform: translateX(-50%) scale(1); /* Aumenta el tamaño y centra */
+  opacity: 1; /* Hace el dot visible */
+}
+
+@media (max-width: 768px) {
+  .navMenu {
+    gap: 10px; /* Ajusta el espacio entre los elementos */
+  }
+  
+  .navMenu a {
+    font-size: 0.6em; /* Ajusta el tamaño de fuente en móviles */
   }
 }
 
@@ -112,24 +154,7 @@ h1 {
   border-left: 20px solid transparent;
   border-bottom: 20px solid #f37c32;
 }
-.question-mark {
-  position: fixed;
-  font-weight: 500;
-  bottom: 30px;
-  right: 30px;
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #F9C642, #FFEB84);
-  color: black;
-  text-align: center;
-  line-height: 50px;
-  border-radius: 50%;
-  transition: transform 0.3s ease-in-out;
 
-    &:hover {
-    transform: scale(1.5); /* Cambia el tamaño al hacer hover */
-    }
-}
 #slogan {
   font-size: 14px;
   text-align: center;

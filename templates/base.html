@@ -64,13 +64,14 @@
     <div id="beta">
         <div class="badge">Beta</div>
       </div>
-      
-    <nav class="menu">
-        <a class="btn" href="/">Juega</a>
-        <a class="btn" href="/questions">Contribuye</a>
-        <a class="btn" href="/rankings">Rankings</a>
-        <!--<a class="btn" href="/questions">Create your questions</a>-->
-    </nav>
+      <div class="menu">
+        <nav class="navMenu">
+            <a href="/">Juega<div class="dot"></div></a>
+            <a href="/questions">Contribuye<div class="dot"></div></a>
+            <a href="/rankings">Rankings<div class="dot"></div></a>
+        </nav>
+    </div>
+
     <div class="main-container">
         <!-- Contenido específico de cada página -->
         {% block content %}
@@ -79,13 +80,14 @@
     <audio id="correct-sound" src="{{ url_for('static', filename='audio/right.mp3') }}"></audio>
     <audio id="wrong-sound" src="{{ url_for('static', filename='audio/wrong.mp3') }}"></audio>
     </div>
-
+    <div id="pinBox" style="display:none">
+        <span id="pinDisplay" >****</span>
+        <span id="infoMessage">Guarda el PIN para usar tu nombre de usuario siempre que quieras</span>
+    </div>
     <footer class="footer">
         <div class="footer-bottom">
             <p>
-                <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a> |
-                <button id="togglePin">Ver PIN</button>
-                <span id="pinDisplay" >****</span> 
+                <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a>
             </p>
         </div>
     </footer>

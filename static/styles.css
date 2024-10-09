@@ -971,16 +971,17 @@ label {
     margin: 40px auto;
 }
 
+
 #mute-button {
     background: transparent; /* Fondo transparente */
     border: none; /* Sin borde */
     cursor: pointer; /* Cambiar el cursor al pasar por encima */
     position: fixed; /* Posicionamiento absoluto para colocar el botón */
-    bottom: 20px; /* Ajusta esto para alinearlo con la parte inferior del footer */
+    top: 20px; /* Ajusta esto para alinearlo con la parte inferior del footer */
     right: 20px; /* Ajusta esto según el espaciado que necesites desde el borde derecho */
     z-index: 4000; /* Mantener un z-index alto para que esté en la parte superior */
-    width: 40px; /* Ajusta el ancho del botón */
-    height: 40px; /* Ajusta la altura del botón */
+    width: 30px; /* Ajusta el ancho del botón */
+    height: 30px; /* Ajusta la altura del botón */
     display: flex; /* Para centrar los iconos */
     align-items: center; /* Centrar verticalmente */
     justify-content: center; /* Centrar horizontalmente */
@@ -988,9 +989,10 @@ label {
     transition: opacity 0.3s ease; /* Transición para hacer que el botón aparezca/disminuya */
 }
 
+
 /* Iconos */
 #mute-button .icon {
-    font-size: 24px; /* Tamaño del icono */
+    font-size: 18px; /* Tamaño del icono */
     width: 100%; /* Tomar todo el ancho del botón */
     height: 100%; /* Tomar todo el alto del botón */
     display: flex; /* Para centrar el icono */

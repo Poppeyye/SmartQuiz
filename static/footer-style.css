@@ -30,18 +30,44 @@
   border-radius: 8px; /* Bordes redondeados */
   padding: 5px 10px; /* Relleno alrededor del texto */
   margin-right: 10px; /* Espacio a la derecha */
+  color: whitesmoke
 }
-
-#togglePin {
-  background-color: transparent; /* Color de fondo azul */
-  color: white; /* Color del texto blanco */
+#pinBox {
+  background: transparent; /* Fondo transparente */
   border: none; /* Sin borde */
-  border-radius: 5px; /* Bordes redondeados */
-  font-size: 16px; /* Tamaño de fuente */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  transition: background-color 0.3s; /* Transición suave para el fondo */
+  cursor: pointer; /* Cambiar el cursor al pasar por encima */
+  position: fixed; /* Posicionamiento absoluto para colocar el botón */
+  bottom: 20px; /* Ajusta esto para alinearlo con la parte inferior del footer */
+  right: 20px; /* Ajusta esto según el espaciado que necesites desde el borde derecho */
+  z-index: 4000; /* Mantener un z-index alto para que esté en la parte superior */
+  width: 30px; /* Ajusta el ancho del botón */
+  height: 30px; /* Ajusta la altura del botón */
+  display: flex; /* Para centrar los iconos */
+  align-items: center; /* Centrar verticalmente */
+  justify-content: center; /* Centrar horizontalmente */
+  opacity: 0.8; /* Opcional - agregar un poco de opacidad para hacerlo más discreto */
+  transition: opacity 0.3s ease; /* Transición para hacer que el botón aparezca/disminuya */
 }
 
-#togglePin:hover {
-  color: gold; /* Color más oscuro al pasar el mouse */
+#infoMessage {
+  display: none; /* Ocultar el mensaje inicialmente */
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9); /* Blanco con transparencia */
+  color: black; /* Color blanco con transparencia */
+  padding: 5px;
+  font-weight: 400;
+  border-radius: 5px;
+  top: 50%; /* Centrar verticalmente */
+  left: -350px; /* Ajustar la posición a la izquierda */
+  transform: translateY(-50%); /* Centrar el mensaje verticalmente */
+  transform: translateX(-10%); /* Centrar el mensaje verticalmente */
+  z-index: 10;
+  transition: opacity 0.3s ease; /* Efecto de transición */
+  opacity: 0; /* Hacer el mensaje invisible inicialmente */
+  pointer-events: none; /* Evitar que capte eventos de ratón */
+}
+
+#pinBox:hover #infoMessage {
+  display: block; /* Mostrar el mensaje al hacer hover */
+  opacity: 1; /* Hacer el mensaje visible */
 }
