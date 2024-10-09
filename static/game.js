@@ -1,28 +1,6 @@
-const pinDisplay = document.getElementById("pinDisplay");
-const toggleButton = document.getElementById("togglePin");
+import { mostrarPinSiDisponible } from './user-pins.js';
+import { backgroundMusic, correctSound, wrongSound, isMuted } from './mute-handler.js';
 
-pinDisplay.textContent = "****";
-
-function togglePin() {
-    if (pinDisplay.textContent === "****") {
-        pinDisplay.textContent = pin_code; // Muestra el pin
-        toggleButton.textContent = "Ocultar PIN";
-    } else {
-        pinDisplay.textContent = "****"; // Oculta el pin
-        toggleButton.textContent = "Ver PIN";
-    }
-}
-
-function mostrarPinSiDisponible(pin_code) {
-    if (pin_code) {
-        toggleButton.style.display = "inline"; // Muestra el botón para alternar
-        pinDisplay.style.display = "inline"; // Muestra el bloque del PIN
-        pinDisplay.textContent = "****"; // Asegúrate que inicia como ****
-    } else {
-        pinDisplay.style.display = "none"; // Esconde el bloque del PIN si no hay
-        toggleButton.style.display = "none"; // Esconde el botón si no hay PIN
-    }
-}
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
     const pinCode = document.getElementById('pin-code');
@@ -44,17 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionText = document.getElementById('question-text');
     const flagImage = document.querySelector('#answer-buttons picture img');
 
-    //const scoreTimer = document.getElementById('score-timer')
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
-    // music
-    const backgroundMusic = document.getElementById('background-music');
-    const correctSound = document.getElementById('correct-sound');
-    const wrongSound = document.getElementById('wrong-sound');
-    const muteButton = document.getElementById('mute-button');
-    backgroundMusic.volume = 0.1;
-    correctSound.volume = 0.5;
-    wrongSound.volume = 0.5;
+
 
     let correctAnswer = null;
     let timerInterval = null;
@@ -62,33 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let bestScores = [];
     let selectedCategory = '';
     let gameEnded = null;
-    let correctAnswersCount = 0; // Contador de respuestas correctas
-    let totalTimeTaken = 0; // Acumulador del tiempo total tomado por las respuestas
-    let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
-    
-    // Inicialización del mute en la GUI
-    toggleMute();
-
-    // Manejo del botón de mute
-    muteButton.addEventListener('click', () => {
-        isMuted = !isMuted;  // Cambia el estado de silencio
-        localStorage.setItem('isMuted', isMuted); // Almacena el nuevo estado
-        toggleMute(); // Llama a la función para manejar el mute
-    });
-
+    let correctAnswersCount = 0; 
+    let totalTimeTaken = 0; 
     let debounceTimer;
     
     userNameInput.addEventListener('input', () => {
         userName = userNameInput.value.trim();
-        clearTimeout(debounceTimer); // Limpiar el timer anterior
+        clearTimeout(debounceTimer); 
     
-        // Solo llamar a la API si el nombre tiene al menos 3 caracteres
         if (userName.length > 3) {
             debounceTimer = setTimeout(() => {
                 checkUserNameAvailability(userName);
-            }, 300); // 300 ms de debounce
+            }, 300);
         } else {
-            usernameStatus.textContent = ''; // Reiniciar el estado si es muy corto
+            usernameStatus.textContent = '';
         }
     });
 
@@ -284,29 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
         //displayFunnyMessage(userName, score)
         displayBestScores();
     }  
-  
-    // Manejar el botón de silenciar
-    function toggleMute() {
-        if (isMuted) {
-            backgroundMusic.muted = true;
-            correctSound.muted = true;
-            wrongSound.muted = true;
-            muteButton.classList.add('active'); // Cambia el estado visual
-            muteButton.querySelector('.icon-sound').style.display = 'none'; // Oculta icono de sonido
-            muteButton.querySelector('.icon-muted').style.display = 'flex'; // Muestra icono de silencio
-        } else {
-            backgroundMusic.muted = false;
-            correctSound.muted = false;
-            wrongSound.muted = false;
-            muteButton.classList.remove('active'); // Cambia el estado visual
-            muteButton.querySelector('.icon-sound').style.display = 'flex'; // Muestra icono de sonido
-            muteButton.querySelector('.icon-muted').style.display = 'none'; // Oculta icono de silencio
-        }
-    }
 
     async function getQuestion() {
         // Mostrar elementos del temporizador y la barra de progreso
-        if (!isMuted){
+        if (!isMuted) {
             backgroundMusic.play();
         }
     
@@ -322,15 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameEnded = false; // Asegúrate de reiniciar el estado del juego
         }
     
-        let endpoint;
-        if (selectedCategory === "flags") {
-            endpoint = `/get_country_question`;
-        } else if (selectedCategory === "LogicGame") {
-            endpoint = `/get_logic_game/`;
-        }
-        else {
-            endpoint = `/get_question/${selectedCategory}`
-        }
+        let endpoint = getEndpoint(selectedCategory);
     
         try {
             const response = await fetch(endpoint);
@@ -338,72 +268,91 @@ document.addEventListener('DOMContentLoaded', () => {
                 endGame('Has terminado todas las preguntas');
                 return;
             }
+    
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
                 return;
             }
     
-            if (selectedCategory === "flags") {
-
-                const { correct_country, random_country } = data;
-                const options = [correct_country, random_country];
-                const shuffledOptions = options.sort(() => Math.random() - 0.5);
-                flagImage.style.display = 'inline';
-
-                // Actualizar la imagen de la bandera
-                flagImage.src = `https://flagcdn.com/160x120/${correct_country.iso_code.toLowerCase()}.png`;
+            // Verificar si el manejador para la categoría existe
+            const categoryHandler = categoryHandlers[selectedCategory] || categoryHandlers["default"];
+            categoryHandler(data);
     
-                // Actualizar las opciones de los botones
-                optionButton1.textContent = shuffledOptions[0].name;
-                optionButton2.textContent = shuffledOptions[1].name;
-    
-                // Almacenar la respuesta correcta
-                correctAnswer = correct_country.name;
-            } 
-            else if (selectedCategory==="LogicGame") {
-                const logicQuestion = data.question;
-                const wrong = decodeString(data.wrong);
-                const correct = decodeString(data.correct);
-                const options = [wrong, correct];
-                const shuffledOptions = options.sort(() => Math.random() - 0.5);
-                optionButton1.textContent = shuffledOptions[0];
-                optionButton2.textContent = shuffledOptions[1];
-                const questionContainer = document.getElementById('question-container');
-                questionText.style.display = 'block'
-
-                questionText.textContent = logicQuestion;
-
-                questionContainer.style.display = "block";
-                correctAnswer = correct;
-
-            }
-            else {
-                
-                // Supongamos que `data` es un objeto que contiene `headline`, `fake_news` y `created_by`
-                const headline = decodeString(data.headline);
-                const fake = decodeString(data.fake_news);
-                const options = [headline, fake];
-                const createdBySpan = document.getElementById('created-by-span'); // Corrige esto para acceder al span
-                // Shuffle options
-                const shuffledOptions = options.sort(() => Math.random() - 0.5);
-                optionButton1.textContent = shuffledOptions[0];
-                optionButton2.textContent = shuffledOptions[1];
-                correctAnswer = headline;
-                
-                // Set the creator's name in the createdBySpan
-                createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
-
-            }
-    
-            // Mostrar los botones de respuesta
+            // Mostrar los botones de respuesta y comenzar la cuenta regresiva
             answerButtons.style.display = 'flex';
             startCountdown();
         } catch (error) {
             console.error('Error fetching question:', error);
         }
     }
-
+    
+    // Obtener el endpoint adecuado según la categoría seleccionada
+    function getEndpoint(category) {
+        const endpoints = {
+            "flags": `/get_country_question`,
+            "LogicGame": `/get_logic_game/`,
+            "default": `/get_question/${category}`
+        };
+    
+        return endpoints[category] || endpoints["default"];
+    }
+    
+    // Manejadores de cada categoría
+    const categoryHandlers = {
+        "flags": function (data) {
+            const { correct_country, random_country } = data;
+            const options = [correct_country, random_country];
+            const shuffledOptions = options.sort(() => Math.random() - 0.5);
+            flagImage.style.display = 'inline';
+    
+            // Actualizar la imagen de la bandera
+            flagImage.src = `https://flagcdn.com/160x120/${correct_country.iso_code.toLowerCase()}.png`;
+    
+            // Actualizar las opciones de los botones
+            optionButton1.textContent = shuffledOptions[0].name;
+            optionButton2.textContent = shuffledOptions[1].name;
+    
+            // Almacenar la respuesta correcta
+            correctAnswer = correct_country.name;
+        },
+    
+        "LogicGame": function (data) {
+            const logicQuestion = data.question;
+            const wrong = decodeString(data.wrong);
+            const correct = decodeString(data.correct);
+            const options = [wrong, correct];
+            const shuffledOptions = options.sort(() => Math.random() - 0.5);
+    
+            // Actualizar las opciones de los botones
+            optionButton1.textContent = shuffledOptions[0];
+            optionButton2.textContent = shuffledOptions[1];
+    
+            questionText.style.display = 'block';
+            questionText.textContent = logicQuestion;
+    
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.style.display = "block";
+            correctAnswer = correct;
+        },
+    
+        "default": function (data) {
+            const headline = decodeString(data.headline);
+            const fake = decodeString(data.fake_news);
+            const options = [headline, fake];
+            const shuffledOptions = options.sort(() => Math.random() - 0.5);
+    
+            // Actualizar las opciones de los botones
+            optionButton1.textContent = shuffledOptions[0];
+            optionButton2.textContent = shuffledOptions[1];
+            correctAnswer = headline;
+    
+            // Actualizar el span con el creador de la pregunta
+            const createdBySpan = document.getElementById('created-by-span');
+            createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
+        }
+    };
+    
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
     let userRank = 0;
     async function displayFunnyMessage(playerScore) {
@@ -474,8 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return cookie.substring(name.length + 1);
             }
         }
-        return   
-     null;
+        return  
+      null;
     }
 
     async function submitScore(userName, totalScore, totalTimeTaken, correctAnswersCount ) {

@@ -79,12 +79,13 @@
         <div class="footer-bottom">
             <p>
                 <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a> |
-                <button id="togglePin" onclick="togglePin(pin_code)">Ver PIN</button>
+                <button id="togglePin">Ver PIN</button>
                 <span id="pinDisplay" >****</span> 
             </p>
         </div>
     </footer>
-<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='game.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='user-pins.js') }}"></script>
 
 <script type="text/javascript">
 const allCategories = {{ categories|tojson }};
