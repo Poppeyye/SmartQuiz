@@ -53,21 +53,32 @@
   display: none; /* Ocultar el mensaje inicialmente */
   position: absolute;
   background-color: rgba(255, 255, 255, 0.9); /* Blanco con transparencia */
-  color: black; /* Color blanco con transparencia */
+  color: black;
   padding: 5px;
   font-weight: 400;
   border-radius: 5px;
-  top: 50%; /* Centrar verticalmente */
-  left: -350px; /* Ajustar la posición a la izquierda */
-  transform: translateY(-50%); /* Centrar el mensaje verticalmente */
-  transform: translateX(-10%); /* Centrar el mensaje verticalmente */
+  bottom: 50%; /* Centrar verticalmente */
+  left: -80px; /* Ajustar la posición a la izquierda */
+  transform: translateY(-50%); /* Centrar verticalmente */
+  transform: translateX(-50%);
   z-index: 10;
-  transition: opacity 0.3s ease; /* Efecto de transición */
+  transition: opacity 0.3s ease;
   opacity: 0; /* Hacer el mensaje invisible inicialmente */
   pointer-events: none; /* Evitar que capte eventos de ratón */
+  width: auto;
 }
 
 #pinBox:hover #infoMessage {
   display: block; /* Mostrar el mensaje al hacer hover */
   opacity: 1; /* Hacer el mensaje visible */
+}
+
+/* Media query para pantallas pequeñas (móviles) */
+@media only screen and (max-width: 600px) {
+  #infoMessage {
+    bottom: 30%; /* Centrar verticalmente */
+    left: -40px; /* Ajustar la posición a la izquierda */
+    padding: 10px; /* Ajustar el padding para pantallas pequeñas */
+    font-size: 10px; /* Reducir el tamaño de fuente si es necesario */
+  }
 }

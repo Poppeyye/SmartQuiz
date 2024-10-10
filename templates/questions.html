@@ -2,11 +2,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>Crea nuevas preguntas con Genia💡</h1>
-    <h2 class="quests">No te preocupes, ella las crea por ti 🙂‍</h2>
+    <h1>Publica nuevas preguntas al juego</h1>
+    <h2 class="quests">No te preocupes, Genia💡 las crea por ti</h2>
     <form id="thematic-form">
-        <label for="thematic-input">Elige una categoría:</label>
+        <label for="thematic-input">Primero, elige una categoría:</label>
         <select id="thematic-input" required>
+            <option value="" disabled selected>Selecciona una categoría</option>
             {% for category in categories %}
                 {% if category not in ['flags', 'LogicGame'] %}
                     <option value="{{ category }}">{{ category }}</option>
@@ -14,20 +15,24 @@
             {% endfor %}
         </select>
         
-        <label for="context-input">Para que nuestra genIA cree preguntas únicas, escribe algo de contexto.<br>
-            Por ejemplo, si eliges Deportes, puedes poner: "Fútbol, Cristiano Ronaldo, Real Madrid".<br>
-            No te preocupes, puedes editarlas luego.<br>
-            Datos actualizados a 2023</label>
-        
+        <div id="additional-fields" style="display: none;"> <!-- Ocultar los campos adicionales al inicio -->
+            <label for="context-input">
+                Para que genia cree preguntas únicas, escribe algo de contexto.<br>
+                Por ejemplo, si eliges Deportes, puedes poner: "Fútbol, Cristiano Ronaldo, Real Madrid".<br>
+                No te preocupes, puedes editarlas luego.<br>
+                Datos actualizados a 2023
+            </label>
             <input type="text" id="context-input" class="custom-input" required placeholder="Añade contexto" maxlength="150" />
-        <label for="questions-count">Cuántas preguntas quieres generar?:</label>
-        <select id="questions-count" required>
-            <option value="5">5 Preguntas - ☕</option>
-            <option value="10">10 Preguntas - 🍸</option>
-            <option value="15">15 Preguntas - 🍾</option>
-        </select>
-
-        <button class="btn" type="submit" id="obtain-questions-button">Obtener Preguntas</button>
+            
+            <label for="questions-count">¿Cuántas preguntas quieres generar?</label>
+            <select id="questions-count" required>
+                <option value="5">5 Preguntas - ☕</option>
+                <option value="10">10 Preguntas - 🍸</option>
+                <option value="15">15 Preguntas - 🍾</option>
+            </select>
+        </div>
+    
+        <button class="btn" type="submit" id="obtain-questions-button" style="display: none;">Obtener Preguntas</button>
     </form>
 
     <div id="loading-indicator" style="display:none;">
@@ -39,9 +44,9 @@
     </div>
 
     <div id="questions-container" style="display:none;">
-        <h2>Preguntas</h2>
         <div id="questions-list"></div>
         <input type="text" id="created-by-input" class="custom-input" required placeholder="Nombre" maxlength="100" />
+        <p style="color:white; font-weight: 300;">Pondremos tu nombre de usuario debajo de las preguntas que hayas generado</p>
         <button id="save-questions-button" class="btn">Guardar Preguntas</button>
         
         <!-- Sugerencia de donación -->
@@ -300,6 +305,18 @@ textarea:focus {
 
 });
 
+function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                return cookie.substring(name.length + 1);
+            }
+        }
+        return  
+      null;
+    }
+
 document.getElementById('save-questions-button').addEventListener('click', function() {
     const questionInputs = document.querySelectorAll('#questions-list .question-item');
     const questionsToSave = [];
@@ -320,9 +337,12 @@ document.getElementById('save-questions-button').addEventListener('click', funct
 
     fetch('/save_questions', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+
+                },
         body: JSON.stringify(questionsToSave)
     })
     .then(response => response.json())
@@ -333,7 +353,18 @@ document.getElementById('save-questions-button').addEventListener('click', funct
         console.error('Error al guardar las preguntas:', error);
     });
 });
+const categoryInput = document.getElementById('thematic-input');
+const additionalFields = document.getElementById('additional-fields');
+const obtainQuestionsButton = document.getElementById('obtain-questions-button');
 
+categoryInput.addEventListener('change', function() {
+    if (thematicInput.value !== "") {
+        // Mostrar los campos adicionales y el botón de submit cuando el usuario elija una categoría válida
+        additionalFields.style.display = 'block';
+        obtainQuestionsButton.style.display = 'inline-flex';
+
+    }
+});
 
     
 </script>

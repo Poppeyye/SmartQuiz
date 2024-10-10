@@ -672,6 +672,7 @@ a {
 .quests{
     font-size: 1.5rem;
     margin: 20px 0;
+    font-weight: 300;
     color: whitesmoke;
     text-shadow: 1px 1px hsl(35, 100%, 20%);
 }

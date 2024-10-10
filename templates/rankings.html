@@ -63,7 +63,6 @@
         const searchInput = document.getElementById('search-input');
         const categorySelector = document.getElementById('category-selector');
 
-        // Función para mostrar/ocultar categorías según la selección
         function filterCategories() {
             const selectedCategory = categorySelector.value.toLowerCase(); // Convertir a minúsculas
             allCategories.forEach(category => {
@@ -76,22 +75,18 @@
             });
         }
 
-        // Inicializar el filtrado
         categorySelector.addEventListener('change', filterCategories);
-        filterCategories(); // Llamar a la función al cargar la página
+        filterCategories();
 
-        // Obtener los parámetros de la URL
         const params = new URLSearchParams(window.location.search);
         const searchValue = params.get('search');
 
-        // Si hay un valor, establecerlo en el input y disparar el evento 'input'
         if (searchValue) {
             searchInput.value = decodeURIComponent(searchValue);
             const event = new Event('input', { bubbles: true });
             searchInput.dispatchEvent(event);
         }
 
-        // Extra: Puedes añadir un filtro de búsqueda si es necesario aquí
     };
 </script>
 {% endblock %}
