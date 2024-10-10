@@ -9,7 +9,7 @@
         <select id="thematic-input" required>
             <option value="" disabled selected>Selecciona una categoría</option>
             {% for category in categories %}
-                {% if category not in ['flags', 'LogicGame'] %}
+                {% if category not in ['flags', 'LogicGame', 'Culture'] %}
                     <option value="{{ category }}">{{ category }}</option>
                 {% endif %}
             {% endfor %}
@@ -29,7 +29,6 @@
                 <option value="5">5 Preguntas - ☕</option>
                 <option value="10">10 Preguntas - 🍸</option>
                 <option value="15">15 Preguntas - 🍾</option>
-                <option value="150">150 Preguntas - 🍾</option>
             </select>
         </div>
     
