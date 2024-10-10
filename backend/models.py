@@ -48,6 +48,7 @@ class LogicGames(db.Model):
     question = db.Column(db.String(500), nullable=False)
     correct = db.Column(db.String(500), nullable=False)
     wrong = db.Column(db.String(500), nullable=False)
+    category = db.Column(db.String(100), nullable=False) #logics o culture
     difficulty = db.Column(db.String(500), nullable=False)
     numero = db.Column(db.String(500), nullable=False)
 

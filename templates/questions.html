@@ -29,6 +29,7 @@
                 <option value="5">5 Preguntas - ☕</option>
                 <option value="10">10 Preguntas - 🍸</option>
                 <option value="15">15 Preguntas - 🍾</option>
+                <option value="150">150 Preguntas - 🍾</option>
             </select>
         </div>
     
@@ -235,7 +236,7 @@ textarea:focus {
 
     obtainButton.disabled = true;
     loadingIndicator.style.display = 'block';  // Mostrar indicador de carga
-    if (thematicInput==="LogicGame"){
+    if (thematicInput==="Culture"){
         const response = await fetch(`/create_logic_game?thematic=${encodeURIComponent(thematicInput)}&context=${encodeURIComponent(contextInput)}&count=${encodeURIComponent(questionsCount)}`);
         const questions = await response.json();
         if (response.ok) {

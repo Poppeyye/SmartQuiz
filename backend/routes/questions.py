@@ -51,12 +51,12 @@ def get_question(category):
         "created_by": new_item["created_by"]
     }
     return jsonify(question)
-@questions_bp.route("/get_logic_game/")
+@questions_bp.route("/get_logic_game/<category>")
 @require_jwt
-def get_logic_game():
+def get_logic_game(category):
     # Cargamos la pool de preguntas desde la base de datos si es la primera vez
     if "logic_game_pool" not in session:
-        session["logic_game_pool"] = get_logic_game_questions()  # Función que carga preguntas
+        session["logic_game_pool"] = get_logic_game_questions(category)  # Función que carga preguntas
         session["used_headlines"] = []  # Índice para seguir la siguiente pregunta a devolver
 
     # Si no hay preguntas disponibles en la pool, retornamos error.
@@ -149,12 +149,12 @@ def get_all_questions(category):
         for question in questions
     ]
 
-def get_logic_game_questions():
+def get_logic_game_questions(category):
     questions = []
     query = (
-        LogicGames.query
+        LogicGames.query.filter_by(category=category)
         .order_by(func.random())
-        .limit(150)
+        .limit(200)
         .all()
     )
     questions.extend(query)
@@ -187,7 +187,7 @@ def create_questions():
     context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
     # TODO a veces falla
     if palabrota.contains_palabrota(context):
-        return jsonify({"error": "Vuelve a intentarlo, gracias :D"}), 400
+        return jsonify({"error": "Oops, alguna palabra no gustó a Genia"}), 400
 
     if not thematic:
         return jsonify({"error": "La temática es requerida"}), 400

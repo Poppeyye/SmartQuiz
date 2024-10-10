@@ -291,7 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function getEndpoint(category) {
         const endpoints = {
             "flags": `/get_country_question`,
-            "LogicGame": `/get_logic_game/`,
+            "LogicGame": `/get_logic_game/logics`,
+            "Culture": `/get_logic_game/culture`,
             "default": `/get_question/${category}`
         };
     
@@ -318,22 +319,11 @@ document.addEventListener('DOMContentLoaded', () => {
         },
     
         "LogicGame": function (data) {
-            const logicQuestion = data.question;
-            const wrong = decodeString(data.wrong);
-            const correct = decodeString(data.correct);
-            const options = [wrong, correct];
-            const shuffledOptions = options.sort(() => Math.random() - 0.5);
+            handleLogicOrCultureGame(data);
+        },
     
-            // Actualizar las opciones de los botones
-            optionButton1.textContent = shuffledOptions[0];
-            optionButton2.textContent = shuffledOptions[1];
-    
-            questionText.style.display = 'block';
-            questionText.textContent = logicQuestion;
-    
-            const questionContainer = document.getElementById('question-container');
-            questionContainer.style.display = "block";
-            correctAnswer = correct;
+        "Culture": function (data) {
+            handleLogicOrCultureGame(data);
         },
     
         "default": function (data) {
@@ -352,6 +342,27 @@ document.addEventListener('DOMContentLoaded', () => {
             createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
         }
     };
+    
+    // Función compartida para manejar tanto LogicGame como Culture
+    function handleLogicOrCultureGame(data) {
+        const logicQuestion = data.question;
+        const wrong = decodeString(data.wrong);
+        const correct = decodeString(data.correct);
+        const options = [wrong, correct];
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+    
+        // Actualizar las opciones de los botones
+        optionButton1.textContent = shuffledOptions[0];
+        optionButton2.textContent = shuffledOptions[1];
+    
+        questionText.style.display = 'block';
+        questionText.textContent = logicQuestion;
+    
+        const questionContainer = document.getElementById('question-container');
+        questionContainer.style.display = "block";
+        correctAnswer = correct;
+    }
+    
     
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
     let userRank = 0;
@@ -482,10 +493,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function decodeString(s) {
-        let decodedBytes = atob(s);  // Decodificamos la cadena base64 a bytes
-        let uint8Array = new Uint8Array([...decodedBytes].map(char => char.charCodeAt(0))); // Convertimos a array de bytes
-        let decoder = new TextDecoder('utf-8');  // Creamos un decodificador de UTF-8
-        return decoder.decode(uint8Array);  // Decodificamos a string
+        let decodedBytes = atob(s);
+        let uint8Array = new Uint8Array([...decodedBytes].map(char => char.charCodeAt(0)));
+        let decoder = new TextDecoder('utf-8');
+        return decoder.decode(uint8Array);
     }
 
     function updateProgressBar() {
@@ -495,13 +506,10 @@ document.addEventListener('DOMContentLoaded', () => {
         remainingTime = countdownTime - elapsedTime;
         const progressPercentage = (remainingTime / countdownTime) * 100;
 
-        // Actualizar la barra de progreso
         progressBar.style.width = `${progressPercentage}%`;
 
-        // Actualizar el texto del temporizador
         timerText.textContent = `Tiempo: ${remainingTime.toFixed(1)}s`;
 
-        // Verificar si el tiempo ha terminado y detener el intervalo
         if (remainingTime <= 0 && !gameEnded) {
             endGame('Se acabó el tiempo!\n Puntuación Total: ');
         }

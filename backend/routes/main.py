@@ -144,7 +144,7 @@ def sitemap():
 
 @main_bp.context_processor
 def inject_categories():
-    categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'flags','LogicGame']
+    categories = ['Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'flags','LogicGame', 'Culture']
     category_names = {
         'Deportes': 'Deportes',
         'Moda': 'Moda y Estilo',
@@ -152,6 +152,7 @@ def inject_categories():
         'Software': 'Informática y Matemáticas',
         'Economia': 'Economía y Finanzas',
         'flags': 'Banderas del Mundo',
-        'LogicGame': 'Desafío Mental'
+        'LogicGame': 'Desafío Mental',
+        'Culture': 'Cultura General'
     }
     return dict(categories=categories, category_names=category_names)
