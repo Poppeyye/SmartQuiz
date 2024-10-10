@@ -6,12 +6,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-9336280075263389">
-    <meta name="description" content="El juego de inteligencia, velicidad y astucia más completo de Internet. Juega y compite por el primer puesto">
-    <meta name="keywords" content="juego de preguntas, banderas del mundo, juegos de logica, juegos de inteligencia">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Juega al mejor juego de preguntas y respuestas de cultura general, banderas del mundo, deportes, moda, tecnología y más. Compite por el primer puesto en el ranking global y demuestra tu inteligencia y rapidez. ¡Acepta el desafío y alcanza la cima!">
+    <meta name="keywords" content="juego de preguntas, cultura general, banderas del mundo, juegos de lógica, juegos de inteligencia, deportes, moda, tecnología, trivia online, quiz de conocimientos, competencia global, ranking de jugadores">
     <meta name="author" content="genias.io">
     <meta name="robots" content="index, follow">
 
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Genias.io - El desafío global de preguntas y respuestas">
+    <meta property="og:description" content="Demuestra tu inteligencia y rapidez en Genias.io. Compite en preguntas de cultura general, banderas, deportes, tecnología y más. ¡Alcanza el primer puesto del ranking global!">
+    <meta property="og:image" content="{{ url_for('static', filename='pngs/geniasiologo.png', _external=True) }}">
+    <meta property="og:url" content="{{ url_for('main.index', _external=True) }}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Genias.io - Compite en el mejor juego de preguntas y respuestas">
+    <meta name="twitter:description" content="Pon a prueba tu conocimiento en categorías como deportes, moda, tecnología y más. Juega y compite por el primer puesto del ranking global en Genias.io.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='geniasiologo.png', _external=True) }}">
+
+
     <title>{% block title %}Genias.io{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='svgs/owl.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
