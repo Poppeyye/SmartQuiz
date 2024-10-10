@@ -14,19 +14,25 @@ main_bp = Blueprint('main', __name__, static_folder='static')
 # Función para renovar el access token si está por expirar
 def refresh_access_token_if_needed(response):
     try:
-        verify_jwt_in_request(optional=True)
+        verify_jwt_in_request()
         exp_timestamp = get_jwt().get("exp")
         now = datetime.now(timezone.utc)
         if exp_timestamp and exp_timestamp < now.timestamp() + 300:  # Si el token expira en 5 minutos
             user_identity = get_jwt_identity()
             access_token = create_access_token(identity=user_identity)
+            new_refresh_token = create_refresh_token(identity=user_identity)
+
             set_access_cookies(response, access_token)
+            set_refresh_cookies(response, new_refresh_token)
+
             return response
-    except ExpiredSignatureError:
+    except:
         if 'admin_id' in session:
             user_identity = session['admin_id']
             access_token = create_access_token(identity=user_identity)
+            new_refresh_token = create_refresh_token(identity=user_identity)
             set_access_cookies(response, access_token)
+            set_refresh_cookies(response, new_refresh_token)
             return response
     return None
 
