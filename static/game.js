@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedCategory = category;
         categoryContainer.style.display = 'none';
         getBestScores();
-        totalScore = 0;
     
         // Mostrar el contador de "Preparados, listos, ya" dentro de #question-container
         const questionContainer = document.getElementById('question-container');
@@ -531,6 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const endTime = Date.now();
         const timeTaken = (endTime - startTime) / 1000;
+        console.log(timeTaken)
         if (userAnswer === correctAnswer) {
             correctSound.play()
             handleCorrectAnswer(timeTaken);
@@ -581,6 +581,8 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`; 
         correctAnswersCount += 1;
         totalTimeTaken += timeTaken;
+
+        console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             displayFunnyMessage(totalScore);
@@ -604,15 +606,15 @@ document.addEventListener('DOMContentLoaded', () => {
         submitScore(userName, totalScore,totalTimeTaken, correctAnswersCount);
         // Mostrar el mensaje de puntuación final como un pop-up
         showFinalOverlay();
-
+        totalScore=0.0;
+        totalTimeTaken = 0.0;
         // Remover el pop-up de ranking si existe
         const rankingPopup = document.querySelector('.ranking-popup');
         if (rankingPopup) {
             document.body.removeChild(rankingPopup);
         }
-
-        console.log(`Juego terminado. Puntuación final: ${totalScore}`);
     }
+
     async function showFinalOverlay() {
         // Crear el overlay
         const overlay = document.createElement('div');
