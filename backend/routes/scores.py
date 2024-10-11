@@ -145,9 +145,7 @@ def get_user_rank(category=None):
             + 1
         )
 
-    total_users = db.session.query(PlayerScore).count()
-
-    response = {"userRank": user_rank, "totalUsers": total_users}
+    response = {"userRank": user_rank}
 
     return jsonify(response)
 

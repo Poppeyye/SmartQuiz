@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
-    const rankingContainer = document.getElementById('ranking-container');
+    //const rankingContainer = document.getElementById('ranking-container');
     const slogan = document.getElementById('slogan');
     const optionButton1 = document.getElementById('option-button-1');
     const optionButton2 = document.getElementById('option-button-2');
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectCategory(category) {
         selectedCategory = category;
         categoryContainer.style.display = 'none';
-        getBestScores();
+        //getBestScores();
     
         // Mostrar el contador de "Preparados, listos, ya" dentro de #question-container
         const questionContainer = document.getElementById('question-container');
@@ -365,6 +365,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
     let userRank = 0;
+    async function getUserRank(playerScore) {
+        const url = selectedCategory ? `/get_user_rank/${selectedCategory}` : '/get_user_rank/';
+        const params = new URLSearchParams({ playerScore });
+        
+        try {
+            const response = await fetch(`${url}?${params}`);
+            const data = await response.json();
+            userRank = data.userRank;
+        } catch (error) {
+            console.error('Error fetching user rank:', error);
+        }
+        return userRank;
+    }
+
     async function displayFunnyMessage(playerScore) {
         const url = selectedCategory ? `/get_user_rank/${selectedCategory}` : '/get_user_rank/';
         const params = new URLSearchParams({ playerScore });
@@ -585,8 +599,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
-            displayFunnyMessage(totalScore);
-            updateBestScores(userName, totalScore);
+            //displayFunnyMessage(totalScore);
+            //updateBestScores(userName, totalScore);
 
             // Obtener la siguiente pregunta, se puede agregar un tiempo para delay antes de hacer la siguiente pregunta
             getQuestion();
@@ -605,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Enviar la puntuación
         submitScore(userName, totalScore,totalTimeTaken, correctAnswersCount);
         // Mostrar el mensaje de puntuación final como un pop-up
-        showFinalOverlay();
+        showFinalOverlay(totalScore);
         totalScore=0.0;
         totalTimeTaken = 0.0;
         // Remover el pop-up de ranking si existe
@@ -615,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function showFinalOverlay() {
+    async function showFinalOverlay(totalScore) {
         // Crear el overlay
         const overlay = document.createElement('div');
         overlay.className = 'final-overlay';   
@@ -625,11 +639,12 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.appendChild(confetti);
         }
         // Crear el cuadro del mensaje
+        let userRankResult = await getUserRank(totalScore)
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';
         const userRanking = document.createElement('p');
         userRanking.className = 'overlay-subtitle';
-        userRanking.textContent = `${totalScore} 📣 #${userRank}`;
+        userRanking.textContent = `${totalScore} 📣 #${userRankResult}`;
 
         const nameOverlay = document.createElement('p');
         nameOverlay.className = 'overlay-username';
@@ -753,7 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultText.style.display = 'none';
                 scoreText.style.display = 'none';
                 slogan.style.display = 'flex';
-                rankingContainer.style.display = 'none';
+                //rankingContainer.style.display = 'none';
                 questionText.style.display = 'none'
 
                 flagImage.style.display = 'none';
