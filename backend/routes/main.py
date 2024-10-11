@@ -1,56 +1,48 @@
 from functools import wraps
-from flask import Blueprint, jsonify, make_response, request, send_from_directory, session, render_template, current_app
+from flask import Blueprint, jsonify, make_response, request, session, render_template
 from flask_jwt_extended import (
-    verify_jwt_in_request, get_jwt_identity, get_jwt, create_access_token, 
+    verify_jwt_in_request, get_jwt_identity, create_access_token, 
     create_refresh_token, set_access_cookies, set_refresh_cookies, 
-    unset_jwt_cookies, jwt_required, decode_token
+    unset_jwt_cookies, get_jwt, decode_token
 )
 from jwt.exceptions import ExpiredSignatureError
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import uuid
 
 main_bp = Blueprint('main', __name__, static_folder='static')
 
-# Función para renovar el access token si está por expirar
+# Función para crear y establecer tokens
+def create_and_set_tokens(identity, response):
+    access_token = create_access_token(identity=identity)
+    refresh_token = create_refresh_token(identity=identity)
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
+
+# Función para renovar el access token si está a punto de expirar
 def refresh_access_token_if_needed(response):
     try:
         verify_jwt_in_request()
         exp_timestamp = get_jwt().get("exp")
-        now = datetime.now(timezone.utc)
-        if exp_timestamp and exp_timestamp < now.timestamp() + 300:  # Si el token expira en 5 minutos
+        now = datetime.now(timezone.utc).timestamp()
+        if exp_timestamp and exp_timestamp < now + 300:  # Si el token expira en 5 minutos
             user_identity = get_jwt_identity()
-            access_token = create_access_token(identity=user_identity)
-            new_refresh_token = create_refresh_token(identity=user_identity)
-
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, new_refresh_token)
-
-            return response
+            create_and_set_tokens(user_identity, response)
     except:
         if 'admin_id' in session:
             user_identity = session['admin_id']
-            access_token = create_access_token(identity=user_identity)
-            new_refresh_token = create_refresh_token(identity=user_identity)
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, new_refresh_token)
-            return response
-    return None
+            create_and_set_tokens(user_identity, response)
 
-# Decorador para requerir JWT y manejar la renovación automática de tokens
+# Decorador para manejar la renovación automática de tokens
 def require_jwt(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
             verify_jwt_in_request()  # Verifica que el token es válido
             response = make_response(func(*args, **kwargs))
-
-            # Intenta renovar el token si es necesario
-            refresh_response = refresh_access_token_if_needed(response)
-            if refresh_response:
-                return refresh_response
+            refresh_access_token_if_needed(response)
+            return response
             
         except ExpiredSignatureError:
-            # Intenta renovar usando el refresh token
             refresh_token = request.cookies.get('refresh_token_cookie')
             if not refresh_token:
                 response = make_response(jsonify({'error': 'Refresh token missing'}), 401)
@@ -60,13 +52,9 @@ def require_jwt(func):
             try:
                 decoded_refresh_token = decode_token(refresh_token)
                 user_identity = decoded_refresh_token['sub']
-                
-                access_token = create_access_token(identity=user_identity)
-                new_refresh_token = create_refresh_token(identity=user_identity)
+                create_and_set_tokens(user_identity, response)
                 
                 response = make_response(func(*args, **kwargs))
-                set_access_cookies(response, access_token)
-                set_refresh_cookies(response, new_refresh_token)
             except Exception as e:
                 response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}), 401)
                 unset_jwt_cookies(response)
@@ -81,18 +69,13 @@ def require_jwt(func):
 def index():
     response = make_response(render_template("index.html", user_name=session.get('user_name', ''),
                                              pin_code=session.get('pin_code', '')))
-    
+
     if 'admin_id' not in session:
         session['admin_id'] = str(uuid.uuid4())
-        access_token = create_access_token(identity=session['admin_id'])
-        refresh_token = create_refresh_token(identity=session['admin_id'])
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
+        create_and_set_tokens(session['admin_id'], response)
     else:
-        refresh_response = refresh_access_token_if_needed(response)
-        if refresh_response:
-            return refresh_response
-        
+        refresh_access_token_if_needed(response)
+
     session["used_headlines"] = []
     session.pop('news_pool', None)
     session.pop('country_pool', None)
