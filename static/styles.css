@@ -155,7 +155,14 @@ body {
 
 /* Estilo para el texto */
 #timer-text, #score-text, #result-text {
-    font-size: 1.5rem; /* Tamaño mayor para visibilidad */
+    font-size: 1.2rem; /* Tamaño mayor para visibilidad */
+    margin: 5px 0;
+    color: #F9C642; /* Color suave */
+    text-align: center; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
+}
+#count-text {
+    font-size: 1rem; /* Tamaño mayor para visibilidad */
     margin: 5px 0;
     color: #F9C642; /* Color suave */
     text-align: center; 
@@ -308,7 +315,7 @@ body {
     font-style: normal;
 }
 #ranking-container h2 {
-    font-size: 1.8em; /* Aumenta el tamaño del título */
+    font-size: 1.4em; /* Aumenta el tamaño del título */
     margin: 0;
     padding-bottom: 10px; /* Espacio inferior para separar del contenido */
     color: #F9C642; /* Color amarillo/camel */
@@ -339,13 +346,9 @@ body {
 }
 
 /* Estilos para móviles y tabletas */
-@media (max-width: 850px) {
+@media (max-width: 768px) {
     #ranking-container {
-        position: relative; /* Cambia a relativo para dispositivos pequeños */
-        width: 100%; /* Ancho completo en móviles */
-        top: auto;
-        right: auto;
-        margin-top: 10px; /* Espacio adicional desde el main container */
+        display: none;
     }
 }
 #welcome-container {

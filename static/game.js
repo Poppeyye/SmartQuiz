@@ -10,13 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
     const categoryContainer = document.getElementById('category-container');
-    //const rankingContainer = document.getElementById('ranking-container');
+    const rankingContainer = document.getElementById('ranking-container');
     const slogan = document.getElementById('slogan');
     const optionButton1 = document.getElementById('option-button-1');
     const optionButton2 = document.getElementById('option-button-2');
     const timerText = document.getElementById('timer-text');
     const resultText = document.getElementById('result-text');
     const scoreText = document.getElementById('score-text');
+    const correctCountText = document.getElementById('count-text');
     const bestScoresList = document.getElementById('best-scores-list');
     const answerButtons = document.getElementById('answer-buttons');
     const questionText = document.getElementById('question-text');
@@ -97,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Limpiar la lista actual
         bestScoresList.innerHTML = '';
 
-        // Ordenar las puntuaciones de mayor a menor si no se ha hecho antes
         bestScores.sort((a, b) => b.score - a.score);
 
         // Recorriendo la lista de puntuaciones
@@ -190,7 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectCategory(category) {
         selectedCategory = category;
         categoryContainer.style.display = 'none';
-        //getBestScores();
+        if (window.innerWidth > 768) {
+            // Solo aplicar display flex en pantallas de ordenador
+            getBestScores();
+        }
     
         // Mostrar el contador de "Preparados, listos, ya" dentro de #question-container
         const questionContainer = document.getElementById('question-container');
@@ -251,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slogan.style.display = 'none';
         timerText.style.display = 'flex';
         scoreText.style.display = 'flex';
+        correctCountText.style.display='flex';
         progressBar.style.width = '100%';
     
         // Detener el temporizador anterior si existe
@@ -479,10 +483,27 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error:', error);
         }
     }
-
+    function modifyRankingContainer() {
+        const rankingContainer = document.getElementById('ranking-container');
+    
+        // Solo cambiar display a flex si la pantalla es mayor a 768px
+        if (window.innerWidth > 768) {
+            rankingContainer.style.display = 'flex';
+        } else {
+            rankingContainer.style.display = 'none'; // Asegurarte de que esté oculto en móviles
+        }
+    }
+    
+    window.addEventListener('resize', modifyRankingContainer);
+    modifyRankingContainer();
+    
     async function getBestScores() {
         try {
             rankingContainer.style.display = 'flex';
+            const rankingTitle = document.querySelector('#ranking-container h2');
+
+            rankingTitle.textContent = `Top 7 ${categoryNames[selectedCategory]}`;
+
             const response = await fetch(`/get_best_scores/${selectedCategory}`);
             const data = await response.json();
             if (data.scores) {
@@ -594,13 +615,17 @@ document.addEventListener('DOMContentLoaded', () => {
         totalScore = parseFloat(totalScore.toFixed(2));
         scoreText.textContent = `Puntuación Total: ${totalScore.toFixed(2)}`; 
         correctAnswersCount += 1;
+        correctCountText.textContent = `Correctas: ${correctAnswersCount}`; 
         totalTimeTaken += timeTaken;
 
         console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             //displayFunnyMessage(totalScore);
-            //updateBestScores(userName, totalScore);
+            if (window.innerWidth > 768) {
+                // Solo aplicar display flex en pantallas de ordenador
+                updateBestScores(userName, totalScore);
+            }
 
             // Obtener la siguiente pregunta, se puede agregar un tiempo para delay antes de hacer la siguiente pregunta
             getQuestion();
@@ -767,6 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userNameInput.value = userName;
                 resultText.style.display = 'none';
                 scoreText.style.display = 'none';
+                correctCountText.style.display='none';
                 slogan.style.display = 'flex';
                 //rankingContainer.style.display = 'none';
                 questionText.style.display = 'none'

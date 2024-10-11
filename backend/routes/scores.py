@@ -84,7 +84,7 @@ def get_best_scores(category):
     scores = (
         PlayerScore.query.filter_by(category=category)
         .order_by(PlayerScore.score.desc())
-        .limit(10)
+        .limit(7)
         .all()
     )
     results = [{"name": score.name, "score": score.score} for score in scores]
