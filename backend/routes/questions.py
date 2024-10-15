@@ -143,7 +143,7 @@ def end_game():
 def get_all_questions(category):
     questions = Question.query.filter(
     and_(
-        Question.category == category,
+        Question.category == category
     )).all()
     
     return [
