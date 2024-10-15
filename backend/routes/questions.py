@@ -144,7 +144,6 @@ def get_all_questions(category):
     questions = Question.query.filter(
     and_(
         Question.category == category,
-        Question.explanation != 'VF'
     )).all()
     
     return [
