@@ -1,6 +1,6 @@
 import random
 from flask import Blueprint, jsonify, session, request
-from sqlalchemy import inspect
+from sqlalchemy import and_, inspect
 from backend.models import LogicGames, Question, db, Countries
 from backend.brain import generate_ia_questions
 import base64
@@ -46,11 +46,15 @@ def get_question(category):
 
     new_item = next(news for news in session["news_pool"] if news["id"] == selected_id)
     question = {
-        "headline": encode_string(new_item["fact"]),
-        "fake_news": encode_string(new_item["invent"]),
+        "question": new_item["question"],
+        "correct": encode_string(new_item["fact"]),
+        "wrong": encode_string(new_item["invent"]),
+        "explanation": encode_string(new_item["explanation"]),
         "created_by": new_item["created_by"]
     }
     return jsonify(question)
+
+
 @questions_bp.route("/get_logic_game/<category>")
 @require_jwt
 def get_logic_game(category):
@@ -137,17 +141,25 @@ def end_game():
 
 
 def get_all_questions(category):
-    questions = Question.query.filter_by(category=category, validated=True).all()
+    questions = Question.query.filter(
+    and_(
+        Question.category == category,
+        Question.explanation != 'VF'
+    )).all()
+    
     return [
         {
             "id": question.id,
             "fact": question.fact,
             "invent": question.invent,
             "category": question.category,
-            "created_by": question.created_by
+            "created_by": question.created_by,
+            "question": question.question,
+            "explanation": question.explanation,
         }
         for question in questions
     ]
+
 
 def get_logic_game_questions(category):
     questions = []
@@ -183,7 +195,6 @@ def create_questions():
     thematic = request.args.get('thematic')
     context = request.args.get('context')
     n_questions = request.args.get('count')
-
     context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
     # TODO a veces falla
     if palabrota.contains_palabrota(context):
@@ -194,7 +205,7 @@ def create_questions():
 
     try:
         # Llamar a la función que crea las preguntas
-        questions = generate_ia_questions(thematic, context, n_questions)
+        questions = generate_ia_questions(thematic, context, n_questions, "choices")
     except Exception as e:
         # Manejar cualquier excepción que ocurra en la función generate_ia_questions
         return jsonify({"error": "Oops, algo ha ido mal. Refresca la página o vuelve a intentarlo."}), 500
@@ -236,11 +247,13 @@ def save_questions():
 
     # Guardar cada pregunta en la base de datos
     for question in data:
+        q = question.get('question')
         fact = question.get('fact')
         invent = question.get('invent')
         category = question.get('category')
         created_by = question.get('created_by')
-        new_question = Question(fact=fact, invent=invent, category=category, validated=False, created_by= created_by)
+        explanation = question.get('explanation')
+        new_question = Question(fact=fact, invent=invent, category=category, validated=False, created_by= created_by, question=q, explanation=explanation)
         questions_to_save.append(new_question)
 
     # Agregar las preguntas a la base de datos

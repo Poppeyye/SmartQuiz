@@ -86,8 +86,14 @@ def index():
 # Rutas adicionales
 @main_bp.route("/rankings")
 def rankings():
-    return make_response(render_template("rankings.html", user_name=session.get('user_name', ''),
+    response = make_response(render_template("rankings.html", user_name=session.get('user_name', ''),
                                              pin_code=session.get('pin_code', '')))
+    if 'admin_id' not in session:
+        session['admin_id'] = str(uuid.uuid4())
+        create_and_set_tokens(session['admin_id'], response)
+    else:
+        refresh_access_token_if_needed(response)
+    return response
 
 @main_bp.route("/about")
 def about():

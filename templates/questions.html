@@ -44,6 +44,12 @@
     </div>
 
     <div id="questions-container" style="display:none;">
+        <label for="select-all-container">Seleccionar todas</label>
+        <div id="select-all-container" class="select-all-container">
+            <input type="checkbox" id="select-all" class="switch-input" />
+            <label for="select-all" class="switch-label"></label>
+        </div>
+        
         <div id="questions-list"></div>
         <input type="text" id="created-by-input" class="custom-input" required placeholder="Nombre" maxlength="100" />
         <p style="color:white; font-weight: 300;">Pondremos tu nombre de usuario debajo de las preguntas que hayas generado</p>
@@ -166,16 +172,6 @@
     color: #333;
 }
 
-.question-item > label {
-    font-size: 1em;
-    margin-bottom: 10px;
-}
-
-.question-item-number {
-    font-weight: bold;
-    color: #333;
-}
-
 textarea {
     width: 100%;
     padding: 10px;
@@ -219,6 +215,132 @@ textarea:focus {
     position: relative; /* Asegura que no afecte el flujo de otros elementos */
     z-index: 1001; /* Asegura que esté por encima de otros elementos */
 }
+
+/* Estilo del contenedor de la pregunta */
+.question-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Cabecera con el número de pregunta y el switch */
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.question-item-number {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Estilo para el contenedor del switch */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Estilo del texto "Seleccionar" */
+.select-label-text {
+    font-size: 1em;
+    color: darkblue;
+    text-align: center;
+
+}
+
+/* Estilo del input checkbox oculto */
+.switch-input {
+    display: none;
+}
+
+/* Estilo del switch personalizado (el círculo deslizante) */
+.switch-label {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background-color: #ccc;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.switch-label::before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #fff;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+/* Cambios de color y posición cuando el checkbox está activado */
+.switch-input:checked + .switch-label {
+    background-color: #4caf50;
+}
+
+.switch-input:checked + .switch-label::before {
+    transform: translateX(24px);
+}
+
+/* Estilo para el campo de la pregunta */
+.question-text {
+    width: 100%;
+    height: 100px;
+    font-size: 1em;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+/* Contenedor para las respuestas */
+.answers-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Estilos para las respuestas correctas e incorrectas */
+.answer {
+    width: 48%;
+    height: 60px;
+    font-size: 0.9em;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.correct-answer {
+    background-color: #e0f7e0;
+}
+
+.wrong-answer {
+    background-color: #fce4e4;
+}
+
+/* Ajuste para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .answers-container {
+        flex-direction: column;
+    }
+
+    .answer {
+        width: 100%;
+    }
+}
+
+
 </style>
 
 <script>
@@ -235,74 +357,57 @@ textarea:focus {
 
     obtainButton.disabled = true;
     loadingIndicator.style.display = 'block';  // Mostrar indicador de carga
-    if (thematicInput==="Culture"){
-        const response = await fetch(`/create_logic_game?thematic=${encodeURIComponent(thematicInput)}&context=${encodeURIComponent(contextInput)}&count=${encodeURIComponent(questionsCount)}`);
-        const questions = await response.json();
-        if (response.ok) {
-            const questionsList = document.getElementById('questions-list');
-            questionsList.innerHTML = ''; 
+        try{
+            const response = await fetch(`/create_questions?thematic=${encodeURIComponent(thematicInput)}&context=${encodeURIComponent(contextInput)}&count=${encodeURIComponent(questionsCount)}`);
+            const questions = await response.json();
+            if (response.ok) {
+                const questionsList = document.getElementById('questions-list');
+                questionsList.innerHTML = ''; 
 
-            questions.forEach((question, index) => {
-                const questionItem = document.createElement('div');
-                questionItem.className = 'question-item';
-                questionItem.innerHTML = `
-                    <label>
-                        <div class="question-item-number">Pregunta ${index + 1}</div>
-                        <textarea data-index="${index}" placeholder="">${question.question}</textarea>
-                        <textarea data-index="${index}" placeholder="">${question.correct_answer}</textarea>
-                        <textarea data-index="${index}" placeholder="">${question.wrong_answer}</textarea>
-                    </label>
-                `;
-                questionsList.appendChild(questionItem);
-            });
+                questions.category.game.forEach((question, index) => {
+                    const questionItem = document.createElement('div');
+                    questionItem.className = 'question-item';
 
-            document.getElementById('questions-container').style.display = 'flex';
+                    questionItem.innerHTML = `
+                        <label>
+                            <div class="question-header">
+                                <div class="question-item-number">Pregunta ${index + 1}</div>
+                                <div class="switch-container">
+                                    <input type="checkbox" id="select-question-${index}" class="select-question switch-input" />
+                                    <label for="select-question-${index}" class="switch-label"></label>
+                                    <span class="select-label-text">Seleccionar</span>
+                                </div>
+                            </div>
+                            <textarea class="question-text" data-index="${index}" placeholder="Escribe la pregunta...">${question.question}</textarea>
+                            <div class="answers-container">
+                                <textarea class="answer correct-answer" data-index="${index}" placeholder="Respuesta correcta...">${question.fact}</textarea>
+                                <textarea class="answer wrong-answer" data-index="${index}" placeholder="Respuesta incorrecta...">${question.invent}</textarea>
+                            </div>
+                             <p>Explicación:<p/>
+                            <textarea class="explanation-text" data-index="${index}" placeholder="Escribe la explicación...">${question.explanation}</textarea>
 
-        } 
-        else {
-            alert(data.error);
-        }
-    }
-    else{
-        try {
-        const response = await fetch(`/create_questions?thematic=${encodeURIComponent(thematicInput)}&context=${encodeURIComponent(contextInput)}&count=${encodeURIComponent(questionsCount)}`);
-        const data = await response.json();
+                        </label>
+                    `;
+                    questionsList.appendChild(questionItem);
+                });
 
-        if (response.ok) {
-            const questions = data.category[thematicInput];
-            const questionsList = document.getElementById('questions-list');
-            questionsList.innerHTML = ''; 
+                document.getElementById('questions-container').style.display = 'flex';
 
-            questions.forEach((question, index) => {
-                const questionItem = document.createElement('div');
-                questionItem.className = 'question-item';
-                questionItem.innerHTML = `
-                    <label>
-                        <div class="question-item-number">Pregunta ${index + 1}</div>
-                        <textarea data-index="${index}" placeholder="">${question.fact}</textarea>
-                        <textarea data-index="${index}" placeholder="">${question.invent}</textarea>
-                    </label>
-                `;
-                questionsList.appendChild(questionItem);
-            });
-
-            document.getElementById('questions-container').style.display = 'flex';
-            document.getElementById('created-by-input').style.display = 'flex';
-        } else {
-            alert(data.error);
-        }
-    } catch (error) {
-        console.error('Error fetching questions:', error);
-    } finally {
-        obtainButton.disabled = false;
-        loadingIndicator.style.display = 'none';  // Ocultar indicador de carga
-        const bmcButton = document.querySelector('#bmc-wbtn');
-            if (bmcButton) {
-                bmcButton.classList.add('animate-bmc');  // Añade la clase de animación
+            } 
+            else {
+                alert("Ha ocurrido un error");
             }
-    }
-    }
-
+        }
+        catch (error) {
+            console.error('Error fetching questions:', error);
+        } finally {
+            obtainButton.disabled = false;
+            loadingIndicator.style.display = 'none';  // Ocultar indicador de carga
+            const bmcButton = document.querySelector('#bmc-wbtn');
+                if (bmcButton) {
+                    bmcButton.classList.add('animate-bmc');  // Añade la clase de animación
+                }
+        }
 });
 
 function getCookie(name) {
@@ -317,23 +422,55 @@ function getCookie(name) {
       null;
     }
 
-document.getElementById('save-questions-button').addEventListener('click', function() {
-    const questionInputs = document.querySelectorAll('#questions-list .question-item');
-    const questionsToSave = [];
+    document.getElementById('select-all').addEventListener('change', function() {
+    const isChecked = this.checked;
+    const allSwitches = document.querySelectorAll('.select-question');
 
-    questionInputs.forEach((input) => {
-        const factInput = input.querySelector('textarea:nth-of-type(1)');
-        const inventInput = input.querySelector('textarea:nth-of-type(2)');
-        const createdByInput = document.getElementById('created-by-input').value;
-        if (factInput && inventInput) {
-            questionsToSave.push({
-                fact: factInput.value,
-                invent: inventInput.value,
-                category: thematicInput,
-                created_by: createdByInput
-            });
+    // Activa o desactiva todos los checkboxes individuales
+    allSwitches.forEach((switchInput) => {
+        switchInput.checked = isChecked;
+    });
+});
+
+document.getElementById('save-questions-button').addEventListener('click', function() {
+    const questionItems = document.querySelectorAll('#questions-list .question-item');
+    const questionsToSave = [];
+    document.getElementById('select-all').checked = false;
+    let selectedCount = 0; // Contador para validar si hay al menos una seleccionada
+
+    questionItems.forEach((item) => {
+        const isSelected = item.querySelector('.select-question').checked; // Verifica si el switch está seleccionado
+        if (isSelected) {
+            selectedCount++; // Incrementa el contador de seleccionadas
+            const questionInput = item.querySelector('.question-text'); // Campo de pregunta
+            const factInput = item.querySelector('.correct-answer');    // Respuesta correcta (fact)
+            const inventInput = item.querySelector('.wrong-answer');    // Respuesta incorrecta (invent)
+            const explanationInput = item.querySelector('.explanation-text');
+            const createdByInput = document.getElementById('created-by-input').value; // Campo de autor
+            const thematicInput = document.getElementById('thematic-input').value;   // Campo de categoría
+
+            // Verifica si los campos tienen contenido válido
+            if (questionInput && factInput && inventInput) {
+                questionsToSave.push({
+                    question: questionInput.value,
+                    fact: factInput.value,
+                    invent: inventInput.value,
+                    category: thematicInput,
+                    explanation: explanationInput.value,
+                    created_by: createdByInput
+                });
+            }
         }
     });
+
+    // Validación: Al menos una pregunta debe estar seleccionada
+    if (selectedCount === 0) {
+        alert('Debes seleccionar al menos una pregunta.');
+        return; // Detenemos el proceso de guardado si no hay ninguna seleccionada
+    }
+
+    // Aquí puedes hacer algo con las preguntas guardadas, como enviarlas al servidor
+    console.log('Preguntas a guardar:', questionsToSave);
 
     fetch('/save_questions', {
         method: 'POST',

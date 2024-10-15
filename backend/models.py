@@ -27,10 +27,11 @@ class Question(db.Model):
     category = db.Column(db.String(100), nullable=False)
     validated = db.Column(db.Boolean, default=True)
     created_by = db.Column(db.String(100), nullable=False)
-
-
+    question = db.Column(db.String(500), nullable=False)
+    explanation = db.Column(db.String(500), nullable=False)
+    
     def __repr__(self):
-        return f"<Question {self.id} {self.fact} {self.invent} {self.category} {self.validated} {self.created_by}>"
+        return f"<Question {self.id} {self.fact} {self.invent} {self.category} {self.validated} {self.created_by} {self.question} {self.explanation}>"
     
 class Countries(db.Model):
     __tablename__ = "countries"

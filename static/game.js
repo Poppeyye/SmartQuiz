@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctAnswersCount = 0; 
     let totalTimeTaken = 0; 
     let debounceTimer;
-    
+    let explanation = '';
+
     userNameInput.addEventListener('input', () => {
         userName = userNameInput.value.trim();
         clearTimeout(debounceTimer); 
@@ -330,19 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
     
         "default": function (data) {
-            const headline = decodeString(data.headline);
-            const fake = decodeString(data.fake_news);
-            const options = [headline, fake];
-            const shuffledOptions = options.sort(() => Math.random() - 0.5);
-    
-            // Actualizar las opciones de los botones
-            optionButton1.textContent = shuffledOptions[0];
-            optionButton2.textContent = shuffledOptions[1];
-            correctAnswer = headline;
-    
-            // Actualizar el span con el creador de la pregunta
-            const createdBySpan = document.getElementById('created-by-span');
-            createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
+            handleCategoryQuiz(data);
         }
     };
     
@@ -366,7 +355,32 @@ document.addEventListener('DOMContentLoaded', () => {
         correctAnswer = correct;
     }
     
+    function handleCategoryQuiz(data) {
+        let quizQuestion = data.question;
+        const wrong = decodeString(data.wrong);
+        const correct = decodeString(data.correct);
+        explanation = decodeString(data.explanation);
+        const options = [wrong, correct];
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
     
+        // Actualizar las opciones de los botones
+        optionButton1.textContent = shuffledOptions[0];
+        optionButton2.textContent = shuffledOptions[1];
+    
+        questionText.style.display = 'block';
+        if (quizQuestion=='VF'){
+            quizQuestion='Elige la afirmación correcta'
+        }
+        questionText.textContent = quizQuestion;
+    
+        const questionContainer = document.getElementById('question-container');
+        questionContainer.style.display = "block";
+        correctAnswer = correct;
+                    // Actualizar el span con el creador de la pregunta
+        const createdBySpan = document.getElementById('created-by-span');
+        createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
+    }
+
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
     let userRank = 0;
     async function getUserRank(playerScore) {
@@ -647,6 +661,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showFinalOverlay(totalScore);
         totalScore=0.0;
         totalTimeTaken = 0.0;
+        correctAnswersCount = 0;
+        correctCountText.textContent = `Correctas: ${correctAnswersCount}`; ;
         // Remover el pop-up de ranking si existe
         const rankingPopup = document.querySelector('.ranking-popup');
         if (rankingPopup) {
@@ -654,87 +670,101 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function showFinalOverlay(totalScore) {
-        // Crear el overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'final-overlay';   
-        for (let i = 0; i < 10; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            overlay.appendChild(confetti);
-        }
-        // Crear el cuadro del mensaje
-        let userRankResult = await getUserRank(totalScore)
-        const messageBox = document.createElement('div');
-        messageBox.className = 'message-box';
-        const userRanking = document.createElement('p');
-        userRanking.className = 'overlay-subtitle';
-        userRanking.textContent = `${totalScore} 📣 #${userRankResult}`;
+async function showFinalOverlay(totalScore) {
+    // Crear el overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'final-overlay';   
+    for (let i = 0; i < 10; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        overlay.appendChild(confetti);
+    }
+    
+    // Crear el cuadro del mensaje
+    let userRankResult = await getUserRank(totalScore)
+    const messageBox = document.createElement('div');
+    messageBox.className = 'message-box';
+    const userRanking = document.createElement('p');
+    userRanking.className = 'overlay-subtitle';
+    userRanking.textContent = `${totalScore} 📣 #${userRankResult}`;
 
-        const nameOverlay = document.createElement('p');
-        nameOverlay.className = 'overlay-username';
-        nameOverlay.textContent = `${userName}`;
-        messageBox.appendChild(nameOverlay);
-        
-        const labelOverlay = document.createElement('span');
-        labelOverlay.className = 'message-box-label'; // Asigna la clase para el estilo
-        labelOverlay.textContent = 'genias.io'; // Establece el texto del span
-        messageBox.appendChild(labelOverlay);
-        const overlayTitle = document.createElement('overlay-h1');
-        //overlayTitle.textContent = 'Genias.io';
-        overlayTitle.className = 'overlay-title';
-        const rankMessage = document.createElement('p');
-        rankMessage.className = 'rank-message';
-        
-        // Ajustar el título del mensaje según el userRank
-        if (userRank ===3) {
-            nameOverlay.textContent = `${userName}🥉`;
-        } else if (userRank === 2) {
-            nameOverlay.textContent = `${userName}🥈`;
-        } else if (userRank === 1) {
-            nameOverlay.textContent = `${userName}🥇`;
-        }
+    const nameOverlay = document.createElement('p');
+    nameOverlay.className = 'overlay-username';
+    nameOverlay.textContent = `${userName}`;
+    messageBox.appendChild(nameOverlay);
     
-        messageBox.appendChild(nameOverlay);
+    const labelOverlay = document.createElement('span');
+    labelOverlay.className = 'message-box-label'; // Asigna la clase para el estilo
+    labelOverlay.textContent = 'genias.io'; // Establece el texto del span
+    messageBox.appendChild(labelOverlay);
+    
+    // Agregar el título
+    const overlayTitle = document.createElement('h1');
+    overlayTitle.className = 'overlay-title';
+    
+    const rankMessage = document.createElement('p');
+    rankMessage.className = 'rank-message';
+    
+    // Ajustar el título del mensaje según el userRank
+    if (userRank === 3) {
+        nameOverlay.textContent = `${userName}🥉`;
+    } else if (userRank === 2) {
+        nameOverlay.textContent = `${userName}🥈`;
+    } else if (userRank === 1) {
+        nameOverlay.textContent = `${userName}🥇`;
+    }
+
+    const categoryMessage = document.createElement('p');
+    categoryMessage.className = 'overlay-category';
+    categoryMessage.textContent = `${categoryNames[selectedCategory]}`;
+    
+    // Agregar los elementos al cuadro del mensaje
+    messageBox.appendChild(userRanking);
+    messageBox.appendChild(rankMessage);
+    messageBox.appendChild(categoryMessage);
+
+    overlay.appendChild(messageBox);
+    
+    // Crear un contenedor para los botones dentro del overlay
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    
+    const returnButton = document.createElement('button');
+    returnButton.textContent = 'Volver a Jugar';
+    returnButton.className = 'btn';
+    
+    const rankingButton = document.createElement('button');
+    rankingButton.textContent = 'Ver Rankings';
+    rankingButton.className = 'btn';
+    
+    const shareButton = document.createElement('button');
+    shareButton.textContent = 'Compartir Resultado';
+    shareButton.className = 'btn';
+    
+    // Agregar los botones al contenedor de botones
+    buttonContainer.appendChild(returnButton);
+    buttonContainer.appendChild(rankingButton);
+    buttonContainer.appendChild(shareButton);
+    
+    // Agregar el contenedor de botones dentro del overlay
+    overlay.appendChild(buttonContainer);
+    
+    const infoField = document.createElement('p');
+    infoField.className = 'info-field'; // Clase para estilizar el campo
+    if (explanation){
+        infoField.textContent = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
+    }
+
+    // Agregar estilo
+    infoField.style.marginTop = '20px'; // Espacio superior
+    infoField.style.fontSize = '14px'; // Tamaño de fuente
+    infoField.style.color = 'white'; // Color del texto
+    infoField.style.textAlign = 'center'; // Alinear al centro
+    overlay.appendChild(infoField)
+    // Agregar el campo informativo al body, después del overlay
+    document.body.appendChild(overlay);
 
 
-        const categoryMessage = document.createElement('p');
-
-        categoryMessage.className = 'overlay-category';
-        categoryMessage.textContent = `${categoryNames[selectedCategory]}`;
-        // Agregar los elementos al cuadro del mensaje (sin los botones)
-        messageBox.appendChild(userRanking);
-        messageBox.appendChild(rankMessage);
-        messageBox.appendChild(categoryMessage);
-
-        overlay.appendChild(messageBox);
-    
-        // Crear un contenedor para los botones dentro del overlay, pero fuera del messageBox
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
-    
-        const returnButton = document.createElement('button');
-        returnButton.textContent = 'Volver a Jugar';
-        returnButton.className = 'btn';
-    
-        const rankingButton = document.createElement('button');
-        rankingButton.textContent = 'Ver Rankings';
-        rankingButton.className = 'btn';
-    
-        const shareButton = document.createElement('button');
-        shareButton.textContent = 'Compartir Resultado';
-        shareButton.className = 'btn';
-    
-        // Agregar los botones al contenedor de botones
-        buttonContainer.appendChild(returnButton);
-        buttonContainer.appendChild(rankingButton);
-        buttonContainer.appendChild(shareButton);
-    
-        // Agregar el contenedor de botones dentro del overlay (debajo del messageBox)
-        overlay.appendChild(buttonContainer);
-    
-        // Agregar el overlay al body
-        document.body.appendChild(overlay);
     
         // Manejar eventos de los botones
         returnButton.addEventListener('click', () => {
@@ -795,8 +825,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 correctCountText.style.display='none';
                 slogan.style.display = 'flex';
                 //rankingContainer.style.display = 'none';
-                questionText.style.display = 'none'
-
+                explanation ='';
+                questionText.style.display = 'none';
                 flagImage.style.display = 'none';
 
                 

@@ -58,15 +58,6 @@ body {
     gap: 10px; /* Espacio entre botones */
     width: 80%; /* Asegúrate de que ocupe el ancho completo que necesita */
 }
-.question-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 100%; /* Cambiado a 100% en lugar de 100vh */
-    box-sizing: border-box; /* Asegura que el padding y el borde no desborden el ancho */
-}
 
 #questions-container {
     display: flex;
