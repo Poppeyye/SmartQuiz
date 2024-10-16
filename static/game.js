@@ -824,7 +824,6 @@ async function showFinalOverlay(totalScore) {
                 scoreText.style.display = 'none';
                 correctCountText.style.display='none';
                 slogan.style.display = 'flex';
-                //rankingContainer.style.display = 'none';
                 explanation ='';
                 questionText.style.display = 'none';
                 flagImage.style.display = 'none';
