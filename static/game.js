@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const answerButtons = document.getElementById('answer-buttons');
     const questionText = document.getElementById('question-text');
     const flagImage = document.querySelector('#answer-buttons picture img');
+    const questionContainer = document.getElementById('question-container');
 
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
@@ -197,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         // Mostrar el contador de "Preparados, listos, ya" dentro de #question-container
-        const questionContainer = document.getElementById('question-container');
         const countdownText = document.createElement('p');
         countdownText.style.fontSize = '4rem';
         countdownText.style.textAlign = 'center';
@@ -251,13 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
             backgroundMusic.play();
         }
     
-        progressBarContainer.style.display = 'flex';
-        slogan.style.display = 'none';
-        timerText.style.display = 'flex';
-        scoreText.style.display = 'flex';
-        correctCountText.style.display='flex';
-        progressBar.style.width = '100%';
-    
         // Detener el temporizador anterior si existe
         if (countdownInterval) {
             clearInterval(countdownInterval);
@@ -279,13 +272,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
     
-            // Verificar si el manejador para la categoría existe
+            // Llama al manejador de la categoría seleccionada
             const categoryHandler = categoryHandlers[selectedCategory] || categoryHandlers["default"];
-            categoryHandler(data);
-    
-            // Mostrar los botones de respuesta y comenzar la cuenta regresiva
-            answerButtons.style.display = 'flex';
-            startCountdown();
+            
+            // Se ejecuta el handler, pero NO mostramos los botones aún
+            slogan.style.display = 'none';
+            await categoryHandler(data);
+            timerText.style.display = 'flex';
+            scoreText.style.display = 'flex';
+            correctCountText.style.display = 'flex';
+            progressBar.style.width = '100%';
+            
         } catch (error) {
             console.error('Error fetching question:', error);
         }
@@ -297,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "flags": `/get_country_question`,
             "LogicGame": `/get_logic_game/logics`,
             "Culture": `/get_logic_game/culture`,
+            "Memoria": `/get_memory_game`,
             "default": `/get_question/${category}`
         };
     
@@ -320,21 +318,65 @@ document.addEventListener('DOMContentLoaded', () => {
     
             // Almacenar la respuesta correcta
             correctAnswer = correct_country.name;
+            answerButtons.style.display = 'flex';
+            progressBarContainer.style.display = 'flex';
+            startCountdown();
         },
     
         "LogicGame": function (data) {
             handleLogicOrCultureGame(data);
+            answerButtons.style.display = 'flex';
+            progressBarContainer.style.display = 'flex';
+            startCountdown();
         },
     
         "Culture": function (data) {
             handleLogicOrCultureGame(data);
+            answerButtons.style.display = 'flex';
+            progressBarContainer.style.display = 'flex';
+            startCountdown();
         },
-    
-        "default": function (data) {
-            handleCategoryQuiz(data);
+        "Memoria": async function (data) {
+                const problem = decodeString(data.problem);
+                // Mostrar el texto del problema en el centro de la pantalla
+                questionText.style.display = 'block';
+                questionText.textContent = problem;
+                answerButtons.style.display = 'none';
+                //questionContainer.style.display = 'none';
+
+                await new Promise(resolve => setTimeout(resolve, 3000));  // Esperar 3 segundos
+        
+                // Mostrar la pregunta y las opciones
+                handleMemoryGame(data); 
+        },
+            "default": function (data) {
+                handleCategoryQuiz(data);
+                answerButtons.style.display = 'flex';
+                progressBarContainer.style.display = 'flex';
+                startCountdown();
+            }
+        };
+          function handleMemoryGame(data) {
+            const memoryQuestion = data.question;
+            const wrong = decodeString(data.wrong);
+            const correct = decodeString(data.correct);
+            const options = [wrong, correct];
+            const shuffledOptions = options.sort(() => Math.random() - 0.5);
+        
+            // Actualizar las opciones de los botones
+            optionButton1.textContent = shuffledOptions[0];
+            optionButton2.textContent = shuffledOptions[1];
+            questionText.style.display = 'block';
+            questionText.textContent = memoryQuestion;
+        
+            // Asegúrate de que ahora se muestre todo correctamente
+            questionContainer.style.display = "block";
+            answerButtons.style.display = 'flex'; // Mostrar los botones de respuesta después de cargar la pregunta
+            correctAnswer = correct;
+            answerButtons.style.display = 'flex';
+            progressBarContainer.style.display = 'flex';
+            startCountdown();
         }
-    };
-    
     // Función compartida para manejar tanto LogicGame como Culture
     function handleLogicOrCultureGame(data) {
         const logicQuestion = data.question;
@@ -350,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
         questionText.style.display = 'block';
         questionText.textContent = logicQuestion;
     
-        const questionContainer = document.getElementById('question-container');
         questionContainer.style.display = "block";
         correctAnswer = correct;
     }
@@ -373,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         questionText.textContent = quizQuestion;
     
-        const questionContainer = document.getElementById('question-container');
         questionContainer.style.display = "block";
         correctAnswer = correct;
                     // Actualizar el span con el creador de la pregunta

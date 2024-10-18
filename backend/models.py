@@ -53,6 +53,16 @@ class LogicGames(db.Model):
     difficulty = db.Column(db.String(500), nullable=False)
     numero = db.Column(db.String(500), nullable=False)
 
+class MemoryGames(db.Model):
+    __tablename__ = "memory_games"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    question = db.Column(db.String(500), nullable=False)
+    correct = db.Column(db.String(500), nullable=False)
+    wrong = db.Column(db.String(500), nullable=False)
+    difficulty = db.Column(db.String(500), nullable=False)
+    problem = db.Column(db.String(500), nullable=False)
+
+
 class Users(db.Model):
     __tablename__ = 'users'
     username = db.Column(db.String(100), primary_key=True, nullable=False)

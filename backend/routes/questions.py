@@ -1,7 +1,7 @@
 import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import and_, inspect
-from backend.models import LogicGames, Question, db, Countries
+from backend.models import LogicGames, MemoryGames, Question, db, Countries
 from backend.brain import generate_ia_questions
 import base64
 from spanlp.palabrota import Palabrota
@@ -54,6 +54,36 @@ def get_question(category):
     }
     return jsonify(question)
 
+
+@questions_bp.route("/get_memory_game")
+@require_jwt
+def get_memory_game():
+    if "logic_game_pool" not in session:
+        session["logic_game_pool"] = get_memory_questions()
+        session["used_headlines"] = []
+
+    if not session["logic_game_pool"]:
+        return jsonify({"error": "No questions available"}), 204
+
+    all_ids = set(news["id"] for news in session["logic_game_pool"])
+    used_ids = set(session["used_headlines"])
+    unasked_ids = list(all_ids - used_ids)
+    if not unasked_ids:
+        return jsonify({"msg": "All questions have been asked in this category"}), 204
+
+
+    selected_id = random.choice(unasked_ids)
+    session["used_headlines"].append(selected_id)
+
+    new_item = next(news for news in session["logic_game_pool"] if news["id"] == selected_id)
+    question = {
+        "question": new_item["question"],
+        "correct": encode_string(new_item["correct"]),
+        "wrong": encode_string(new_item["wrong"]),
+        "problem": encode_string(new_item["problem"]),
+        "difficulty": new_item["difficulty"]
+    }
+    return jsonify(question)
 
 @questions_bp.route("/get_logic_game/<category>")
 @require_jwt
@@ -159,6 +189,20 @@ def get_all_questions(category):
         for question in questions
     ]
 
+def get_memory_questions():
+    memory_games = MemoryGames.query.all()
+    
+    return [
+        {
+            "id": game.id,
+            "correct": game.correct,
+            "wrong": game.wrong,
+            "question": game.question,
+            "problem": game.problem,
+            "difficulty": game.difficulty
+        }
+        for game in memory_games
+    ]
 
 def get_logic_game_questions(category):
     questions = []
