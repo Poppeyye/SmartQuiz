@@ -105,6 +105,70 @@ def generate_ia_questions(category, context, n, quiz_type=None):
                 },
             },
         )
+    elif category == "Memoria":
+        content = f"""
+        Eres un asistente imaginativo que vas crear un juego de memoria en una respuesta JSON que debe cumplir con lo siguiente:
+        1- Un total de {n} preguntas de retos y memoria.
+        2- Incluye cualquier juego de memoria que sirva para retar al jugador. Su misión será recordar el problema mostrado en 5 segundos
+        3- En el JSON debes incluir los campos: problema, pregunta, respuesta correcta, respuesta incorrecta, dificultad
+        4- La dificultad será un número del 1 al 10, donde 1 es lo más fácil y 10 lo más difícil.
+        5- Combina distintos tipos de juegos en la respuesta JSON, intentando equilibrar el numero de problemas a las distintas dificultades
+        Un ejemplo de juego podría ser:
+        Ejemplo:
+        problem: Gato Perro Elefante Lechuga,
+        question: ¿Está presente la letra 'i' en alguna palabra?,
+        correct: No,
+        wrong: Sí,
+        Dificultad: 1
+
+        Añade más elementos a los problemas y añade complejidad a la pregunta a medida que el nivel sube de dificultad.
+        Asegura siempre que haya variedad en las preguntas y en los tipos de juegos.
+        Debes variar entre emojis, texto, numeros y simbolos en cada pregunta.
+
+        Inventa distintos tipos de juegos en cada pregunta, para desafiar al usuario que lo juega
+        """
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": content},
+                {"role": "user", "content": f"{context}"},
+            ],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "game_generator",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "game": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "problem": {"description": "El texto que se mostrará durante un periodo de tiempo", "type": "string"},
+                                        "question": {"description": "La pregunta relativa al texto mostrado","type": "string"},
+                                        "correct": {"type": "string"},
+                                        "wrong": {"type": "string"},
+                                        "difficulty" : {"type": "string"}
+                                    },
+                                    "required": [
+                                        "problem",
+                                        "question",
+                                        "correct",
+                                        "wrong",
+                                        "difficulty"
+                                    ],
+                                    "additionalProperties": False,
+                                },
+                            }
+                        },
+                        "required": ["game"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+        )
     else:
         if quiz_type=="TF":
             content = f"""Eres un asistente imaginativo que vas a crear una respuesta en formato JSON con la temática"
@@ -202,4 +266,4 @@ def generate_ia_questions(category, context, n, quiz_type=None):
                 },
             },
         )
-        return json.loads(response.choices[0].message.content)
+    return json.loads(response.choices[0].message.content)

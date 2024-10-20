@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Manejadores de cada categoría
+    let problem ='';
     const categoryHandlers = {
         "flags": function (data) {
             const { correct_country, random_country } = data;
@@ -337,14 +338,14 @@ document.addEventListener('DOMContentLoaded', () => {
             startCountdown();
         },
         "Memoria": async function (data) {
-                const problem = decodeString(data.problem);
+                problem = decodeString(data.problem);
                 // Mostrar el texto del problema en el centro de la pantalla
                 questionText.style.display = 'block';
                 questionText.textContent = problem;
                 answerButtons.style.display = 'none';
                 //questionContainer.style.display = 'none';
 
-                await new Promise(resolve => setTimeout(resolve, 3000));  // Esperar 3 segundos
+                await new Promise(resolve => setTimeout(resolve, 7000));  // Esperar 3 segundos
         
                 // Mostrar la pregunta y las opciones
                 handleMemoryGame(data); 
@@ -375,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             correctAnswer = correct;
             answerButtons.style.display = 'flex';
             progressBarContainer.style.display = 'flex';
+            explanation = problem;
             startCountdown();
         }
     // Función compartida para manejar tanto LogicGame como Culture

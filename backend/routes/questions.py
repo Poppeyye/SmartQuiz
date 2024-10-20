@@ -4,16 +4,10 @@ from sqlalchemy import and_, inspect
 from backend.models import LogicGames, MemoryGames, Question, db, Countries
 from backend.brain import generate_ia_questions
 import base64
-from spanlp.palabrota import Palabrota
-from spanlp.domain.countries import Country
-from spanlp.domain.strategies import JaccardIndex
-from spanlp.domain.strategies import Preprocessing, TextToLower, RemoveAccents, RemoveStopWords
 from sqlalchemy.sql.expression import func
 import random
 from backend.routes.main import require_jwt
 
-jaccard = JaccardIndex(threshold=0.9, normalize=False, n_gram=1)
-palabrota = Palabrota(countries=[Country.ESPANA, Country.MEXICO, Country.ARGENTINA], distance_metric=jaccard)
 
 
 def encode_string(s):
@@ -238,10 +232,6 @@ def create_questions():
     thematic = request.args.get('thematic')
     context = request.args.get('context')
     n_questions = request.args.get('count')
-    context = Preprocessing(data=context, clean_strategies=[TextToLower(), RemoveAccents(), RemoveStopWords()]).clean()
-    # TODO a veces falla
-    if palabrota.contains_palabrota(context):
-        return jsonify({"error": "Oops, alguna palabra no gustó a Genia"}), 400
 
     if not thematic:
         return jsonify({"error": "La temática es requerida"}), 400
