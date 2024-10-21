@@ -1,9 +1,10 @@
-export const backgroundMusic = document.getElementById('background-music');
-export const correctSound = document.getElementById('correct-sound');
-export const wrongSound = document.getElementById('wrong-sound');
 const muteButton = document.getElementById('mute-button');
 export let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
+export const backgroundMusic = new Audio(audioUrls.background);
+backgroundMusic.loop = true;
 
+export const correctSound = new Audio(audioUrls.correct);
+export const wrongSound = new Audio(audioUrls.wrong);
 backgroundMusic.volume = 0.1;
 correctSound.volume = 0.5;
 wrongSound.volume = 0.5;
