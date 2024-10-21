@@ -645,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeTaken = (endTime - startTime) / 1000;
         console.log(timeTaken)
         if (userAnswer === correctAnswer) {
-            correctSound.play()
+            correctSound.play();
             handleCorrectAnswer(timeTaken);
         } else {
             wrongSound.play()

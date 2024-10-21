@@ -43,7 +43,7 @@ if (muteButton) {
 // Pausar la música cuando la página se cierra
 window.addEventListener("beforeunload", function() {
     if (backgroundMusic) {
-        backgroundMusic.stop();
+        backgroundMusic.pause();
         backgroundMusic.currentTime = 0; // Reinicia la música
     }
 });
