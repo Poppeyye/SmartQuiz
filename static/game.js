@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalTimeTaken = 0; 
     let debounceTimer;
     let explanation = '';
-
+    let currentQuestion = '';
     userNameInput.addEventListener('input', () => {
         userName = userNameInput.value.trim();
         clearTimeout(debounceTimer); 
@@ -801,6 +801,9 @@ async function showFinalOverlay(totalScore) {
     overlay.appendChild(buttonContainer);
     
     const infoField = document.createElement('p');
+    const reportButton = document.createElement('button');
+    reportButton.className = 'report-button';
+    reportButton.textContent = 'Reportar Pregunta'
     infoField.className = 'info-field'; // Clase para estilizar el campo
     if (explanation){
         infoField.innerHTML = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
@@ -811,54 +814,85 @@ async function showFinalOverlay(totalScore) {
     infoField.style.fontSize = '14px'; // Tamaño de fuente
     infoField.style.color = 'white'; // Color del texto
     infoField.style.textAlign = 'center'; // Alinear al centro
-    overlay.appendChild(infoField)
+    overlay.appendChild(infoField);
+    overlay.appendChild(reportButton);
     // Agregar el campo informativo al body, después del overlay
     document.body.appendChild(overlay);
-
-
-    
-        // Manejar eventos de los botones
-        returnButton.addEventListener('click', () => {
-            document.body.removeChild(overlay);
-            goToMainScreen();
-        });
-    
-        rankingButton.addEventListener('click', () => {
-            stopTimer();
-            document.body.removeChild(overlay);
-            window.location.href = '/rankings';
-        });
-    
-        shareButton.addEventListener('click', async () => {
-            const urlToShare = `https://genias.io/rankings?search=${userName}`;
-            const shareTitle = '¡Mira esta clasificación!';
-    
-            // Capturar el screenshot del cuadro de mensaje usando html2canvas
-            try {
-                const canvas = await html2canvas(messageBox);
-                canvas.toBlob((blob) => {
-                    const file = new File([blob], 'screenshot.png', { type: 'image/png' });
-    
-                    // Verificar si la API de compartir está disponible
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share({
-                            title: shareTitle,
-                            text: rankMessage.textContent,
-                            files: [file],
-                            url: urlToShare
-                        }).then(() => console.log('Contenido compartido'))
-                        .catch(error => console.error('Error al compartir:', error));
-                    } else {
-                        alert('Tu dispositivo no soporta compartir esta funcionalidad.');
-                    }
-                });
-            } catch (error) {
-                console.error('Error al capturar el screenshot:', error);
-            }
-        });
+    if (selectedCategory == 'flags'){
+        currentQuestion = flagImage.src;
+    } else{
+        currentQuestion = questionText.textContent;
     }
     
-    
+    reportButton.addEventListener('click', () => {
+        const confirmed = confirm('¿Estás seguro de que deseas reportar esta pregunta como incorrecta?');
+        if (confirmed) {
+          reportQuestion(currentQuestion, selectedCategory);
+        }
+      });
+
+
+    // Manejar eventos de los botones
+    returnButton.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        goToMainScreen();
+    });
+
+    rankingButton.addEventListener('click', () => {
+        stopTimer();
+        document.body.removeChild(overlay);
+        window.location.href = '/rankings';
+    });
+
+    shareButton.addEventListener('click', async () => {
+        const urlToShare = `https://genias.io/rankings?search=${userName}`;
+        const shareTitle = '¡Mira esta clasificación!';
+
+        // Capturar el screenshot del cuadro de mensaje usando html2canvas
+        try {
+            const canvas = await html2canvas(messageBox);
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+
+                // Verificar si la API de compartir está disponible
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        title: shareTitle,
+                        text: rankMessage.textContent,
+                        files: [file],
+                        url: urlToShare
+                    }).then(() => console.log('Contenido compartido'))
+                    .catch(error => console.error('Error al compartir:', error));
+                } else {
+                    alert('Tu dispositivo no soporta compartir esta funcionalidad.');
+                }
+            });
+        } catch (error) {
+            console.error('Error al capturar el screenshot:', error);
+        }
+    });
+}
+
+    function reportQuestion(question, category) {
+        fetch('/report_question', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+        },
+        body: JSON.stringify({ question, category }),
+        })
+        .then(response => response.json())
+        .then(data => {
+        alert('Gracias por tu reporte. Revisaremos esta pregunta.');
+        })
+        .catch((error) => {
+        console.error('Error al enviar el reporte:', error);
+        });
+    }
+  
+        
 
     function goToMainScreen() {
 

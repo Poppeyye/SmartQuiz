@@ -1,7 +1,7 @@
 import random
 from flask import Blueprint, jsonify, session, request
 from sqlalchemy import and_, inspect
-from backend.models import LogicGames, MemoryGames, Question, db, Countries
+from backend.models import LogicGames, MemoryGames, Question, QuestionReports, db, Countries
 from backend.brain import generate_ia_questions
 import base64
 from sqlalchemy.sql.expression import func
@@ -294,3 +294,18 @@ def save_questions():
     db.session.commit()
 
     return jsonify({"message": "Preguntas guardadas exitosamente"}), 201
+
+
+@questions_bp.route('/report_question', methods=['POST'])
+@require_jwt
+def report_question():
+    data = request.json
+
+    q = data.get('question')
+    c = data.get('category')
+
+    new_report = QuestionReports(question=q, category=c)
+    db.session.add(new_report)
+    db.session.commit()
+
+    return jsonify({"message": "Reporte creado correctamente"}), 201

@@ -74,3 +74,11 @@ class Users(db.Model):
 
     def check_pin_code(self, pin_code):
         return check_password_hash(self.pin_code_hash, pin_code)  # Comprobar hash del pin_code
+
+
+class QuestionReports(db.Model):
+    __tablename__ = 'question_reports'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    question = db.Column(db.String(500), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())

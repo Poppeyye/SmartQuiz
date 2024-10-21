@@ -543,7 +543,7 @@ a {
 }
 
 .final-overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -559,6 +559,28 @@ a {
     display: flex;
     gap: 10px;
     justify-content: center;
+}
+
+.report-button {
+    background-color: red; /* Fondo rojo */
+    border: none;
+    color: white; /* Texto blanco */
+    padding: 5px 10px; /* Tamaño pequeño */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px; /* Texto más pequeño */
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Efecto de transición */
+    position: fixed;
+    left:5%;
+    bottom: 5%;
+}
+
+.report-button:hover {
+    background-color: darkred; /* Cambiar a un rojo más oscuro al hacer hover */
 }
 
 @keyframes bounce {
