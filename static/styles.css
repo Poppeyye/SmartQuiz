@@ -552,7 +552,7 @@ a {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    overflow: hidden;
+    overflow: auto;
 }
 .button-container {
     margin-top: 20px;

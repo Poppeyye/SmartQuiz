@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             correctAnswer = correct;
             answerButtons.style.display = 'flex';
             progressBarContainer.style.display = 'flex';
-            explanation = problem;
+            explanation = formatMemoryExplanation(memoryQuestion, problem, correct);
             startCountdown();
         }
     // Función compartida para manejar tanto LogicGame como Culture
@@ -396,9 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
         questionContainer.style.display = "block";
         correctAnswer = correct;
+        explanation = formatLogicExplanation(logicQuestion, correct);
     }
     
-    function handleCategoryQuiz(data) {
+    function handleCategoryQuiz(data) { 
         let quizQuestion = data.question;
         const wrong = decodeString(data.wrong);
         const correct = decodeString(data.correct);
@@ -421,6 +422,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Actualizar el span con el creador de la pregunta
         const createdBySpan = document.getElementById('created-by-span');
         createdBySpan.textContent = `Pregunta de: ${data.created_by}`;
+    }
+
+    function formatMemoryExplanation(memoryQuestion, problem, correct) {
+        return `ℹ️ Pregunta de memoria: ${memoryQuestion}<br><br>Problema:<br>${problem}<br><br>Respuesta correcta:<br>${correct} ℹ️`;
+      }
+
+    function formatLogicExplanation(question, correct) {
+    return `ℹ️ Pregunta: ${question}<br><br>Respuesta correcta:<br>${correct}ℹ️`;
     }
 
     let previousUserRank = null; // Variable para almacenar el rango anterior del usuario
@@ -794,7 +803,7 @@ async function showFinalOverlay(totalScore) {
     const infoField = document.createElement('p');
     infoField.className = 'info-field'; // Clase para estilizar el campo
     if (explanation){
-        infoField.textContent = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
+        infoField.innerHTML = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
     }
 
     // Agregar estilo
