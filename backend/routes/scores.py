@@ -1,3 +1,4 @@
+from math import isclose
 from flask import Blueprint, request, jsonify, session
 from backend.models import PlayerScore, Users, db
 from datetime import datetime
@@ -17,26 +18,42 @@ scores_bp = Blueprint("scores", __name__)
 @require_jwt  # Asegúrate de que el token JWT sea requerido para acceder
 def add_score():
     data = request.json
-    player_name = session.get("user_name", None)  # Obtiene el nombre del usuario de la sesión
+    session_name = session.get("user_name", None)
+    player_name = data.get("name")
     new_score_value = data.get("score")
     category = data.get("category")
     total_correct = data.get("total_correct")
     total_time = data.get("total_time")
 
-    if not isinstance(new_score_value, (int, float)):
-        return jsonify({"error": "Score must be a number"}), 400
+    if session_name != player_name:
+        return jsonify({"error": "Denegado"}), 400
     
-    if player_name is None:
-        return jsonify({"error": "Invalid session data"}), 400
+    # Validación inicial de tipos y rangos
+    if not all(isinstance(v, (int, float)) for v in [new_score_value, total_correct, total_time]):
+        return jsonify({"error": "Invalid data types"}), 400
+
+    if any(v < 0 for v in [new_score_value, total_correct, total_time]):
+        return jsonify({"error": "Values cannot be negative"}), 400
+
+    # Cálculo del score esperado
+    if total_correct == 0:
+        expected_score = 0.0
+    else:
+        average_time_per_correct = total_time / total_correct
+        score_per_response = max(0, 10 - average_time_per_correct)
+        expected_score = score_per_response * total_correct
+        expected_score = round(expected_score, 2)
+
+    # Comprobar que el score calculado es similar al enviado
+    if not isclose(expected_score, new_score_value, rel_tol=1e-5):
+        return jsonify({"error": "Denegado"}), 400
 
     try:
-        # Busca si existe un registro para el mismo name, category y name en la misma categoría
         existing_record = PlayerScore.query.filter_by(
             category=category, name=player_name
         ).order_by(PlayerScore.score.desc()).first()
 
         if existing_record:
-            # Actualiza el registro existente si el puntaje nuevo es mayor
             if new_score_value > existing_record.score:
                 existing_record.score = new_score_value
                 existing_record.date = datetime.now()
@@ -48,7 +65,6 @@ def add_score():
             else:
                 return jsonify({"message": "Puntuación menor o igual que la existente"}), 204
         else:
-            # Crea un nuevo registro si no existe
             new_score = PlayerScore(
                 name=player_name,
                 score=new_score_value,
@@ -63,7 +79,6 @@ def add_score():
             return jsonify({"message": "Puntuación agregada con éxito"}), 201
 
     except Exception as e:
-        # Si ocurre un error, se hace rollback de la sesión para evitar el PendingRollbackError
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
