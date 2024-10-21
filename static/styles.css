@@ -572,18 +572,12 @@ a {
     background-color: red; /* Fondo rojo */
     border: none;
     color: white; /* Texto blanco */
-    padding: 5px 10px; /* Tamaño pequeño */
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 10px; /* Texto más pequeño */
-    margin: 2px 1px;
     cursor: pointer;
     border-radius: 4px; /* Bordes redondeados */
     transition: background-color 0.3s ease; /* Efecto de transición */
-    position: relative;
-    left:5%;
-    bottom: 5%;
 }
 
 .report-button:hover {

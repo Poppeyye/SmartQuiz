@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const progressBarContainer = document.getElementById('progress-bar-container')
     const progressBar = document.getElementById('progress-bar');
-
+    const memorizationMessage = document.getElementById("memorization-message");
 
     let correctAnswer = null;
     let timerInterval = null;
@@ -206,15 +206,26 @@ document.addEventListener('DOMContentLoaded', () => {
         questionContainer.style.display = 'block'; // Asegurarse de que el contenedor esté visible
         
         let countdown = 3;
-    
+        
         // Actualizar el texto del countdown inmediatamente
         function updateCountdownText() {
-            countdownText.innerText = countdown === 3 ? "3..." : countdown === 2 ? "2..." : "1...";
+            if (selectedCategory === "Memoria") {
+                // Mostrar el mensaje de memorización
+                memorizationMessage.innerText = "Tienes 6 segundos para memorizar todo lo que veas";
+                memorizationMessage.style.display = "block"; // Asegurarse de que el mensaje esté visible
+        
+                // Mostrar el countdown
+                countdownText.innerText = countdown === 3 ? "3..." : countdown === 2 ? "2..." : "1...";
+            } else {
+                // Para otras categorías
+                countdownText.innerText = countdown === 3 ? "3..." : countdown === 2 ? "2..." : "1...";
+            }
         }
+        
     
         // Llamar la primera vez para que se muestre "¡Preparados!" inmediatamente
         updateCountdownText();
-    
+        
         const countdownInterval = setInterval(() => {
             countdown--;
     
@@ -222,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateCountdownText();
             } else {
                 clearInterval(countdownInterval);
+                memorizationMessage.style.display = "none";
                 questionContainer.removeChild(countdownText); // Eliminar el texto después de terminar
                 getQuestion(); // Llamar a getQuestion después de la cuenta regresiva
             }
@@ -339,13 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "Memoria": async function (data) {
                 problem = decodeString(data.problem);
+                
                 // Mostrar el texto del problema en el centro de la pantalla
                 questionText.style.display = 'block';
                 questionText.textContent = problem;
                 answerButtons.style.display = 'none';
                 //questionContainer.style.display = 'none';
 
-                await new Promise(resolve => setTimeout(resolve, 7000));  // Esperar 3 segundos
+                await new Promise(resolve => setTimeout(resolve, 6000));  // Esperar 6 segundos
         
                 // Mostrar la pregunta y las opciones
                 handleMemoryGame(data); 
@@ -795,10 +808,19 @@ async function showFinalOverlay(totalScore) {
     // Agregar el contenedor de botones dentro del overlay
     overlay.appendChild(buttonContainer);
     
-    const infoField = document.createElement('p');
+
+    const reportButtonContainer = document.createElement('div');
+    reportButtonContainer.style.marginTop = '10px';
+    reportButtonContainer.style.display = 'flex'; // Usar flex para centrar
+    reportButtonContainer.style.justifyContent = 'center'; // Centrar horizontalmente
     const reportButton = document.createElement('button');
     reportButton.className = 'report-button';
-    reportButton.textContent = 'Reportar'
+    reportButton.textContent = 'Reportar pregunta'
+    buttonContainer.appendChild(reportButton);
+    reportButtonContainer.appendChild(reportButton);
+    overlay.appendChild(reportButtonContainer);
+
+    const infoField = document.createElement('p');
     infoField.className = 'info-field'; // Clase para estilizar el campo
     if (explanation){
         infoField.innerHTML = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
@@ -810,7 +832,6 @@ async function showFinalOverlay(totalScore) {
     infoField.style.color = 'white'; // Color del texto
     infoField.style.textAlign = 'center'; // Alinear al centro
     overlay.appendChild(infoField);
-    buttonContainer.appendChild(reportButton);
     // Agregar el campo informativo al body, después del overlay
     document.body.appendChild(overlay);
     if (selectedCategory == 'flags'){
