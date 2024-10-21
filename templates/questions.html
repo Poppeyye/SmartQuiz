@@ -9,7 +9,7 @@
         <select id="thematic-input" required>
             <option value="" disabled selected>Selecciona una categoría</option>
             {% for category in categories %}
-                {% if category not in ['flags', 'LogicGame', 'Culture'] %}
+                {% if category not in ['flags', 'LogicGame', 'Culture', 'Memoria'] %}
                     <option value="{{ category }}">{{ category }}</option>
                 {% endif %}
             {% endfor %}

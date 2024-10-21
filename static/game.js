@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rankingContainer = document.getElementById('ranking-container');
     
         // Solo cambiar display a flex si la pantalla es mayor a 768px
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 768 && rankingContainer.style.display != 'none') {
             rankingContainer.style.display = 'flex';
         } else {
             rankingContainer.style.display = 'none'; // Asegurarte de que esté oculto en móviles
@@ -725,11 +725,6 @@ async function showFinalOverlay(totalScore) {
     // Crear el overlay
     const overlay = document.createElement('div');
     overlay.className = 'final-overlay';   
-    for (let i = 0; i < 10; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        overlay.appendChild(confetti);
-    }
     
     // Crear el cuadro del mensaje
     let userRankResult = await getUserRank(totalScore)
@@ -803,7 +798,7 @@ async function showFinalOverlay(totalScore) {
     const infoField = document.createElement('p');
     const reportButton = document.createElement('button');
     reportButton.className = 'report-button';
-    reportButton.textContent = 'Reportar Pregunta'
+    reportButton.textContent = 'Reportar'
     infoField.className = 'info-field'; // Clase para estilizar el campo
     if (explanation){
         infoField.innerHTML = `ℹ️ ${explanation} ℹ️`; // Establecer el contenido del campo
@@ -815,7 +810,7 @@ async function showFinalOverlay(totalScore) {
     infoField.style.color = 'white'; // Color del texto
     infoField.style.textAlign = 'center'; // Alinear al centro
     overlay.appendChild(infoField);
-    overlay.appendChild(reportButton);
+    buttonContainer.appendChild(reportButton);
     // Agregar el campo informativo al body, después del overlay
     document.body.appendChild(overlay);
     if (selectedCategory == 'flags'){

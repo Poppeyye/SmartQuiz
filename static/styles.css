@@ -310,7 +310,6 @@ body {
 
 #ranking-container {
     position: fixed;
-    display: flex;
     flex-direction: column;
     top: 40px;
     right: 10px;
@@ -332,7 +331,15 @@ body {
     font-weight: 200;
     font-style: italic;
 }
-
+@media (max-width: 850px) {
+    #ranking-container {
+        position: relative; /* Cambia a relativo para dispositivos pequeños */
+        width: 100%; /* Ancho completo en móviles */
+        top: auto;
+        right: auto;
+        margin-top: 10px; /* Espacio adicional desde el main container */
+    }
+}
 #best-scores-list {
     list-style-type: none; /* Quita los puntos de la lista */
     padding: 0; /* Sin padding */
@@ -569,12 +576,12 @@ a {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 12px; /* Texto más pequeño */
-    margin: 4px 2px;
+    font-size: 10px; /* Texto más pequeño */
+    margin: 2px 1px;
     cursor: pointer;
     border-radius: 4px; /* Bordes redondeados */
     transition: background-color 0.3s ease; /* Efecto de transición */
-    position: fixed;
+    position: relative;
     left:5%;
     bottom: 5%;
 }
@@ -618,7 +625,7 @@ a {
     font-size: 1.5em;
     color: hsl(35, 100%, 30%);
     max-width: 600px;
-    margin: 50px auto;
+    margin: 80px auto;
     height: 45vh;
     box-sizing: border-box;
     text-shadow: 2px 2px 4px rgba(255, 223, 0, 0.7);
@@ -1103,3 +1110,13 @@ label {
     font-size: 20px; /* Ajusta el tamaño según sea necesario */
 }
 
+.image-container {
+    position: flex;
+}
+
+.game-image {
+    max-width: 200px; /* Ajusta este valor según el tamaño adecuado para la imagen */
+    max-height: 200px;
+    object-fit: contain; /* Asegura que la imagen no se deforme */
+    opacity: 0.95; /* Para darle una apariencia clara pero no saturada */
+}

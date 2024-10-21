@@ -6,8 +6,10 @@
     <div class="icon icon-muted">🔇</div>
 </button>
 <div class="game-container common-container" id="game-container">
-
-    <h1>🦉Genias.io</h1>
+    <picture class="image-container">
+        <img src="{{ url_for('static', filename='pngs/geniasiopicturenotext.png') }}" alt="Genias.io image" class="game-image">
+    </picture>
+    <h1>genias.io</h1>
     <p id="slogan">Aquí empieza tu viaje a lo más alto</p>
     <div id="welcome-container">
         <input type="text" id="user-name" class="custom-input" placeholder="Nombre divertido" value="{{ user_name }}" />
