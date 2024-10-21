@@ -110,9 +110,9 @@ const categoryNames = {{ category_names|tojson }};
 let pin_code = "{{ pin_code | default('') }}";
 let userName = "{{ user_name | default('') }}";
 const audioUrls = {
-           background: "{{ url_for('static', filename='audio/thinktime.mp3') }}",
-           correct: "{{ url_for('static', filename='audio/right.mp3') }}",
-           wrong: "{{ url_for('static', filename='audio/wrong.mp3') }}"
+           background: "{{ url_for('static', filename='audio/thinktime.webm') }}",
+           correct: "{{ url_for('static', filename='audio/right.webm') }}",
+           wrong: "{{ url_for('static', filename='audio/wrong.webm') }}"
        };
 </script>
 
