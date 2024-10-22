@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function checkUserNameAvailability(userName) {
+    if (userName.length > 4) {
         fetch('/check_user_name', {
             method: 'POST',
             credentials: 'include',
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startButton.disabled = true;  // Deshabilita el botón en caso de error
             pinContainer.style.display = 'none';  // Oculta el contenedor del PIN
         });
+    }
     }
     
     // Función para mostrar la tabla de puntuaciones
@@ -139,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         const userName = userNameInput.value.trim();
         const pin_code_input = pinCode.value; // Asegúrate de tener el valor del PIN
-        if (userName.length >= 3) { // Verifica que el nombre de usuario tenga al menos 3 caracteres
+        if (userName.length >= 4) { // Verifica que el nombre de usuario tenga al menos 3 caracteres
             fetch('/set_user_name', {
                 method: 'POST',
                 credentials: 'include',

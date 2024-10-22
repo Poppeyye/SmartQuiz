@@ -124,15 +124,12 @@ def get_all_scores(category=None):
     for cat, scores in scores_by_category.items():
         scores_sorted = sorted(scores, key=lambda x: x.score, reverse=True)
         for index, score in enumerate(scores_sorted):
-            date_utc = score.date.astimezone(pytz.UTC)
-            formatted_date = date_utc.strftime("%d %b %y - %H:%M")
             results.append(
                 {
                     "ranking": index + 1,
                     "name": score.name,
                     "score": score.score,
                     "category": cat,
-                    "date": formatted_date,
                     "total_correct": score.total_correct,
                     "avg_time": score.avg_time,
                 }

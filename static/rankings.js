@@ -44,10 +44,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Agrega listener al input de búsqueda
+// Agrega listener al input de búsqueda
     searchInput.addEventListener('input', (event) => {
         const query = event.target.value.toLowerCase();
-        filterAndDisplayScores(query); // Filtra y muestra los puntajes en tiempo real
+        
+        if (query) {
+            // Si hay texto en la búsqueda, filtra los resultados
+            filterAndDisplayScores(query); 
+        } else {
+            // Si el input está vacío, vuelve a mostrar los 20 primeros puntajes
+            updateScores(allScores);
+        }
     });
+
 });
 
 // Función para obtener todos los puntajes, filtrar por categoría y rango de fecha
@@ -90,7 +99,7 @@ function displayScores(scores) {
             scoresList.innerHTML = ''; // Limpiamos la lista al inicio
 
             // Solo mostramos los 20 mejores para cada categoría
-            const categoryScores = scores.filter(score => score.category.toLowerCase() === category.toLowerCase()).slice(0, 20);
+            const categoryScores = scores.filter(score => score.category.toLowerCase() === category.toLowerCase()).slice(0, 10);
             populateScoreRows(categoryScores, scoresList);
         }
     });
@@ -129,11 +138,17 @@ function populateScoreRows(scores, scoresList) {
 
         row.innerHTML = `
             <td>${medalHtml}${score.ranking}</td>
-            <td class="scrollable-cell">${score.name}</td>
+            <td>
+                <div class="name-avatar-cell">
+                    <div class="avatar-small">
+                        ${multiavatar(score.name)} <!-- Genera el avatar basado en el nombre -->
+                    </div>
+                    <span class="user-name">${score.name}</span>
+                </div>
+            </td>
             <td>${score.score}</td>
             <td>${score.total_correct}</td>
             <td>${score.avg_time}</td>
-            <td>${score.date}</td>
         `;
         scoresList.appendChild(row);
     });

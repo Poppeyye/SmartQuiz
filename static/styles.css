@@ -1115,3 +1115,48 @@ label {
     object-fit: contain; /* Asegura que la imagen no se deforme */
     opacity: 0.95; /* Para darle una apariencia clara pero no saturada */
 }
+
+.avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px; /* Espacio entre el avatar y el input */
+    margin-bottom: 10px; /* Separación del resto de la página */
+    
+}
+
+.avatar {
+    width: 70px;  /* Reducido a un tamaño más pequeño */
+    height: 70px;
+    border-radius: 50%; /* Hace que la imagen sea circular */
+    background-color: #f0f0f0; /* Color de fondo antes de que se cargue el avatar */
+    border: 1px solid #ff9800; /* Borde de color brillante */
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.6), 
+                0 0 10px rgba(255, 87, 34, 0.7); /* Sombra divertida y más prominente */
+    overflow: hidden; /* Asegura que la imagen se ajuste al círculo */
+    transition: transform 0.3s ease; /* Animación de crecimiento al pasar el ratón */
+}
+
+.name-avatar-cell {
+    display: flex;
+    align-items: center;  /* Alinea verticalmente el avatar y el nombre */
+    gap: 10px;  /* Espacio entre el avatar y el nombre */
+}
+
+.avatar-small {
+    width: 50px;  /* Tamaño pequeño del avatar */
+    height: 50px;
+    border-radius: 50%;  /* Hace que la imagen sea circular */
+    overflow: hidden;
+}
+
+.avatar-small svg {
+    width: 100%;
+    height: 100%;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
