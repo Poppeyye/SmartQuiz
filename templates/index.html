@@ -108,13 +108,13 @@
     }
 
     document.getElementById('user-name').addEventListener('input', function() {
-        const avatarName = this.value || 'default'; // Si el input está vacío, usa 'default'
+        const avatarName = this.value || 'defaultoitr'; // Si el input está vacío, usa 'default'
         const avatarSvg = multiavatar(avatarName);
         document.getElementById('avatar-icon').innerHTML = avatarSvg;
     });
 
     window.onload = function() {
-        const avatarName = document.getElementById('user-name').value || 'default';
+        const avatarName = document.getElementById('user-name').value || 'defaultoitr';
         const avatarSvg = multiavatar(avatarName);
         document.getElementById('avatar-icon').innerHTML = avatarSvg;
     };

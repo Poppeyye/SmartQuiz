@@ -1119,12 +1119,10 @@ label {
 .avatar-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px; /* Espacio entre el avatar y el input */
-    margin-bottom: 10px; /* Separación del resto de la página */
-    
+    gap: 10px;  /* Espacio entre el avatar y el input */
 }
 
+/* Estilo para el avatar */
 .avatar {
     width: 70px;  /* Reducido a un tamaño más pequeño */
     height: 70px;
@@ -1134,7 +1132,12 @@ label {
     box-shadow: 0 4px 12px rgba(255, 152, 0, 0.6), 
                 0 0 10px rgba(255, 87, 34, 0.7); /* Sombra divertida y más prominente */
     overflow: hidden; /* Asegura que la imagen se ajuste al círculo */
-    transition: transform 0.3s ease; /* Animación de crecimiento al pasar el ratón */
+    transition: transform 0.3s ease;  /* Transición suave */
+}
+
+/* Hover: Cuando se haga hover sobre el avatar, este se agranda */
+.avatar:hover {
+    transform: scale(2.0);  /* Agranda el avatar un 20% */
 }
 
 .name-avatar-cell {
@@ -1159,4 +1162,15 @@ label {
     font-size: 16px;
     font-weight: 600;
     color: #333;
+}
+
+@media (max-width: 768px) {
+    .avatar-container {
+        flex-direction: column;  /* Cambia a disposición vertical */
+        align-items: center;  /* Alinea todo al centro */
+    }
+
+    .avatar {
+        margin-bottom: 10px;  /* Espacio entre el avatar y el input en la disposición vertical */
+    }
 }
