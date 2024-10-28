@@ -6,6 +6,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
+
 }
 
 body {
@@ -21,7 +23,8 @@ body {
     background: linear-gradient(to bottom right, #222222, #111111);
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-color: #111111;
+
 }
 .main-container {
     flex-grow: 1;
