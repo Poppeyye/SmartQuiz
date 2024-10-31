@@ -28,8 +28,10 @@
 
 
     <title>{% block title %}Genias.io{% endblock %}</title>
-    <link rel="canonical" href="https://genias.io/" />
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='svgs/owl.svg') }}">
+    {% block canonical %}
+    <link rel="canonical" href="https://genias.io" />
+    {% endblock %} 
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='pngs/magic-lamp.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nerko+One&family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
@@ -82,7 +84,7 @@
       <div class="menu">
         <nav class="navMenu">
             <a href="/">Juega<div class="dot"></div></a>
-            <a href="/questions">Contribuye<div class="dot"></div></a>
+            <a href="/publica-tus-preguntas">Contribuye<div class="dot"></div></a>
             <a href="/rankings">Rankings<div class="dot"></div></a>
         </nav>
     </div>
@@ -99,7 +101,7 @@
     <footer class="footer">
         <div class="footer-bottom">
             <p>
-                <a href="/rankings">About</a> | <a href="/rankings">Privacy Policy</a>
+                <a href="/trivia-desafio-mental-juego">Qué es genias.io?</a> | <a href="/politica-de-privacidad">Política de Privacidad</a>
             </p>
         </div>
     </footer>

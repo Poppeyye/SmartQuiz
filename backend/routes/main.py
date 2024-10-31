@@ -95,16 +95,19 @@ def rankings():
         refresh_access_token_if_needed(response)
     return response
 
-@main_bp.route("/about")
+@main_bp.route("/trivia-desafio-mental-juego")
 def about():
-    return make_response(render_template("about.html", user_name=session.get('user_name', ''),
+    return make_response(render_template("trivia-desafio-mental-juego.html", user_name=session.get('user_name', ''),
                                              pin_code=session.get('pin_code', '')))
 
-@main_bp.route("/questions")
+@main_bp.route("/publica-tus-preguntas")
 def questions():
-    return make_response(render_template("questions.html", user_name=session.get('user_name', ''),
+    return make_response(render_template("publica-tus-preguntas.html", user_name=session.get('user_name', ''),
                                              pin_code=session.get('pin_code', '')))
 
+@main_bp.route("/politica-de-privacidad")
+def privacy():
+    return make_response(render_template("politica-de-privacidad.html"))
 
 @main_bp.route("/robots.txt")
 def robots_txt():
@@ -118,7 +121,7 @@ def sitemap():
     ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
 
     # Definir las rutas que deseas incluir en el sitemap
-    included_routes = ['/', '/rankings', '/questions']
+    included_routes = ['/', '/rankings', '/publica-tus-preguntas']
 
     # Accede a las rutas de la aplicación principal
     for rule in current_app.url_map.iter_rules():
