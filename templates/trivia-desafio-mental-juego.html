@@ -1,0 +1,101 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Genias.io: el juego de preguntas y respuestas para desafiar tu mente, competir con amigos y descubrir categorías emocionantes.">
+    <title>Genias.io - Desafía tu mente</title>
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing-style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='pngs/magic-lamp.png') }}">
+    <link rel="canonical" href="https://genias.io/" />
+
+  </head>
+  <header>
+    <h2>genias.io!</h2>
+    <nav>
+      <li><a href="/rankings">Rankings</a></li>
+      <li><a href="/publica-tus-preguntas">Contribuye</a></li>
+      <li><a href="/">Juego</a></li>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="background-image"></div>
+    <div class="hero-content-area">
+      <h1>¡Desafía tu mente con Genias.io!</h1>
+      <h3>Compite, aprende y disfruta con el juego de preguntas más completo.</h3>
+      <a href="/" class="btn">Juega ahora!</a>
+    </div>
+  </section>
+  
+  
+  <section class="packages">
+    <h3 class="title">Modalidades de Juego</h3>
+    <p>En Genias.io ofrecemos varias modalidades de juego: desafíos de memoria, competiciones de banderas, cultura general y retos semanales en distintas categorías. ¡Compite contra tus amigos, contra ti mismo o jugadores de todo el mundo!</p>
+    <hr>
+  
+    <ul class="grid">
+      <li>
+        <i class="fa fa-lightbulb-o fa-4x"></i>
+        <h4>Desafío por categorías</h4>
+        <p>Prueba tus conocimientos en rondas de preguntas infinitas. Cada segundo cuenta para acumular puntos y superar a tus oponentes.</p>
+      </li>
+      <li>
+        <i class="fa fa-users fa-4x"></i>
+        <h4>Compite contra todos</h4>
+        <p>¿Crees que puedes llegar a la cima del ranking?. ¡Las categorías varían, así que estar preparado es clave!</p>
+      </li>
+      <li>
+        <i class="fa fa-trophy fa-4x"></i>
+        <h4>Retos Semanales</h4>
+        <p>Cada semana alimentamos a Genia con nuevos retos. ¡Súbete al ranking y muestra quién es la verdadera genia!</p>
+      </li>
+      
+      <li>
+        <i class="fa fa-pencil fa-4x"></i>
+        <h4>Crea tus Preguntas</h4>
+        <p>Aporta tus propias preguntas y contribuye a que el juego siga creciendo con contenido de calidad. ¡Nuestro sistema de IA validará tus preguntas!</p>
+      </li>
+    </ul>
+    <a href="/publica-tus-preguntas" class="btn">Crea nuevas preguntas</a>
+
+  </section>
+  
+  <section class="testimonials">
+    <h3 class="title">Opiniones de nuestros jugadores:</h3>
+    <hr>
+    <p class="quote">“Genias.io me ha hecho recordar cuánto me gusta aprender. Es un juego perfecto para disfrutar con amigos y, al mismo tiempo, adquirir conocimientos nuevos.”</p>
+    <p class="author">- Andrea L.</p>
+    <p class="quote">“Nunca pensé que competir en preguntas de cultura general sería tan emocionante. ¡Definitivamente una experiencia única!”</p>
+    <p class="author">- José M.</p>
+    <p class="quote">“Gracias a Genias.io, he mejorado mi velocidad mental. Jugar cada semana es ya una tradición entre mis amigos y yo.”</p>
+    <p class="author">- Camila R.</p>
+  </section>
+  
+  <section class="contact">
+    <h3 class="title">¡Mantente al tanto!</h3>
+    <p>¿Quieres saber sobre los próximos desafíos y actualizaciones? Únete a nuestra lista de correos y no te pierdas nada. ¡Sin spam, solo novedades importantes para nuestros jugadores!</p>
+    <hr>
+    <picture class="image-container">
+      <source srcset="{{ url_for('static', filename='pngs/geniasiopicturenotext.webp') }}" type="image/webp">
+      <source srcset="{{ url_for('static', filename='pngs/geniasiopicturenotext.png') }}" type="image/png"> 
+      <img src="{{ url_for('static', filename='pngs/geniasiopicturenotext.png') }}" alt="Genias.io image" class="game-image">
+  </picture>
+    <div class="social-menu">
+      <ul>
+          <li><a href="" target="blank"><i class="fab fa-github"></i></i></a></li>
+          <li><a href="" target="blank"><i class="fab fa-instagram"></i></a></li>
+          <li><a href="" target="blank"><i class="fab fa-linkedin-in"></i></a></li>
+          <li><a href=""><i class="fab fa-codepen" target="blank"></i></a></li>
+      </ul>
+  </div>
+
+
+  </section>
+
+  <footer>
+    <p>Politica de privacidad <a href="politica-de-privacidad">aquí</a>.</p>
+    <p>Genias.io - El juego donde cada pregunta cuenta.</p>
+  </footer>
+  
+  <script src="https://kit.fontawesome.com/66aa7c98b3.js" crossorigin="anonymous"></script>
