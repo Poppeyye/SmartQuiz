@@ -573,7 +573,7 @@ a {
 }
 
 .report-button {
-    background-color: red; /* Fondo rojo */
+    background-color: rgba(255, 0, 0, 0.5); /* Fondo rojo con transparencia */
     border: none;
     color: white; /* Texto blanco */
     text-align: center;
@@ -581,12 +581,15 @@ a {
     display: inline-block;
     cursor: pointer;
     border-radius: 4px; /* Bordes redondeados */
+    padding: 6px 12px; /* Añadir algo de padding para mejorar el aspecto */
     transition: background-color 0.3s ease; /* Efecto de transición */
+    margin-top:20px;
 }
 
 .report-button:hover {
-    background-color: darkred; /* Cambiar a un rojo más oscuro al hacer hover */
+    background-color: rgba(255, 0, 0, 0.85); /* Fondo ligeramente más oscuro en hover */
 }
+
 
 @keyframes bounce {
     0%, 100% {

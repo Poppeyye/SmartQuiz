@@ -737,6 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 async function showFinalOverlay(totalScore) {
+    window.scrollTo(0, 0);
+
     // Crear el overlay
     const overlay = document.createElement('div');
     overlay.className = 'final-overlay';   
