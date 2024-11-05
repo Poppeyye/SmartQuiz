@@ -1,5 +1,5 @@
 const muteButton = document.getElementById('mute-button');
-export let isMuted = localStorage.getItem('isMuted') === 'true';
+export let isMuted = localStorage.getItem('isMuted') === 'true'; // Recuperar el estado del mute de localStorage
 export const backgroundMusic = new Audio(audioUrls.background);
 backgroundMusic.loop = true;
 
@@ -15,27 +15,28 @@ function toggleMute() {
         correctSound.muted = true;
         wrongSound.muted = true;
         if (muteButton) {
-            muteButton.classList.add('active'); 
-            muteButton.querySelector('.icon-sound').style.display = 'none'; 
-            muteButton.querySelector('.icon-muted').style.display = 'flex'; 
+            muteButton.classList.add('active'); // Cambia el estado visual
+            muteButton.querySelector('.icon-sound').style.display = 'none'; // Oculta icono de sonido
+            muteButton.querySelector('.icon-muted').style.display = 'flex'; // Muestra icono de silencio
         }
     } else {
         backgroundMusic.muted = false;
         correctSound.muted = false;
         wrongSound.muted = false;
         if (muteButton) {
-            muteButton.classList.remove('active');
-            muteButton.querySelector('.icon-sound').style.display = 'flex'; 
-            muteButton.querySelector('.icon-muted').style.display = 'none'; 
+            muteButton.classList.remove('active'); // Cambia el estado visual
+            muteButton.querySelector('.icon-sound').style.display = 'flex'; // Muestra icono de sonido
+            muteButton.querySelector('.icon-muted').style.display = 'none'; // Oculta icono de silencio
         }
     }
 }
 
+// Verifica si el botón de mute existe antes de intentar usarlo
 if (muteButton) {
     muteButton.addEventListener('click', () => {
-        isMuted = !isMuted;  
-        localStorage.setItem('isMuted', isMuted); 
-        toggleMute(); 
+        isMuted = !isMuted;  // Cambia el estado de silencio
+        localStorage.setItem('isMuted', isMuted); // Almacena el nuevo estado
+        toggleMute(); // Llama a la función para manejar el mute
     });
 }
 
@@ -44,20 +45,6 @@ window.addEventListener("beforeunload", function() {
     if (backgroundMusic) {
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
-    }
-});
-
-// Evento visibilitychange para pausar la música
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === 'hidden') {
-        if (backgroundMusic) {
-            backgroundMusic.pause();
-            backgroundMusic.currentTime = 0; // Reinicia la música si es necesario
-        }
-    } else {
-        if (!isMuted && backgroundMusic) {
-            backgroundMusic.play();
-        }
     }
 });
 
