@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const startButton = document.getElementById('start-button');
     const welcomeContainer = document.getElementById('welcome-container');
+    const faqContainer = document.getElementById('faq-container');
     const categoryContainer = document.getElementById('category-container');
     const rankingContainer = document.getElementById('ranking-container');
     const slogan = document.getElementById('slogan');
@@ -164,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 pin_code = data.pin_code; // Actualiza el pin_code con el nuevo PIN
                 mostrarPinSiDisponible(pin_code); // Muestra el nuevo PIN
                 welcomeContainer.style.display = 'none';
+                faqContainer.style.display = 'none';
+
                 categoryContainer.style.display = 'block';
             })
             .catch(error => {
