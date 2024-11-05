@@ -1240,7 +1240,7 @@ label {
 }
 
 .container {
-    padding: 200px;
+    padding: 100px;
   }
   
   h2 {
@@ -1312,7 +1312,7 @@ label {
   .faq-drawer__content p {
     color: rgba(255, 255, 255, 0.85); /* Blanco semitransparente */
     margin: 0;
-    text-align: justify; /* Justificar texto */
+    text-align: left; /* Justificar texto */
   }
   
   /* Ocultar checkbox */
@@ -1323,7 +1323,7 @@ label {
   /* Ajustes para pantallas pequeñas */
   @media only screen and (max-width: 600px) {
     .container {
-      padding: 80px;
+      padding: 40px;
     }
   
     h2 {
