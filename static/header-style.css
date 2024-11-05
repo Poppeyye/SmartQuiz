@@ -178,7 +178,7 @@ h1 {
 }
 
 .backwrap {
-  background: linear-gradient(to bottom, rgb(15, 47, 62), rgb(35, 76, 114));
+  background: rgb(35, 76, 114);
   /* Old browsers */
   background-repeat: no-repeat;
   background-size: 100% 100%;

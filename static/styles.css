@@ -6,25 +6,19 @@
 html, body {
     margin: 0;
     padding: 0;
-    overscroll-behavior: none;
-
 }
-
 body {
     font-family: "Poppins", sans-serif;
     font-weight: 200;
     font-style: normal;
-    margin: 0px;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh; /* Cambiado de min-height */
     position: relative;
-    background: linear-gradient(to bottom right, #222222, #111111);
-    background-size: cover;
-    background-position: center;
     background-color: #111111;
-
+    background: url('pngs/back-image.jpg') no-repeat center center fixed;
+    background-size: 100% 100%; /* Cambiado de cover a evitar parpadeo */
+    background-position: center;
 }
 .main-container {
     flex-grow: 1;
@@ -91,15 +85,10 @@ body {
     font-size: 10px; /* Tamaño de la fuente */
     margin-bottom: 10px; /* Margen inferior para espaciar de los botones */
 }
-/* Estilos para pantallas pequeñas como móviles */
 @media only screen and (max-width: 600px) {
     body {
-        padding: 5px; /* Reduce padding en móviles */
-        min-height: 100vh;
-    }
-
-    #game-container {
-        width: 95%; /* Haz que el contenedor ocupe más espacio horizontal */
+        background: url('pngs/back-image.jpg') no-repeat center center fixed;
+        background-size: cover;
     }
 }
 
