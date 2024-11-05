@@ -72,6 +72,70 @@
     <h2>Top 7</h2>
     <ul id="best-scores-list"></ul>
 </div>
+
+<div class="container">
+    
+    <h2>Quieres disfrutar al máximo del juego?</h2>
+    
+    <!-- FAQ Drawer 1 -->
+    <div class="faq-drawer">
+      <input class="faq-drawer__trigger" id="faq-drawer" type="checkbox" />
+      <label class="faq-drawer__title" for="faq-drawer">¿Cómo funciona el sistema de puntuación en genias.io?</label>
+      <div class="faq-drawer__content-wrapper">
+        <div class="faq-drawer__content">
+          <p style="color: whitesmoke">
+            En genias.io, la velocidad de tus respuestas es clave para obtener una mayor puntuación.
+            <br>
+             La fórmula de puntuación se basa en el tiempo que tardas en responder: cuanto más rápido contestes, más puntos ganarás,
+            lo que significa que si respondes rápidamente, puedes acumular hasta 10 puntos por respuesta correcta.
+            <br>¡Pon a prueba tus conocimientos y compite para lograr el puntaje más alto!
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FAQ Drawer 2 -->
+    <div class="faq-drawer">
+      <input class="faq-drawer__trigger" id="faq-drawer-2" type="checkbox" />
+      <label class="faq-drawer__title" for="faq-drawer-2">¿Qué categorías de preguntas están disponibles en el juego?</label>
+      <div class="faq-drawer__content-wrapper">
+        <div class="faq-drawer__content">
+          <p style="color: whitesmoke">
+            Genias.io ofrece una variedad de categorías en las que podrás demostrar tus conocimientos: cultura general, lógica, banderas, deportes, moda, historia y geografía, informática y matemáticas, economía y juegos de memoria. Cada categoría está diseñada para desafiar tu inteligencia y rapidez en temas específicos, proporcionando una experiencia de trivia entretenida y educativa. ¡Explora cada categoría y reta tus conocimientos en cada área!
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FAQ Drawer 3 -->
+    <div class="faq-drawer">
+      <input class="faq-drawer__trigger" id="faq-drawer-3" type="checkbox" />
+      <label class="faq-drawer__title" for="faq-drawer-3">¿Cómo puedo contribuir a genias.io añadiendo nuevas preguntas?</label>
+      <div class="faq-drawer__content-wrapper">
+        <div class="faq-drawer__content">
+          <p style="color: whitesmoke">
+            En genias.io, tienes la oportunidad de enriquecer el juego agregando tus propias preguntas a través de nuestra inteligencia artificial. Puedes proponer nuevas preguntas en cualquiera de las categorías, y, tras la revisión de los administradores, tu pregunta se hará pública junto a tu nombre de usuario. Esta función te permite ser parte activa de la comunidad y contribuir a la variedad y calidad del juego. ¡Comparte tu conocimiento y mejora el juego para todos!
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FAQ Drawer 4 -->
+    <div class="faq-drawer">
+      <input class="faq-drawer__trigger" id="faq-drawer-4" type="checkbox" />
+      <label class="faq-drawer__title" for="faq-drawer-4">¿Cómo puedo guardar mi nombre de usuario para usarlo en distintos dispositivos?</label>
+      <div class="faq-drawer__content-wrapper">
+        <div class="faq-drawer__content">
+          <p style="color: whitesmoke">
+            Para mantener tu nombre de usuario en genias.io, recibirás un código PIN que aparecerá en la esquina inferior derecha de la pantalla. Es importante que guardes este código, ya que te permitirá reutilizar tu nombre de usuario en cualquier dispositivo que uses para jugar. Esto asegura que puedas seguir acumulando puntos y manteniendo tu historial de juego, sin importar desde dónde accedas.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
 <script type="module" src="{{ url_for('static', filename='game.js') }}" defer></script>
 <script>
@@ -118,5 +182,26 @@
         const avatarSvg = multiavatar(avatarName);
         document.getElementById('avatar-icon').innerHTML = avatarSvg;
     };
+
+const items = document.querySelectorAll('.accordion button');
+
+function toggleAccordion() {
+  const itemToggle = this.getAttribute('aria-expanded');
+
+  for (i = 0; i < items.length; i++) {
+    items[i].setAttribute('aria-expanded', 'false');
+  }
+
+  if (itemToggle == 'false') {
+    this.setAttribute('aria-expanded', 'true');
+  }
+}
+
+items.forEach((item) => item.addEventListener('click', toggleAccordion));
+
+
+
+
+
 </script>
 {% endblock %}

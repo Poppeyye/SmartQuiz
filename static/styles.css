@@ -1238,3 +1238,101 @@ label {
 .cc-nb-changep:hover {
     background-color: #d8d8d8 !important;
 }
+
+.container {
+    padding: 200px;
+  }
+  
+  h2 {
+    color: rgba(255, 255, 255, 0.85); /* Blanco suave y discreto */
+    font-size: 2em;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .faq-drawer {
+    margin-bottom: 30px;
+  }
+  
+  .faq-drawer__content-wrapper {
+    font-size: 1.15em;
+    line-height: 1.6em;
+    max-height: 0; /* Oculto inicialmente */
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+    padding: 0; /* Sin padding inicial */
+  }
+  
+  .faq-drawer__title {
+    border-top: #2f54eb 1px solid;
+    cursor: pointer;
+    display: block;
+    font-size: 1.25em;
+    font-weight: 700;
+    padding: 30px 0 0 0;
+    position: relative;
+    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.85); /* Blanco semitransparente */
+    transition: color 0.25s ease-out;
+  }
+  
+  .faq-drawer__title::after {
+    border-style: solid;
+    border-width: 1px 1px 0 0;
+    content: " ";
+    display: inline-block;
+    float: right;
+    height: 10px;
+    position: relative;
+    right: 20px;
+    top: 2px;
+    transform: rotate(135deg);
+    transition: transform 0.35s ease-in-out;
+    width: 10px;
+  }
+  
+  .faq-drawer__title:hover { 
+    color: #597ef7;
+  }
+  
+  /* Cuando el acordeón está abierto */
+  .faq-drawer__trigger:checked + .faq-drawer__title + .faq-drawer__content-wrapper {
+    max-height: 1000px; /* Expande según el contenido */
+    padding: 15px 0; /* Añade padding al expandir */
+  }
+  
+  .faq-drawer__trigger:checked + .faq-drawer__title::after {
+    transform: rotate(-45deg); /* Cambia la flecha al abrir */
+    transition: transform 0.25s ease-in-out;
+  }
+  
+  /* Estilo de párrafos */
+  .faq-drawer__content p {
+    color: rgba(255, 255, 255, 0.85); /* Blanco semitransparente */
+    margin: 0;
+    text-align: justify; /* Justificar texto */
+  }
+  
+  /* Ocultar checkbox */
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  /* Ajustes para pantallas pequeñas */
+  @media only screen and (max-width: 600px) {
+    .container {
+      padding: 80px;
+    }
+  
+    h2 {
+      font-size: 1.5em;
+    }
+  
+    .faq-drawer__content-wrapper {
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+  }
+  
