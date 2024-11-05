@@ -44,7 +44,7 @@ if (muteButton) {
 window.addEventListener("beforeunload", function() {
     if (backgroundMusic) {
         backgroundMusic.pause();
-        backgroundMusic.currentTime = 0; // Reinicia la música
+        backgroundMusic.currentTime = 0;
     }
 });
 

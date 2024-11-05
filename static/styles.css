@@ -15,6 +15,7 @@ body {
     flex-direction: column;
     height: 100vh; /* Cambiado de min-height */
     position: relative;
+    background: rgb(35, 76, 114);
 }
 .main-container {
     flex-grow: 1;
