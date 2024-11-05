@@ -113,6 +113,10 @@ def privacy():
 def robots_txt():
     return send_from_directory(current_app.static_folder, "robots.txt")
 
+@main_bp.route("/ads.txt")
+def ads_txt():
+    return send_from_directory(current_app.static_folder, "ads.txt")
+
 
 @main_bp.route('/sitemap.xml', methods=['GET'])
 def sitemap():
