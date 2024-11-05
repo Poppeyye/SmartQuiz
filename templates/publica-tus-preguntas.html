@@ -36,7 +36,6 @@
     
         <button class="btn" type="submit" id="obtain-questions-button" style="display: none;">Obtener Preguntas</button>
     </form>
-
     <div id="loading-indicator" style="display:none;">
         <div class="overlay-loader">
             <div class="loading-message">
@@ -56,13 +55,15 @@
         <input type="text" id="created-by-input" class="custom-input" required placeholder="Nombre" maxlength="100" />
         <p style="color:white; font-weight: 300;">Pondremos tu nombre de usuario debajo de las preguntas que hayas generado</p>
         <button id="save-questions-button" class="btn">Guardar Preguntas</button>
-        
+
         <!-- Sugerencia de donación -->
         <div class="donation-container">
-            <h3>Te está gustando el juego? ☕</h3>
-            <p>Si te gusta este generador de preguntas, considera regalarme un café para apoyar el desarrollo local 🧑‍💻</p>
+            <h3>Te está gustando el juego?</h3>
+            <p>Si te gusta este generador de preguntas y el juego, considera regalarme un café para apoyar el desarrollo local 🧑‍💻</p>
         </div>
     </div>
+    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="alvaromartm" data-color="#FFDD00" data-emoji="☕"  data-font="Poppins" data-text="Me invitarías a un café?" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+
 </div>
 
 <style>
@@ -209,13 +210,6 @@ textarea:focus {
     60% {
         transform: translateY(-5px); /* Rebote */
     }
-}
-
-/* Clase que añade la animación de rebote al botón */
-.animate-bmc {
-    animation: bounce 1.5s ease infinite; /* Rebota de forma continua */
-    position: relative; /* Asegura que no afecte el flujo de otros elementos */
-    z-index: 1001; /* Asegura que esté por encima de otros elementos */
 }
 
 /* Estilo del contenedor de la pregunta */
@@ -405,10 +399,6 @@ textarea:focus {
         } finally {
             obtainButton.disabled = false;
             loadingIndicator.style.display = 'none';  // Ocultar indicador de carga
-            const bmcButton = document.querySelector('#bmc-wbtn');
-                if (bmcButton) {
-                    bmcButton.classList.add('animate-bmc');  // Añade la clase de animación
-                }
         }
 });
 
@@ -506,9 +496,5 @@ categoryInput.addEventListener('change', function() {
 });
 
     
-</script>
-<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" 
-data-id="alvaromartm" data-description="Dame energía para seguir creando!" 
-data-message="" data-color="linear-gradient(135deg, #F9C642, #FFEB84)" data-position="left" data-x_margin="18" data-y_margin="18">
 </script>
 {% endblock %}

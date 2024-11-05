@@ -998,7 +998,8 @@ label {
     margin-bottom: 12px;
     font-weight: 500;
     text-align: center;
-    margin: 40px auto;
+    margin: 10px auto;
+    margin-top:30px;
 }
 
 
@@ -1232,7 +1233,7 @@ label {
     margin-top: 50px;
   }
   
-  h2 {
+  .decorative-title {
     color: rgba(255, 255, 255, 0.85); /* Blanco suave */
     font-size: 2em;
     font-weight: 500;
@@ -1245,8 +1246,8 @@ label {
 }
 
 /* Elementos decorativos en los lados */
-h2::before,
-h2::after {
+.decorative-title::before,
+.decorative-title::after {
     content: ""; /* Sin texto, solo decorativo */
     position: absolute;
     top: 50%; /* Centrado verticalmente */
@@ -1256,17 +1257,17 @@ h2::after {
     transform: translateY(-50%); /* Alinear con el texto */
 }
 
-h2::before {
+.decorative-title::before {
     left: -50px; /* Espacio a la izquierda del texto */
 }
 
-h2::after {
+.decorative-title::after {
     right: -50px; /* Espacio a la derecha del texto */
 }
 
 /* Efecto animado al hacer hover sobre el título */
-h2:hover::before,
-h2:hover::after {
+.decorative-title:hover::before,
+.decorative-title:hover::after {
     width: 60px; /* Ampliación de la línea decorativa */
     transition: width 0.3s ease; /* Transición suave */
 }
