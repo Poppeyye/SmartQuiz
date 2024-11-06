@@ -226,7 +226,7 @@ def set_user_name():
             return jsonify({"error": "Invalid pin code"}), 400
 
     else:
-        pin_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        pin_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
         new_user = Users(username=user_name)
         new_user.set_pin_code(pin_code)
         
