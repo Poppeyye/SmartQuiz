@@ -5,6 +5,7 @@ from flask_jwt_extended import (
     create_refresh_token, set_access_cookies, set_refresh_cookies, 
     unset_jwt_cookies, get_jwt, decode_token
 )
+from jwt import DecodeError, InvalidSignatureError
 from jwt.exceptions import ExpiredSignatureError
 from datetime import datetime, timedelta, timezone
 import uuid
@@ -32,37 +33,64 @@ def refresh_access_token_if_needed(response):
             user_identity = session['admin_id']
             create_and_set_tokens(user_identity, response)
 
-# Decorador para manejar la renovación automática de tokens
 def require_jwt(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        try:
-            verify_jwt_in_request()  # Verifica que el token es válido
-            response = make_response(func(*args, **kwargs))
-            refresh_access_token_if_needed(response)
-            return response
-            
-        except ExpiredSignatureError:
-            refresh_token = request.cookies.get('refresh_token_cookie')
-            if not refresh_token:
-                response = make_response(jsonify({'error': 'Refresh token missing'}), 401)
-                unset_jwt_cookies(response)
-                return response
+        response = make_response()  # Inicializar la respuesta
 
-            try:
-                decoded_refresh_token = decode_token(refresh_token)
-                user_identity = decoded_refresh_token['sub']
-                create_and_set_tokens(user_identity, response)
-                
-                response = make_response(func(*args, **kwargs))
-            except Exception as e:
-                response = make_response(jsonify({'error': 'Cannot refresh token', 'msg': str(e)}), 401)
-                unset_jwt_cookies(response)
-                return response
+        try:
+            # Verificar si el access token es válido
+            verify_jwt_in_request()
+            response = make_response(func(*args, **kwargs))
         
+        except ExpiredSignatureError:
+            # Access token expirado, intentar refrescar usando el refresh token
+            refresh_token = request.cookies.get('refresh_token_cookie')
+            
+            if refresh_token:
+                try:
+                    # Decodificar y verificar el refresh token
+                    decoded_refresh_token = decode_token(refresh_token)
+                    user_identity = decoded_refresh_token['sub']
+                    
+                    # Crear y establecer nuevos tokens si el refresh token es válido
+                    create_and_set_tokens(user_identity, response)
+                    response = make_response(func(*args, **kwargs))
+                
+                except (ExpiredSignatureError, InvalidSignatureError, DecodeError):
+                    # Manejar refresh tokens expirados, inválidos o con firma incorrecta
+                    if 'admin_id' in session:
+                        # Usar admin_id de la sesión para generar nuevos tokens
+                        user_identity = session['admin_id']
+                    else:
+                        # Generar un nuevo admin_id y almacenarlo en la sesión
+                        user_identity = str(uuid.uuid4())
+                        session['admin_id'] = user_identity
+                    
+                    # Crear y establecer nuevos tokens para el usuario
+                    create_and_set_tokens(user_identity, response)
+                    response = make_response(func(*args, **kwargs))
+
+            else:
+                # Si falta el refresh token, generar uno nuevo si es posible
+                if 'admin_id' in session:
+                    user_identity = session['admin_id']
+                else:
+                    # Generar un nuevo admin_id y almacenarlo en la sesión
+                    user_identity = str(uuid.uuid4())
+                    session['admin_id'] = user_identity
+
+                # Crear y establecer nuevos tokens en la respuesta
+                create_and_set_tokens(user_identity, response)
+                response = make_response(func(*args, **kwargs))
+
         return response
     
     return wrapper
+
+
+
+
 
 # Ruta principal donde se crean los tokens si no existen
 @main_bp.route("/")

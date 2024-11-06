@@ -1,4 +1,9 @@
 {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "python.defaultInterpreterPath": "${env:VIRTUAL_ENV}",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }
