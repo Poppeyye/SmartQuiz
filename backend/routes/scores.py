@@ -248,7 +248,7 @@ def set_user_name():
         session["pin_code"] = pin_code
 
         return jsonify({
-            "message": "User name and PIN code set",
+            "message": "New user set",
             "user_name": user_name,
             "pin_code": pin_code
         }), 200

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="blurBackground" class="blur" style="display: none;"></div>
+<div id="welcomeMessage" class="welcome" style="display: none;">
+  Gracias por unirte {{ user_name }}!
+</div>
 <button id="mute-button">
     <div class="icon icon-sound">🔊</div>
     <div class="icon icon-muted">🔇</div>

@@ -104,8 +104,9 @@
         {% block content %}
         {% endblock %}
     </div>
-    <div id="pinBox" style="display:none">
-        <span id="pinDisplay" >****</span>
+    <div id="pinBox">
+        <span id="pinDisplay">****</span>
+        <span class="flecha"></span>
         <span id="infoMessage">Guarda el PIN para usar tu nombre de usuario siempre que quieras</span>
     </div>
     <footer class="footer">
@@ -126,7 +127,8 @@ let userName = "{{ user_name | default('') }}";
 const audioUrls = {
            background: "{{ url_for('static', filename='audio/thinktime.webm') }}",
            correct: "{{ url_for('static', filename='audio/right.mp3') }}",
-           wrong: "{{ url_for('static', filename='audio/wrong.webm') }}"
+           wrong: "{{ url_for('static', filename='audio/wrong.webm') }}",
+           welcome: "{{ url_for('static', filename='audio/welcome-voice.mp3') }}"
        };
 </script>
 

@@ -166,8 +166,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 mostrarPinSiDisponible(pin_code); // Muestra el nuevo PIN
                 welcomeContainer.style.display = 'none';
                 faqContainer.style.display = 'none';
-
                 categoryContainer.style.display = 'block';
+                sessionStorage.setItem('user_name', userName)
+            
+                // Chequea si es un nuevo usuario
+                if (data.message === "New user set") {
+                    // Muestra la flecha parpadeante
+                    document.getElementById('blurBackground').style.display = 'block';
+
+                    // Muestra el mensaje de bienvenida
+                    const welcomeMessage = document.getElementById('welcomeMessage');
+                    welcomeMessage.innerText = `Gracias por unirte ${userName}! 👩‍💻`; // Asigna el nombre de usuario
+                    welcomeMessage.style.display = 'block'; // Muestra el mensaje
+                    setTimeout(() => {
+                        welcomeMessage.style.opacity = '1'; // Asegúrate de que se vuelva visible
+                    }, 50); // Pequeño retraso para iniciar la animación
+                
+                    // Muestra la flecha parpadeante
+                    const pinDisplay = document.getElementById('pinDisplay');
+                    pinDisplay.classList.add('flecha');
+                
+                    // Mostrar el mensaje de información
+                    const infoMessage = document.getElementById('infoMessage');
+                    infoMessage.style.display = 'block'; // Muestra el mensaje y lo hace visible
+                    infoMessage.style.opacity = '1'; // Hacer visible el mensaje de información
+                
+                    // Reproducir sonido
+                    const welcomeAudio = new Audio(audioUrls.welcome); // Cambia por la ruta de tu audio
+                    welcomeAudio.play();
+                
+                    // Ocultar después de un tiempo
+                    setTimeout(() => {
+                        welcomeMessage.style.opacity = '0'; // Comenzar la animación de ocultar
+                        setTimeout(() => {
+                            welcomeMessage.style.display = 'none'; // Ocultar mensaje
+                            document.getElementById('blurBackground').style.display = 'none'; // Ocultar fondo
+                            pinDisplay.classList.remove('flecha'); // Eliminar la clase de la flecha
+                            infoMessage.style.opacity = '0'; // Comenzar a ocultar el mensaje de información
+                            setTimeout(() => {
+                                infoMessage.style.display = 'none'; // Ocultar mensaje de información
+                            }, 300); // Tiempo para la transición de opacidad
+                        }, 500); // Tiempo para completar la transición de la bienvenida
+                    }, 5000); // 5000ms = 5 segundos
+                }
             })
             .catch(error => {
                 console.error(error); // Manejo de error

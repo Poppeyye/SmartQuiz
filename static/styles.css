@@ -1359,3 +1359,64 @@ label {
     }
   }
   
+  .blur {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro traslúcido */
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+/* Estilo de la flecha parpadeante */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.flecha {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px; /* Espaciado entre el PIN y la flecha */
+    font-size: 24px; /* Tamaño de la flecha */
+    color: gold; /* Color dorado */
+    animation: blink 1s infinite; /* Parpadeo infinito */
+    font-weight: bold; /* Hacer la flecha más gruesa */
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.blur {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro traslúcido */
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+/* Estilos para el mensaje de bienvenida */
+.welcome {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centra el mensaje */
+    color: white; /* Color del texto */
+    font-size: 24px; /* Ajusta el tamaño del texto */
+    z-index: 1500; /* Asegúrate de que esté por encima del fondo difuminado */
+    opacity: 0; /* Hacerlo invisible inicialmente */
+    transition: opacity 0.5s ease; /* Transición suave */
+}
