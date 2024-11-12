@@ -1,6 +1,6 @@
 from math import isclose
 from flask import Blueprint, request, jsonify, session
-from backend.models import PlayerScore, Users, db
+from backend.models import AllScores, PlayerScore, Users, db
 from datetime import datetime
 from datetime import timedelta
 import pytz
@@ -49,6 +49,17 @@ def add_score():
         return jsonify({"error": "Denegado"}), 400
 
     try:
+        new_all_score = AllScores(
+            name=player_name,
+            score=new_score_value,
+            date=datetime.now(),
+            category=category,
+            total_correct=total_correct,
+            total_time=total_time,
+            avg_time=round(total_time / total_correct, 2) if total_correct != 0 else 0.0,
+        )
+        db.session.add(new_all_score)
+        
         existing_record = PlayerScore.query.filter_by(
             category=category, name=player_name
         ).order_by(PlayerScore.score.desc()).first()

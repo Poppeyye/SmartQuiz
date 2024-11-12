@@ -19,6 +19,22 @@ class PlayerScore(db.Model):
         return f"<PlayerScore {self.name} {self.score} {self.date} {self.category} {self.total_time} {self.total_correct} {self.avg_time}>"
 
 
+class AllScores(db.Model):
+    __tablename__ = 'all_scores'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    category = db.Column(db.String(100), primary_key=False)
+    name = db.Column(db.String(100), primary_key=False)
+    score = db.Column(db.Float, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now())
+    total_time = db.Column(db.Float, nullable=False)
+    total_correct = db.Column(db.Float, nullable=False)
+    avg_time = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"<PlayerScore {self.name} {self.score} {self.date} {self.category} {self.total_time} {self.total_correct} {self.avg_time}>"
+
+
+
 class Question(db.Model):
     __tablename__ = "questions"
     id = db.Column(db.Integer, primary_key=True)
