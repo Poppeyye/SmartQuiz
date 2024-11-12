@@ -1,9 +1,12 @@
+import { mostrarPinSiDisponible } from './user-pins.js';
+
 let allScores = [];
 let currentCategory = 'all';
 let currentDateRange = 'all';
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    mostrarPinSiDisponible(pin_code);
     const categorySelector = document.getElementById('category-selector');
     const dateRangeSelector = document.getElementById('date-range-selector');
     

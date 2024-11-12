@@ -167,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 welcomeContainer.style.display = 'none';
                 faqContainer.style.display = 'none';
                 categoryContainer.style.display = 'block';
-                sessionStorage.setItem('user_name', userName)
             
                 // Chequea si es un nuevo usuario
                 if (data.message === "New user set") {
@@ -205,9 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             infoMessage.style.opacity = '0'; // Comenzar a ocultar el mensaje de información
                             setTimeout(() => {
                                 infoMessage.style.display = 'none'; // Ocultar mensaje de información
-                            }, 300); // Tiempo para la transición de opacidad
-                        }, 500); // Tiempo para completar la transición de la bienvenida
-                    }, 5000); // 5000ms = 5 segundos
+                            }, 400); // Tiempo para la transición de opacidad
+                        }, 600); // Tiempo para completar la transición de la bienvenida
+                    }, 6000); // 5000ms = 5 segundos
                 }
             })
             .catch(error => {

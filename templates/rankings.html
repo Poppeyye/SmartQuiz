@@ -58,7 +58,7 @@
     {% endfor %}
 </div>
 
-<script src="{{ url_for('static', filename='rankings.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
     window.onload = function() {
         const searchInput = document.getElementById('search-input');
