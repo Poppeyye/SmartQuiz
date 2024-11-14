@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 renderChart(); // Renderizamos el gráfico de promedio
-                renderRadarChart(); // Renderizamos el gráfico radar
+                //renderRadarChart(); // Renderizamos el gráfico radar
                 observer.unobserve(chartContainer); // Desobservamos después de cargar
             }
         });
