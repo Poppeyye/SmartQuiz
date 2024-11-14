@@ -213,21 +213,22 @@ def get_all_scores_dates(category, date_range):
             )
     return jsonify({"scores": results})
 
+category_names = {
+    'flags': 'Banderas del Mundo',
+    'LogicGame': 'Desafío Mental',
+    'Culture': 'Cultura General',
+    'Deportes': 'Deportes',
+    'Moda': 'Moda y Estilo',
+    'Historia': 'Historia y Geografía',
+    'Software': 'Informática y Matemáticas',
+    'Economia': 'Economía y Finanzas',
+    'Memoria': 'Juegos de Memoria'
+}
+
 @scores_bp.route("/get_average_scores/", methods=["GET"])
 @cache.cached(timeout=600)
-
 def get_average_scores():
-    category_names = {
-        'flags': 'Banderas del Mundo',
-        'LogicGame': 'Desafío Mental',
-        'Culture': 'Cultura General',
-        'Deportes': 'Deportes',
-        'Moda': 'Moda y Estilo',
-        'Historia': 'Historia y Geografía',
-        'Software': 'Informática y Matemáticas',
-        'Economia': 'Economía y Finanzas',
-        'Memoria': 'Juegos de Memoria'
-    }
+
     average_scores = (
         db.session.query(AllScores.category, func.avg(AllScores.score).label("average_score"))
         .group_by(AllScores.category)
@@ -248,6 +249,51 @@ def get_average_scores():
 
     return jsonify(data)
 
+@scores_bp.route("/get_top_players/", methods=["GET"])
+@cache.cached(timeout=600)
+def get_top_players():
+    top_players_data = get_top_players_data()
+    return jsonify(top_players_data)
+
+def get_top_players_data():
+    # Definir las categorías disponibles
+    categories = ['flags', 'LogicGame', 'Culture', 'Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'Memoria']
+
+    # Calcular la suma de puntuaciones por cada jugador y contar las categorías jugadas
+    subquery = (
+        db.session.query(
+            AllScores.name,
+            AllScores.category,
+            func.sum(AllScores.score).label("total_score")
+        )
+        .group_by(AllScores.name, AllScores.category)
+        .subquery()
+    )
+
+    players = (
+        db.session.query(
+            subquery.c.name,
+            subquery.c.category,
+            subquery.c.total_score
+        )
+        .order_by(subquery.c.total_score.desc())
+        .limit(5)
+        .all()
+    )
+
+    data = {
+        "top_players": {}
+    }
+
+    # Organizar datos por nombre de jugador
+    for player in players:
+        if player.name not in data["top_players"]:
+            data["top_players"][player.name] = {
+                "scores": {category: 0 for category in categories}  # Inicializa todas las categorías con 0
+            }
+        data["top_players"][player.name]["scores"][player.category] = player.total_score
+
+    return data
 
 def is_valid_name(name):
     return 1 <= len(name) <= 100

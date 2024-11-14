@@ -1400,12 +1400,17 @@ label {
     overflow: hidden;
     box-sizing: border-box;
     margin-top: 350px;
+    gap:30px;
 }
 
   #myChart {
     width: 100%;
     height: auto;
     max-width: 100%;
+}
+
+canvas {
+    margin: 20px 0; /* Margen superior e inferior entre los gráficos */
 }
 @media (max-width: 600px) {
     .chart-container {

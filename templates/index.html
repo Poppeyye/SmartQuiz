@@ -80,7 +80,8 @@
 
 <div class="chart-container" id="chart-container">
   <h2 class="decorative-title">¿Qué dicen los datos de los jugadores?</h2>
-  <canvas id="myChart" height="300" width="300"></canvas>
+  <canvas id="myChart" height="300" width="300"></canvas> <!-- Gráfico de puntuación promedio -->
+  <canvas id="myRadarChart" height="300" width="300"></canvas> <!-- Gráfico radar para top 5 jugadores -->
 </div>
 <!-- FAQ container -->
 <div class="faq-container" id="faq-container">
@@ -149,6 +150,7 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="{{ url_for('static', filename='game.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='charts-logic.js') }}"></script>
 <script>
     const slogans = [
         "¡Bienvenido/a al mejor Quiz de Internet!",
@@ -201,112 +203,6 @@ function toggleFaq(id) {
     trigger.checked = !trigger.checked;
 }
 
-
-
-
-
-</script>
-<script>
-  // Colores de las categorías
-  const colors = ['#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'];
-
-  // Llamada al endpoint para obtener datos dinámicamente
-  async function fetchData() {
-    try {
-      const response = await fetch('/get_average_scores/');
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
-  }
-
-  async function renderChart() {
-    const chartData = await fetchData();
-    if (!chartData) return;
-
-    const ctx = document.getElementById('myChart').getContext('2d');
-
-    new Chart(ctx, {
-      type: 'polarArea',
-      data: {
-        labels: chartData.labels, // Etiquetas de las categorías
-        datasets: [{
-          data: chartData.datasets[0].data, // Valores de puntuación promedio
-          backgroundColor: colors,
-          borderColor: 'rgba(255, 255, 255, 0.7)',
-          borderWidth: 1,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                const category = chartData.labels[tooltipItem.dataIndex];
-                const score = chartData.datasets[0].data[tooltipItem.dataIndex];
-                return `${category}: ${score.toFixed(2)}`;
-              }
-            }
-          },
-          title: {
-            display: true,
-            text: 'Promedio de Puntuación por Categoría',
-            font: {
-              size: 18,
-              weight: 'bold',
-              family: 'Arial, sans-serif',
-            },
-            padding: {
-              top: 10,
-              bottom: 30
-            }
-          }
-        },
-        scales: {
-          r: {
-            ticks: {
-              display: true,
-              backdropColor: 'rgba(0, 0, 0, 0)',
-              color: 'white',
-              font: {
-                size: 14
-              }
-            },
-            pointLabels: {
-              font: {
-                size: 14,
-                weight: 'bold',
-              },
-              color: 'white'
-            }
-          }
-        }
-      }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    const chartContainer = document.getElementById('chart-container');
-    
-    // Usamos IntersectionObserver para cargar el gráfico cuando el contenedor es visible
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          renderChart();
-          observer.unobserve(chartContainer); // Desobservamos después de cargar
-        }
-      });
-    });
-
-    observer.observe(chartContainer); // Observamos el contenedor del gráfico
-  });
 </script>
 
 
