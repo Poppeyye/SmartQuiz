@@ -215,7 +215,19 @@ def get_all_scores_dates(category, date_range):
 
 @scores_bp.route("/get_average_scores/", methods=["GET"])
 @cache.cached(timeout=600)
+
 def get_average_scores():
+    category_names = {
+        'flags': 'Banderas del Mundo',
+        'LogicGame': 'Desafío Mental',
+        'Culture': 'Cultura General',
+        'Deportes': 'Deportes',
+        'Moda': 'Moda y Estilo',
+        'Historia': 'Historia y Geografía',
+        'Software': 'Informática y Matemáticas',
+        'Economia': 'Economía y Finanzas',
+        'Memoria': 'Juegos de Memoria'
+    }
     average_scores = (
         db.session.query(AllScores.category, func.avg(AllScores.score).label("average_score"))
         .group_by(AllScores.category)
@@ -230,7 +242,8 @@ def get_average_scores():
     }
 
     for category, avg_score in average_scores:
-        data["labels"].append(category)
+        descriptive_name = category_names.get(category, category)
+        data["labels"].append(descriptive_name)
         data["datasets"][0]["data"].append(round(avg_score, 2))  # Redondea a 2 decimales si es necesario
 
     return jsonify(data)

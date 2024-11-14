@@ -1424,5 +1424,6 @@ label {
 .chart-container {
     position: relative;
     margin: auto;
-    padding-bottom: 50%
+    padding: 100px;
+    margin-top: 50px;
   }
