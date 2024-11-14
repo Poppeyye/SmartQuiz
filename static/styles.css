@@ -1420,3 +1420,9 @@ label {
     opacity: 0; /* Hacerlo invisible inicialmente */
     transition: opacity 0.5s ease; /* Transición suave */
 }
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    padding-bottom: 50%
+  }

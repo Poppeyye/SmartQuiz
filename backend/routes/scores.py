@@ -9,6 +9,9 @@ from backend.routes.main import require_jwt
 import random
 import string
 from werkzeug.security import check_password_hash
+from sqlalchemy import func
+from backend import cache
+
 
 csrf = CSRFProtect()
 scores_bp = Blueprint("scores", __name__)
@@ -209,6 +212,28 @@ def get_all_scores_dates(category, date_range):
                 }
             )
     return jsonify({"scores": results})
+
+@scores_bp.route("/get_average_scores/", methods=["GET"])
+@cache.cached(timeout=600)
+def get_average_scores():
+    average_scores = (
+        db.session.query(AllScores.category, func.avg(AllScores.score).label("average_score"))
+        .group_by(AllScores.category)
+        .all()
+    )
+
+    data = {
+        "labels": [],
+        "datasets": [{
+            "data": []
+        }]
+    }
+
+    for category, avg_score in average_scores:
+        data["labels"].append(category)
+        data["datasets"][0]["data"].append(round(avg_score, 2))  # Redondea a 2 decimales si es necesario
+
+    return jsonify(data)
 
 
 def is_valid_name(name):
