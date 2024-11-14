@@ -78,9 +78,9 @@
 </div>
 <!-- Charts -->
 
-<div class="chart-container">
+<div class="chart-container" id="chart-container">
   <h2 class="decorative-title">¿Qué dicen los datos de los jugadores?</h2>
-  <canvas id="myChart"></canvas>
+  <canvas id="myChart" height="300" width="300"></canvas>
 </div>
 <!-- FAQ container -->
 <div class="faq-container" id="faq-container">
@@ -241,6 +241,7 @@ function toggleFaq(id) {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         plugins: {
           legend: {
             display: false,

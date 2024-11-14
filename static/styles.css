@@ -1246,33 +1246,6 @@ label {
     padding: 0 20px;
 }
 
-/* Elementos decorativos en los lados */
-.decorative-title::before,
-.decorative-title::after {
-    content: ""; /* Sin texto, solo decorativo */
-    position: absolute;
-    top: 50%; /* Centrado verticalmente */
-    width: 40px;
-    height: 2px;
-    background-color: rgba(255, 255, 255, 0.5); /* Blanco suave */
-    transform: translateY(-50%); /* Alinear con el texto */
-}
-
-.decorative-title::before {
-    left: -50px; /* Espacio a la izquierda del texto */
-}
-
-.decorative-title::after {
-    right: -50px; /* Espacio a la derecha del texto */
-}
-
-/* Efecto animado al hacer hover sobre el título */
-.decorative-title:hover::before,
-.decorative-title:hover::after {
-    width: 60px; /* Ampliación de la línea decorativa */
-    transition: width 0.3s ease; /* Transición suave */
-}
-
   
   .faq-drawer {
     margin-bottom: 30px;
@@ -1422,6 +1395,21 @@ label {
 }
 
 .chart-container {
-    padding:100px;
-    margin-top: 50px;
-  }
+    width: 100%;
+    max-width: 600px; /* Define tu ancho deseado */
+    overflow: hidden;
+    box-sizing: border-box;
+    margin-top: 350px;
+}
+
+  #myChart {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+@media (max-width: 600px) {
+    .chart-container {
+        max-width: 90%;
+        margin-top: 250px
+    }
+}
