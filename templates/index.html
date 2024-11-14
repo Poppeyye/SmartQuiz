@@ -257,11 +257,11 @@ function toggleFaq(id) {
           },
           title: {
             display: true,
-            text: 'Promedio de Puntuación por Categoría', // Título del gráfico
+            text: 'Promedio de Puntuación por Categoría',
             font: {
               size: 18,
               weight: 'bold',
-              family: 'Arial, sans-serif', // Cambia el tipo de letra
+              family: 'Arial, sans-serif',
             },
             padding: {
               top: 10,
@@ -293,7 +293,21 @@ function toggleFaq(id) {
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    renderChart();
+    const chartContainer = document.getElementById('chart-container');
+    
+    // Usamos IntersectionObserver para cargar el gráfico cuando el contenedor es visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          renderChart();
+          observer.unobserve(chartContainer); // Desobservamos después de cargar
+        }
+      });
+    });
+
+    observer.observe(chartContainer); // Observamos el contenedor del gráfico
   });
 </script>
+
+
 {% endblock %}
