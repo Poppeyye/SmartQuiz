@@ -1422,8 +1422,6 @@ label {
 }
 
 .chart-container {
-    position: relative;
-    margin: auto;
-    padding: 100px;
+    padding:100px;
     margin-top: 50px;
   }
