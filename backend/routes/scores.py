@@ -226,7 +226,7 @@ category_names = {
 }
 
 @scores_bp.route("/get_average_scores/", methods=["GET"])
-@cache.cached(timeout=600)
+@cache.cached(timeout=1200)
 def get_average_scores():
 
     average_scores = (
@@ -249,8 +249,36 @@ def get_average_scores():
 
     return jsonify(data)
 
+@scores_bp.route("/get_category_percentages/", methods=["GET"])
+@cache.cached(timeout=1200)
+def get_category_percentages():
+    # Consulta para contar el número de partidas por categoría
+    category_counts = (
+        db.session.query(AllScores.category, func.count(AllScores.id).label("total_games"))
+        .group_by(AllScores.category)
+        .all()
+    )
+
+    # Calcula el total de partidas jugadas en todas las categorías
+    total_games = sum(count for _, count in category_counts)
+
+    # Estructura para el JSON de respuesta
+    data = {
+        "categories": [],
+        "percentages": []
+    }
+
+    # Calcula el porcentaje de partidas por categoría
+    for category, count in category_counts:
+        descriptive_name = category_names.get(category, category)
+        percentage = (count / total_games) * 100 if total_games > 0 else 0
+        data["categories"].append(descriptive_name)
+        data["percentages"].append(round(percentage, 2))  # Redondea a 2 decimales
+
+    return jsonify(data)
+
 @scores_bp.route("/get_top_players/", methods=["GET"])
-@cache.cached(timeout=600)
+@cache.cached(timeout=1200)
 def get_top_players():
     # Definir las categorías disponibles
     categories = ['flags', 'LogicGame', 'Culture', 'Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'Memoria']

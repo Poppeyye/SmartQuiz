@@ -1,7 +1,17 @@
 // Colores de las jugadores
-
+const categoryColors = [
+    'rgba(255, 69, 0, 0.5)',     // Vibrante Rojo Naranja
+    'rgba(0, 128, 0, 0.5)',      // Verde Bosque
+    'rgba(30, 144, 255, 0.5)',   // Azul Brillante
+    'rgba(255, 215, 0, 0.5)',    // Amarillo Dorado
+    'rgba(0, 255, 255, 0.5)',    // Cian
+    'rgba(255, 20, 147, 0.5)',   // Rosa Profundo
+    'rgba(0, 255, 0, 0.5)',      // Verde Limón
+    'rgba(70, 130, 180, 0.5)',   // Azul Acero
+    'rgba(255, 140, 0, 0.5)',    // Naranja Quemado
+];
 // Llamada al endpoint para obtener datos dinámicamente
-async function fetchData() {
+async function fetchAvgScores() {
     try {
         const response = await fetch('/get_average_scores/');
         const data = await response.json();
@@ -22,23 +32,70 @@ async function fetchTopPlayersData() {
         return null;
     }
 }
+async function renderBarChart() {
+    // Define colores vibrantes para las barras
+    const colors = [
+        'rgba(255, 69, 0, 0.8)',     // Vibrante Rojo Naranja
+        'rgba(0, 128, 0, 0.8)',      // Verde Bosque
+        'rgba(30, 144, 255, 0.8)',   // Azul Brillante
+        'rgba(255, 215, 0, 0.8)',    // Amarillo Dorado
+        'rgba(0, 255, 255, 0.8)',    // Cian
+        'rgba(255, 20, 147, 0.8)',   // Rosa Profundo
+        'rgba(0, 255, 0, 0.8)',      // Verde Limón
+        'rgba(70, 130, 180, 0.8)',   // Azul Acero
+        'rgba(255, 140, 0, 0.8)',    // Naranja Quemado
+    ];
 
+    // Fetch data from the backend
+    const response = await fetch('/get_category_percentages/');
+    const chartData = await response.json();
+    if (!chartData) return;
+
+    const ctx = document.getElementById('barChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.categories, // Categorías
+            datasets: [{
+                data: chartData.percentages, // Porcentajes
+                backgroundColor: colors.slice(0, chartData.categories.length), // Colores según el número de categorías
+                borderColor: 'rgba(255, 255, 255, 0.7)', // Color del borde
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: true,
+                    text: 'Qué categorías interesan más? % partidas jugadas',
+                    font: {
+                        size: 18,
+                        weight: 'bold',
+                        family: 'Arial, sans-serif',
+                    },
+                    color: 'rgba(255, 255, 255, 0.85)',
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 async function renderChart() {
     // Define colores transparentes para cada categoría
-    const colors = [
-        'rgba(255, 69, 0, 0.5)',     // Vibrante Rojo Naranja
-        'rgba(0, 128, 0, 0.5)',      // Verde Bosque
-        'rgba(30, 144, 255, 0.5)',   // Azul Brillante
-        'rgba(255, 215, 0, 0.5)',    // Amarillo Dorado
-        'rgba(0, 255, 255, 0.5)',    // Cian
-        'rgba(255, 20, 147, 0.5)',   // Rosa Profundo
-        'rgba(0, 255, 0, 0.5)',      // Verde Limón
-        'rgba(70, 130, 180, 0.5)',   // Azul Acero
-        'rgba(255, 140, 0, 0.5)',    // Naranja Quemado
-    ];
     
-    
-    const chartData = await fetchData();
+    const chartData = await fetchAvgScores();
     if (!chartData) return;
 
     const ctx = document.getElementById('myChart').getContext('2d');
@@ -49,7 +106,7 @@ async function renderChart() {
             labels: chartData.labels, // Etiquetas de las categorías
             datasets: [{
                 data: chartData.datasets[0].data, // Valores de puntuación promedio
-                backgroundColor: colors.slice(0, chartData.labels.length),  // Asigna colores según el número de etiquetas
+                backgroundColor: categoryColors.slice(0, chartData.labels.length),  // Asigna colores según el número de etiquetas
                 borderColor: 'rgba(255, 255, 255, 0.7)', // Color del borde
                 borderWidth: 1,
             }]
@@ -72,12 +129,13 @@ async function renderChart() {
                 },
                 title: {
                     display: true,
-                    text: 'Promedio de Puntuación por Categoría',
+                    text: 'Promedio global de puntos por categoría',
                     font: {
                         size: 18,
                         weight: 'bold',
                         family: 'Arial, sans-serif',
                     },
+                    color:'rgba(255, 255, 255, 0.85)',
                     padding: {
                         top: 10,
                         bottom: 30
@@ -161,7 +219,14 @@ async function renderRadarChart() {
             },
             plugins: {
                 legend: {
-                    position: 'top',
+                    display: true,
+                    labels: {
+                        font: {
+                            size: 16, // Aumenta el tamaño de la fuente de la leyenda
+                            weight: '500' // Opcional: cambia el peso de la fuente
+                        },
+                        color: 'white' // Cambia el color de la fuente de la leyenda
+                    }
                 },
                 title: {
                     display: true,
@@ -169,7 +234,8 @@ async function renderRadarChart() {
                     font: {
                         size: 18,
                         weight: 'bold'
-                    }
+                    },
+                    color: 'rgba(255, 255, 255, 0.85)'
                 }
             }
         }
@@ -186,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (entry.isIntersecting) {
                 renderChart(); // Renderizamos el gráfico de promedio
                 renderRadarChart(); // Renderizamos el gráfico radar
+                renderBarChart();
                 observer.unobserve(chartContainer); // Desobservamos después de cargar
             }
         });
