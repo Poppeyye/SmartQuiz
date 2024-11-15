@@ -209,10 +209,7 @@ async function renderRadarChart() {
                         display: true
                     },
                     suggestedMin: 0,
-                    suggestedMax: 100,
-                    pointLabels: {
-                        display: false // Oculta los nombres de las categorías
-                    }
+                    suggestedMax: 100
                 }
             },
             elements: {
@@ -233,7 +230,7 @@ async function renderRadarChart() {
                 },
                 title: {
                     display: true,
-                    text: 'Top 5 Jugadores global',
+                    text: 'Top 3 Jugadores global',
                     font: {
                         size: 18,
                         weight: 'bold'
