@@ -166,7 +166,7 @@ async function renderChart() {
 }
 
 async function renderRadarChart() {
-    const colors = ['#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'];
+    const colors = ['#FF6384', '#FF9F40', '#FFCD56'];
 
     const topPlayersData = await fetchTopPlayersData(); // Obtener datos de los jugadores
     if (!topPlayersData) return;
@@ -210,6 +210,9 @@ async function renderRadarChart() {
                     },
                     suggestedMin: 0,
                     suggestedMax: 100,
+                    pointLabels: {
+                        display: false // Oculta los nombres de las categorías
+                    }
                 }
             },
             elements: {

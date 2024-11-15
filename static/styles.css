@@ -1404,18 +1404,9 @@ label {
     gap: 50px; /* This will now work */
 }
 
-  #myChart {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-}
 
-canvas {
-    margin: 20px 0; /* Margen superior e inferior entre los gráficos */
-}
 @media (max-width: 600px) {
     .chart-container {
-        max-width: 90%;
         margin-top: 250px
     }
 }

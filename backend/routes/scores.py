@@ -299,7 +299,7 @@ def get_top_players():
             subquery.c.total_score
         )
         .order_by(subquery.c.total_score.desc())
-        .limit(5)
+        .limit(3)
         .all()
     )
 
