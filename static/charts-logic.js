@@ -1,5 +1,4 @@
 // Colores de las jugadores
-const colors = ['#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'];
 
 // Llamada al endpoint para obtener datos dinámicamente
 async function fetchData() {
@@ -25,6 +24,20 @@ async function fetchTopPlayersData() {
 }
 
 async function renderChart() {
+    // Define colores transparentes para cada categoría
+    const colors = [
+        'rgba(255, 69, 0, 0.5)',     // Vibrante Rojo Naranja
+        'rgba(0, 128, 0, 0.5)',      // Verde Bosque
+        'rgba(30, 144, 255, 0.5)',   // Azul Brillante
+        'rgba(255, 215, 0, 0.5)',    // Amarillo Dorado
+        'rgba(0, 255, 255, 0.5)',    // Cian
+        'rgba(255, 20, 147, 0.5)',   // Rosa Profundo
+        'rgba(0, 255, 0, 0.5)',      // Verde Limón
+        'rgba(70, 130, 180, 0.5)',   // Azul Acero
+        'rgba(255, 140, 0, 0.5)',    // Naranja Quemado
+    ];
+    
+    
     const chartData = await fetchData();
     if (!chartData) return;
 
@@ -36,8 +49,8 @@ async function renderChart() {
             labels: chartData.labels, // Etiquetas de las categorías
             datasets: [{
                 data: chartData.datasets[0].data, // Valores de puntuación promedio
-                backgroundColor: colors,
-                borderColor: 'rgba(255, 255, 255, 0.7)',
+                backgroundColor: colors.slice(0, chartData.labels.length),  // Asigna colores según el número de etiquetas
+                borderColor: 'rgba(255, 255, 255, 0.7)', // Color del borde
                 borderWidth: 1,
             }]
         },
@@ -95,6 +108,8 @@ async function renderChart() {
 }
 
 async function renderRadarChart() {
+    const colors = ['#FF6384', '#FF9F40', '#FFCD56', '#4BC0C0', '#36A2EB'];
+
     const topPlayersData = await fetchTopPlayersData(); // Obtener datos de los jugadores
     if (!topPlayersData) return;
 
@@ -113,7 +128,7 @@ async function renderRadarChart() {
         datasets.push({
             label: playerName,
             data: scores,
-            backgroundColor: colors[datasets.length % colors.length] + '80',  // Color con opacidad
+            backgroundColor: colors[datasets.length % colors.length] + '30',  // Color con opacidad
             borderColor: colors[datasets.length % colors.length],
             borderWidth: 2,
             fill: true // Para asegurar que el área esté llena
@@ -170,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 renderChart(); // Renderizamos el gráfico de promedio
-                //renderRadarChart(); // Renderizamos el gráfico radar
+                renderRadarChart(); // Renderizamos el gráfico radar
                 observer.unobserve(chartContainer); // Desobservamos después de cargar
             }
         });

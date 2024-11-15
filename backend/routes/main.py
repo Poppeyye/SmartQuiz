@@ -176,14 +176,14 @@ def sitemap():
 def inject_categories():
     categories = ['flags','LogicGame', 'Culture','Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'Memoria']
     category_names = {
-        'flags': 'Banderas del Mundo',
-        'LogicGame': 'Desafío Mental',
-        'Culture': 'Cultura General',
+        'flags': 'Banderas',
+        'LogicGame': 'Desafío',
+        'Culture': 'Cultura',
         'Deportes': 'Deportes',
-        'Moda': 'Moda y Estilo',
-        'Historia': 'Historia y Geografía',
-        'Software': 'Informática y Matemáticas',
-        'Economia': 'Economía y Finanzas',
-        'Memoria': 'Juegos de Memoria'
+        'Moda': 'Moda',
+        'Historia': 'Historia',
+        'Software': 'Informática',
+        'Economia': 'Economía',
+        'Memoria': 'Memoria'
     }
     return dict(categories=categories, category_names=category_names)

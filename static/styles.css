@@ -1395,12 +1395,13 @@ label {
 }
 
 .chart-container {
+    display: flex; /* Enables gap */
+    flex-direction: column; /* Adjusts the direction if needed */
     width: 100%;
-    max-width: 600px; /* Define tu ancho deseado */
+    max-width: 600px; /* Define your desired width */
     overflow: hidden;
-    box-sizing: border-box;
     margin-top: 350px;
-    gap:30px;
+    gap: 50px; /* This will now work */
 }
 
   #myChart {

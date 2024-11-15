@@ -214,15 +214,15 @@ def get_all_scores_dates(category, date_range):
     return jsonify({"scores": results})
 
 category_names = {
-    'flags': 'Banderas del Mundo',
-    'LogicGame': 'Desafío Mental',
-    'Culture': 'Cultura General',
+    'flags': 'Banderas',
+    'LogicGame': 'Desafío',
+    'Culture': 'Cultura',
     'Deportes': 'Deportes',
-    'Moda': 'Moda y Estilo',
-    'Historia': 'Historia y Geografía',
-    'Software': 'Informática y Matemáticas',
-    'Economia': 'Economía y Finanzas',
-    'Memoria': 'Juegos de Memoria'
+    'Moda': 'Moda',
+    'Historia': 'Historia',
+    'Software': 'Informática',
+    'Economia': 'Economía',
+    'Memoria': 'Memoria'
 }
 
 @scores_bp.route("/get_average_scores/", methods=["GET"])
@@ -252,28 +252,22 @@ def get_average_scores():
 @scores_bp.route("/get_top_players/", methods=["GET"])
 @cache.cached(timeout=600)
 def get_top_players():
-    top_players_data = get_top_players_data()
-    return jsonify(top_players_data)
-
-def get_top_players_data():
     # Definir las categorías disponibles
     categories = ['flags', 'LogicGame', 'Culture', 'Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'Memoria']
 
-    # Calcular la suma de puntuaciones por cada jugador y contar las categorías jugadas
+    # Calcular la suma total de puntuaciones por cada jugador
     subquery = (
         db.session.query(
-            AllScores.name,
-            AllScores.category,
-            func.sum(AllScores.score).label("total_score")
+            PlayerScore.name,
+            func.sum(PlayerScore.score).label("total_score")
         )
-        .group_by(AllScores.name, AllScores.category)
+        .group_by(PlayerScore.name)
         .subquery()
     )
 
     players = (
         db.session.query(
             subquery.c.name,
-            subquery.c.category,
             subquery.c.total_score
         )
         .order_by(subquery.c.total_score.desc())
@@ -281,17 +275,33 @@ def get_top_players_data():
         .all()
     )
 
+    # Preparar los datos para incluir las categorías
     data = {
         "top_players": {}
     }
 
-    # Organizar datos por nombre de jugador
+    # Agregar cada jugador a los datos finales
     for player in players:
-        if player.name not in data["top_players"]:
-            data["top_players"][player.name] = {
-                "scores": {category: 0 for category in categories}  # Inicializa todas las categorías con 0
-            }
-        data["top_players"][player.name]["scores"][player.category] = player.total_score
+        data["top_players"][player.name] = {
+            "total_score": player.total_score,
+            "scores": {category: 0 for category in categories}  # Inicializa todas las categorías con 0
+        }
+    
+    # Ahora necesitas aprovechar la subconsulta para obtener las puntuaciones por categoría
+    for category in categories:
+        category_scores = (
+            db.session.query(
+                PlayerScore.name,
+                func.sum(PlayerScore.score).label("category_score")
+            )
+            .filter(PlayerScore.category == category)
+            .group_by(PlayerScore.name)
+            .all()
+        )
+
+        for player in category_scores:
+            if player.name in data["top_players"]:
+                data["top_players"][player.name]["scores"][category] = player.category_score
 
     return data
 
