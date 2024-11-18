@@ -11,8 +11,7 @@ def create_app():
     app.config.from_object(Config)
     
     jwt = JWTManager(app)  # Inicializar JWTManager
-    CORS(app, supports_credentials=True)
-    
+    CORS(app, resources={r"/*": {"origins": ["https://genias.io", "https://www.genias.io"]}}, supports_credentials=True)
     
     jwt.init_app(app)
     db.init_app(app)

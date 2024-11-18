@@ -10,12 +10,12 @@ class Config:
     SESSION_TYPE = 'sqlalchemy'
     SESSION_SQLALCHEMY = db
     SESSION_PERMANENT = True
-    PERMANENT_SESSION_LIFETIME = timedelta(days=30)
+    PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     JWT_SECRET_KEY = 'admin'
-    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
     JWT_COOKIE_CSRF_PROTECT = True
-    JWT_COOKIE_SECURE = True
+    JWT_COOKIE_SECURE = True if ENV=='pro' else False
     JWT_ACCESS_COOKIE_PATH = '/'
     JWT_REFRESH_COOKIE_PATH = '/'
     SESSION_SQLALCHEMY_TABLE = 'sessions'

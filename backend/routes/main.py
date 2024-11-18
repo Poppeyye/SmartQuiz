@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Blueprint, current_app, jsonify, make_response, request, send_from_directory, session, render_template
+from flask import Blueprint, current_app, jsonify, make_response, redirect, request, send_from_directory, session, render_template
 from flask_jwt_extended import (
     verify_jwt_in_request, get_jwt_identity, create_access_token, 
     create_refresh_token, set_access_cookies, set_refresh_cookies, 
@@ -9,6 +9,8 @@ from jwt import DecodeError, InvalidSignatureError
 from jwt.exceptions import ExpiredSignatureError
 from datetime import datetime, timedelta, timezone
 import uuid
+
+from config import Config
 
 main_bp = Blueprint('main', __name__, static_folder='static')
 
@@ -89,7 +91,10 @@ def require_jwt(func):
     return wrapper
 
 
-
+@main_bp.before_request
+def force_www():
+    if not request.host.startswith("www") and Config.ENV == "pro":
+        return redirect(f"https://www.{request.host}{request.path}")    
 
 
 # Ruta principal donde se crean los tokens si no existen
