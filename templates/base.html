@@ -3,15 +3,6 @@
 <html lang="es">
 
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TXZ2YNC5R2"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-TXZ2YNC5R2');
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-9336280075263389">
@@ -49,7 +40,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='header-style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='footer-style.css') }}">
     <link rel="preconnect" href="https://www.termsfeed.com">
-    <link rel="dns-prefetch" href="https://www.termsfeed.com">
+
 </head>
 <body>
     <div class="backwrap gradient">
@@ -105,7 +96,7 @@
         {% block content %}
         {% endblock %}
     </div>
-    <div id="pinBox">
+    <div id="pinBox" style="display:none;">
         <span id="pinDisplay">****</span>
         <span class="flecha"></span>
         <span id="infoMessage">Guarda el PIN para usar tu nombre de usuario siempre que quieras</span>
@@ -119,26 +110,27 @@
         </div>
     </footer>
 <script type="module" src="{{ url_for('static', filename='user-pins.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@multiavatar/multiavatar/multiavatar.min.js"></script>
-<script type="text/javascript">
-const allCategories = {{ categories|tojson }};
-const categoryNames = {{ category_names|tojson }};
-let pin_code = "{{ pin_code | default('') }}";
-let userName = "{{ user_name | default('') }}";
-const audioUrls = {
+    <!-- Cargar el script de Multiavatar -->
+    <script src="https://cdn.jsdelivr.net/npm/@multiavatar/multiavatar/multiavatar.min.js"></script>
+
+    <script type="text/javascript">
+        const allCategories = {{ categories|tojson }};
+        const categoryNames = {{ category_names|tojson }};
+        let pin_code = "{{ pin_code | default('') }}";
+        let userName = "{{ user_name | default('') }}";
+        const audioUrls = {
            background: "{{ url_for('static', filename='audio/thinktime.webm') }}",
            correct: "{{ url_for('static', filename='audio/right.mp3') }}",
            wrong: "{{ url_for('static', filename='audio/wrong.webm') }}",
            welcome: "{{ url_for('static', filename='audio/welcome-voice.mp3') }}"
        };
-</script>
+    </script>
 
-</script>
-<script type="text/javascript" charset="UTF-8">
-    document.addEventListener('DOMContentLoaded', function () {
+    <!-- Script del consentimiento de cookies -->
+    <script type="text/javascript" charset="UTF-8">
         const script = document.createElement('script');
         script.src = "https://www.termsfeed.com/public/cookie-consent/4.2.0/cookie-consent.js";
-        script.defer = true;
+        script.defer = true; // Cargar de forma diferida
         script.charset = "UTF-8";
         script.onload = function () {
             cookieconsent.run({
@@ -155,10 +147,16 @@ const audioUrls = {
             });
         };
         document.body.appendChild(script);
-    });
-</script>
+    </script>
 
-
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TXZ2YNC5R2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-TXZ2YNC5R2');
+    </script>
 </body>
 
 </html>
