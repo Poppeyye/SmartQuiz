@@ -1,5 +1,5 @@
 import { mostrarPinSiDisponible } from './user-pins.js';
-import { backgroundMusic, correctSound, wrongSound, isMuted } from './mute-handler.js';
+import { backgroundMusic, correctSound, wrongSound, welcomeSound, isMuted } from './mute-handler.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name');
@@ -193,8 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     infoMessage.style.opacity = '1'; // Hacer visible el mensaje de información
                 
                     // Reproducir sonido
-                    const welcomeAudio = new Audio(audioUrls.welcome); // Cambia por la ruta de tu audio
-                    welcomeAudio.play();
+                    welcomeSound.play();
                 
                     // Ocultar después de un tiempo
                     setTimeout(() => {
@@ -678,8 +677,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
-        progressBar.style.width = '0%';
-        progressBarContainer.style.display = 'none';
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '100%'; // Resetea el ancho instantáneamente
+    
+        // Forzar un reflujo para garantizar que el ancho del progressBar se actualice inmediatamente
+        progressBar.offsetHeight; // Acción no-operativa pero hace que el navegador rehaga el cálculo del layout
+    
+        // Volver a aplicar la transición después de resetear el width
+        progressBar.style.transition = 'width 1s linear';
         gameEnded = true;
         timerText.style.display = 'none';
     }
@@ -765,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backgroundMusic.pause()
         resultText.textContent = `${msg}: ${totalScore}`;
         resultText.style.opacity = 1;
-
+        progressBarContainer.style.display = 'none';
         // Enviar la puntuación
         submitScore(userName, totalScore,totalTimeTaken, correctAnswersCount);
         // Mostrar el mensaje de puntuación final como un pop-up

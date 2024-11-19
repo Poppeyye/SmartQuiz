@@ -5,15 +5,20 @@ backgroundMusic.loop = true;
 
 export const correctSound = new Audio(audioUrls.correct);
 export const wrongSound = new Audio(audioUrls.wrong);
+export const welcomeSound = new Audio(audioUrls.welcome);
+
 backgroundMusic.volume = 0.1;
 correctSound.volume = 0.5;
 wrongSound.volume = 0.5;
+welcomeSound.volume = 0.5;
 
 function toggleMute() {
     if (isMuted) {
         backgroundMusic.muted = true;
         correctSound.muted = true;
         wrongSound.muted = true;
+        welcomeSound.muted = true;
+
         if (muteButton) {
             muteButton.classList.add('active'); // Cambia el estado visual
             muteButton.querySelector('.icon-sound').style.display = 'none'; // Oculta icono de sonido
