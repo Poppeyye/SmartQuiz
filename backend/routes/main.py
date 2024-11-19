@@ -158,7 +158,7 @@ def sitemap():
     ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
 
     # Definir las rutas que deseas incluir en el sitemap
-    included_routes = ['/', '/rankings', '/publica-tus-preguntas']
+    included_routes = ['/', '/rankings', '/publica-tus-preguntas', '/trivia-desafio-mental-juego']
 
     # Accede a las rutas de la aplicación principal
     for rule in current_app.url_map.iter_rules():
