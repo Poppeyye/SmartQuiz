@@ -112,11 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Añadir medalla según la posición
             if (index === 0) {
-                li.innerHTML = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score}`;
+                li.innerHTML = `<img src="/${staticFolder}/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">${score.name}: ${score.score}`;
             } else if (index === 1) {
-                li.innerHTML = `<img src="/static/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">${score.name}: ${score.score}`;
+                li.innerHTML = `<img src="/${staticFolder}/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">${score.name}: ${score.score}`;
             } else if (index === 2) {
-                li.innerHTML = `<img src="/static/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">${score.name}: ${score.score}`;
+                li.innerHTML = `<img src="/${staticFolder}/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">${score.name}: ${score.score}`;
             } else {
                 li.textContent = `${score.name}: ${score.score}`; // Sin medalla
             }

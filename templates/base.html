@@ -118,6 +118,7 @@
         const categoryNames = {{ category_names|tojson }};
         let pin_code = "{{ pin_code | default('') }}";
         let userName = "{{ user_name | default('') }}";
+        let staticFolder = "{{ files_folder | default('static') }}";
         const audioUrls = {
            background: "{{ url_for('static', filename='audio/thinktime.webm') }}",
            correct: "{{ url_for('static', filename='audio/right.mp3') }}",

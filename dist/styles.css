@@ -36,7 +36,6 @@ body {
     flex-direction: column; /* Esto es correcto si quieres apilar otros elementos */
     justify-content: center;
     align-items: center;
-    height: 100vh;
     width: 50vw;
     text-align: center;
     margin: 0 auto;
@@ -255,22 +254,6 @@ body {
     font-size: 1.2rem;
 }
 
-.popup-message {
-    position: fixed;
-    bottom: 20px; /* Posicionar 20px desde la parte inferior */
-    left: 50%; /* Centrar horizontalmente */
-    transform: translateX(-50%); /* Centrar con transform */
-    background-color: rgba(0, 128, 0, 0.8); /* Fondo verde semitransparente */
-    color: white;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    opacity: 0; /* Comenzar invisible */
-    transition: opacity 0.3s ease;
-    text-align: center;
-    font-size: 1.5rem;
-}
 
 /* Efecto de animación al aparecer y desaparecer */
 @keyframes fadeIn {
@@ -1400,13 +1383,13 @@ label {
     width: 100%;
     max-width: 600px; /* Define your desired width */
     overflow: hidden;
-    margin-top: 350px;
+    margin-top: 150px;
     gap: 50px; /* This will now work */
 }
 
 
 @media (max-width: 600px) {
     .chart-container {
-        margin-top: 250px
+        margin-top: 100px
     }
 }
