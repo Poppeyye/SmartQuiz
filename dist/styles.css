@@ -1038,10 +1038,9 @@ label {
 }
 
 .popup-message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute; /* Cambiado de fixed a absolute */
+    top: 10px; /* Ajusta según sea necesario */
+    left: 10px; /* Ajusta según sea necesario */
     background: linear-gradient(45deg, gold, darkgoldenrod);
     color: black;
     padding: 15px 25px;
@@ -1052,11 +1051,12 @@ label {
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 1000;
+    transform: translateY(-20px); /* Offsets it upwards */
 }
 
 .popup-message-show {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 

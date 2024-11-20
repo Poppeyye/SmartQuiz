@@ -710,27 +710,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showPopup(message) {
         const popup = document.createElement('div');
-        popup.className = 'popup-message'; // Clase CSS para el pop-up
+        popup.className = 'popup-message';
         popup.textContent = message;
     
-        // Agregar el pop-up al DOM
-        document.body.appendChild(popup);
+        // Agregar el pop-up al contenedor del juego
+        const gameContainer = document.getElementById('game-container');
+        gameContainer.appendChild(popup);
     
         // Forzar el reflujo/repaint para garantizar la aplicación correcta de la clase de estilo
         void popup.offsetWidth;
     
         // Mostrar el pop-up
         setTimeout(() => {
-            popup.classList.add('popup-message-show'); // Añadir la clase que apilará el estilo visible
-        }, 10); // Un pequeño delay para que se aplique el estilo
+            popup.classList.add('popup-message-show');
+        }, 10);
     
         // Ocultar el pop-up después de un tiempo
         setTimeout(() => {
-            popup.classList.remove('popup-message-show'); // Comenzar a ocultar
+            popup.classList.remove('popup-message-show');
             setTimeout(() => {
-                document.body.removeChild(popup); // Eliminar del DOM después de la transición
-            }, 300); // Esperar un poco antes de eliminar
-        }, 1000); // Tiempo de visualización del pop-up
+                gameContainer.removeChild(popup);
+            }, 300);
+        }, 1000);
     }
     function handleCorrectAnswer(timeTaken) {
         const messages = ["Bien!", "Excelente!", "Sigue así!", "Muy bien hecho!", "Gran trabajo!", "Correcto!", "Olé!", "Eso es!", "Crack!"];
