@@ -4,7 +4,6 @@ let allScores = [];
 let currentCategory = 'all';
 let currentDateRange = 'all';
 
-
 document.addEventListener('DOMContentLoaded', async () => {
     mostrarPinSiDisponible(pin_code);
     const categorySelector = document.getElementById('category-selector');
@@ -132,11 +131,11 @@ function populateScoreRows(scores, scoresList) {
         // Asignar medalla según el ranking
         let medalHtml = '';
         if (score.ranking === 1) {
-            medalHtml = `<img src="/static/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">`;
+            medalHtml = `<img src="${staticFolder}/svgs/gold.svg" alt="Medalla de Oro" width="20" height="20">`;
         } else if (score.ranking === 2) {
-            medalHtml = `<img src="/static/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">`;
+            medalHtml = `<img src="${staticFolder}/svgs/silver.svg" alt="Medalla de Plata" width="20" height="20">`;
         } else if (score.ranking === 3) {
-            medalHtml = `<img src="/static/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">`;
+            medalHtml = `<img src="${staticFolder}/svgs/bronze.svg" alt="Medalla de Bronce" width="20" height="20">`;
         }
 
         row.innerHTML = `

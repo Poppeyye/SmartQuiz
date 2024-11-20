@@ -7,7 +7,7 @@ from flask_cors import CORS
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 def create_app():
-    app = Flask(__name__, static_folder='../static', template_folder='../templates')
+    app = Flask(__name__, static_folder=f'../{Config.FILES_FOLDER}', template_folder='../templates')
     app.config.from_object(Config)
     
     jwt = JWTManager(app)  # Inicializar JWTManager

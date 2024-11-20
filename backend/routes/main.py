@@ -12,7 +12,7 @@ import uuid
 
 from config import Config
 
-main_bp = Blueprint('main', __name__, static_folder='static')
+main_bp = Blueprint('main', __name__, static_folder=Config.FILES_FOLDER)
 
 # Función para crear y establecer tokens
 def create_and_set_tokens(identity, response):
@@ -178,7 +178,7 @@ def sitemap():
 
 
 @main_bp.context_processor
-def inject_categories():
+def inject_global_context():
     categories = ['flags','LogicGame', 'Culture','Deportes', 'Moda', 'Historia', 'Software', 'Economia', 'Memoria']
     category_names = {
         'flags': 'Banderas',
@@ -191,4 +191,8 @@ def inject_categories():
         'Economia': 'Economía',
         'Memoria': 'Memoria'
     }
-    return dict(categories=categories, category_names=category_names)
+    return {
+        'categories': categories,
+        'category_names': category_names,
+        'files_folder': Config.FILES_FOLDER
+    }

@@ -60,6 +60,7 @@
 
 <script type="module" src="{{ url_for('static', filename='rankings.js') }}"></script>
 <script>
+    let staticFolder = "{{ files_folder }}";
     window.onload = function() {
         const searchInput = document.getElementById('search-input');
         const categorySelector = document.getElementById('category-selector');

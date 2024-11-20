@@ -19,3 +19,5 @@ class Config:
     JWT_ACCESS_COOKIE_PATH = '/'
     JWT_REFRESH_COOKIE_PATH = '/'
     SESSION_SQLALCHEMY_TABLE = 'sessions'
+    FILES_FOLDER = 'dist' if ENV == 'dev' else 'static'
+
