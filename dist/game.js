@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    mostrarPinSiDisponible(pin_code); // Muestra el pin si está disponible
+    mostrarPinSiDisponible(pin_code);
 
     function startGame() {
         const userName = userNameInput.value.trim();
