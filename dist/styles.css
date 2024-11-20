@@ -994,8 +994,8 @@ label {
     border: none; /* Sin borde */
     cursor: pointer; /* Cambiar el cursor al pasar por encima */
     position: fixed; /* Posicionamiento absoluto para colocar el botón */
-    top: 20px; /* Ajusta esto para alinearlo con la parte inferior del footer */
-    right: 20px; /* Ajusta esto según el espaciado que necesites desde el borde derecho */
+    top: 10px; /* Ajusta esto para alinearlo con la parte inferior del footer */
+    right: 10px; /* Ajusta esto según el espaciado que necesites desde el borde derecho */
     z-index: 4000; /* Mantener un z-index alto para que esté en la parte superior */
     width: 30px; /* Ajusta el ancho del botón */
     height: 30px; /* Ajusta la altura del botón */
