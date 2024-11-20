@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const uglifyjs = require('uglify-js');
-const CleanCSS = require('clean-css');
-const JavaScriptObfuscator = require('javascript-obfuscator'); // Importar el obfuscador
+const CleanCSS = require('clean-css'); // Importar CleanCSS
 
 const inputDir = 'dist'; // Directorio de entrada
 const outputDir = 'static'; // Directorio de salida
@@ -28,26 +27,19 @@ function processDirectory(inputDir, outputDir) {
       processDirectory(inputFilePath, outputFilePath);
     } else {
       if (file.endsWith('.js')) {
-        // Minificar JS
-        let code = fs.readFileSync(inputFilePath, 'utf8');
-        const minifiedResult = uglifyjs.minify(code);
+        // Minificar y escribir JS
+        const result = uglifyjs.minify(fs.readFileSync(inputFilePath, 'utf8'));
         
-        if (minifiedResult.error) {
-          console.error(`Error minifying ${file}: `, minifiedResult.error);
+        if (result.error) {
+          console.error(`Error minifying ${file}: `, result.error);
           return;
         }
-        
-        // Ofuscar JS
-        const obfuscationResult = JavaScriptObfuscator.obfuscate(minifiedResult.code, {
-          compact: true, // Hacer el código más compacto
-          controlFlowFlattening: true, // Aumenta la ofuscación haciendo más complejo el flujo
-        });
 
         ensureDirectoryExistence(outputFilePath);
-        fs.writeFileSync(outputFilePath, obfuscationResult.getObfuscatedCode(), 'utf8');
-        console.log(`Minified and obfuscated ${outputFilePath}`);
+        fs.writeFileSync(outputFilePath, result.code, 'utf8');
+        console.log(`Minified ${outputFilePath}`);
       } else if (file.endsWith('.css')) {
-        // Minificar CSS
+        // Minificar y escribir CSS
         const inputCSS = fs.readFileSync(inputFilePath, 'utf8');
         const outputCSS = new CleanCSS().minify(inputCSS);
 

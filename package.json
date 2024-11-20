@@ -1,9 +1,10 @@
 {
-  "devDependencies": {
-    "uglify-js": "^3.19.3"
+  "scripts": {
+    "build": "node scripts/compress.js",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "clean-css": "^5.3.3",
-    "javascript-obfuscator": "^4.1.1"
+    "uglify-js": "^3.19.3"
   }
 }
