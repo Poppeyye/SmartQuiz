@@ -3,10 +3,9 @@
   justify-content: center;
   align-items: center;
   padding: 10px; /* Ajusta el padding para tener más espacio */
-  position: absolute;
-  top: 10px; /* Solo si esto es necesario, puedes ajustarlo */
-  left: 50%;
-  transform: translateX(-50%); /* Centra el menú horizontalmente */
+  position: sticky;
+  top: 0; /* Solo si esto es necesario, puedes ajustarlo */
+  left: 0;
   z-index: 1000;
   border-radius: 10px; /* Es opcional, para bordes redondeados */
   box-shadow: 0 1px 5px rgba(252, 211, 77, 0.1); /* Opcional, añade sombra */

@@ -13,7 +13,7 @@ body {
     font-style: normal;
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Cambiado de min-height */
+    min-height: 100vh; /* Cambiado de min-height */
     position: relative;
     background: rgb(35, 76, 114);
 }
@@ -41,6 +41,7 @@ body {
     margin: 0 auto;
     position:relative;
     max-width: 600px;
+    overflow: visible;
 }
 
 /* Contenedor específico para los botones */
