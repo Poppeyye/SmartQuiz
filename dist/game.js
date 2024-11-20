@@ -748,8 +748,6 @@ document.addEventListener('DOMContentLoaded', () => {
         correctAnswersCount += 1;
         correctCountText.textContent = `Correctas: ${correctAnswersCount}`; 
         totalTimeTaken += timeTaken;
-
-        console.log(totalTimeTaken)
         // Llamar a displayFunnyMessage después de que el pop-up haya sido visible
         setTimeout(() => {
             //displayFunnyMessage(totalScore);
