@@ -4,6 +4,11 @@
 {% endblock %}
 {% block content %}
 <div class="container">
+    <picture class="image-container">
+        <source srcset="{{ url_for('static', filename='pngs/geniasiopicturenotext.webp') }}" type="image/webp">
+        <source srcset="{{ url_for('static', filename='pngs/geniasiopicturenotext.png') }}" type="image/png"> 
+        <img src="{{ url_for('static', filename='pngs/geniasiopicturenotext.png') }}" alt="Genias.io image" class="game-image">
+    </picture>
     <h1>Publica nuevas preguntas al juego</h1>
     <h2 class="quests">No te preocupes, Genia💡 las crea por ti</h2>
     <form id="thematic-form">
